@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../css/style.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="header">
+    <img class="header__logo" src="../images/icon_128.png" alt="">
+    <div class="header__vertical">
+      <h1>
+        <span class="blueColored">WaveNet</span> for Chrome
+      </h1>
+      <h2>A wrapper for Google WaveNet’s text-to-speech</h2>
+    </div>
+  </div>
+
+  <form class="userPreferences">
+    <h2>Voice Settings</h2>
+    <div class="userPreferences__horizontal">
+      <div class="userPreferences__range">
+        <div class="rangeLabel">
+          <label for="speed" class="small">Speed</label>
+          <label for="" id="speedValue" class="small bold">1</label>
+        </div>
+        <input type="range" value="1" min="0.25" max="3" id="speed" step="0.01">
+      </div>
+
+      <div class="userPreferences__range">
+        <div class="rangeLabel">
+          <label for="pitch" class="small">Pitch</label>
+          <label for="" class="small bold" id="pitchValue">0</label>
+        </div>
+        <input type="range" value="0" min="-20" max="20" id="pitch" step="1">
+      </div>
+    </div>
+
+    <select id="voice" value="en-US-Wavenet-F" required>
+      <option>en-US-Wavenet-A</option>
+      <option>en-US-Wavenet-B</option>
+      <option>en-US-Wavenet-C</option>
+      <option>en-US-Wavenet-D</option>
+      <option>en-US-Wavenet-E</option>
+      <option selected>en-US-Wavenet-F</option>
+    </select>
+
+    <h2>API Key</h2>
+    <input type="text" id="apiKey" placeholder="API Key" requried>
+    <a class="button--filled" href="https://github.com/pgmichael/WaveNet-for-Chrome" target="_blank">View documentation</a>
+  </form>
+  <script src="../js/popup.js"></script>
+</body>
+
+</html>
