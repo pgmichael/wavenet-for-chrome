@@ -12,6 +12,7 @@ You will then be able to use the extension trough the context menu.
 * Ajustable pitch and speed.
 
 ### Planned
+* Shortcuts to start speaking.
 * Live sentence highlighting.
 * Skip or replay sentences and paragraphs.
 * Multimedia functions with onscreen display.
