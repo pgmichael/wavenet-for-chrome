@@ -1,6 +1,6 @@
 {
   "name": "WaveNet for Chrome",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 2,
   "description": "A wrapper for Google WaveNet’s text-to-speech services.",
   "icons": {
