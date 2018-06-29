@@ -1,10 +1,13 @@
 # WaveNet for Chrome
-A wrapper for Google WaveNet’s text-to-speech.
+A wrapper for Google Cloud’s text-to-speech services that transforms highlighted text into high-quality natural sounding audio.
 
 ## How to use
-Although WaveNet for Chrome is a free extension, Google's text-to-speech [services are not](https://cloud.google.com/text-to-speech/pricing). You will, therefore, need to [create your own API key through Google's Cloud Platform](https://cloud.google.com/text-to-speech/) and pass it into the extension's popup menu.
+* [Download the chrome extension in the Chrome store](https://chrome.google.com/webstore/detail/wavenet-for-chrome/iefankigbnlnlaolflbcopliocibkffc).
+* [Generate an API Key using Google Cloud's Console](https://www.youtube.com/watch?v=1n8xlVNWEZ0).
+* Paste the API Key in the extension's popup menu.
+* Right click on highlighted text and click "Read this by WaveNet for Chrome".
 
-You will then be able to use the extension trough the context menu.
+Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to-speech services offer the first 1 million characters free of charge, the regular pricing is [$16.00USD per 1 million characters](https://cloud.google.com/text-to-speech/pricing).
 
 ## Features
 ### Currently available
