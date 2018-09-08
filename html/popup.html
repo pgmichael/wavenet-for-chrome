@@ -5,54 +5,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="../css/style.css">
-  <title>Document</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <title>WaveNet for Chrome</title>
 </head>
 
-<body>
-  <div class="header">
-    <img class="header__logo" src="../images/icon_128.png" alt="">
-    <div class="header__vertical">
-      <h1>
-        <span class="blueColored">WaveNet</span> for Chrome
-      </h1>
-      <h2>A wrapper for Google Cloud's text-to-speech services.</h2>
-    </div>
-  </div>
+<body class="app">
+  <header class="header">
+    <img src="../images/icon_128.png" alt="WaveNet for Chrome logo" class="header__logo">
+    <h1 class="header__title"><span class="header__title--blue">WaveNet</span> for Chrome</h1>
+    <h2 class="header__subtitle">A wrapper for Google Cloud's text-to-speech services.</h2>
+  </header>
 
-  <form class="userPreferences">
-    <h2>Voice Settings</h2>
-    <div class="userPreferences__horizontal">
-      <div class="userPreferences__range">
-        <div class="rangeLabel">
-          <label for="speed" class="small">Speed</label>
-          <label for="" id="speedValue" class="small bold">1</label>
-        </div>
-        <input type="range" value="1" min="0.25" max="3" id="speed" step="0.01">
-      </div>
-
-      <div class="userPreferences__range">
-        <div class="rangeLabel">
-          <label for="pitch" class="small">Pitch</label>
-          <label for="" class="small bold" id="pitchValue">0</label>
-        </div>
-        <input type="range" value="0" min="-20" max="20" id="pitch" step="1">
-      </div>
-    </div>
-
-    <select id="voice" value="en-US-Wavenet-F" required>
-      <option>en-US-Wavenet-A</option>
-      <option>en-US-Wavenet-B</option>
-      <option>en-US-Wavenet-C</option>
-      <option>en-US-Wavenet-D</option>
-      <option>en-US-Wavenet-E</option>
-      <option selected>en-US-Wavenet-F</option>
+  <form class="settings">
+    <h2 class="settings__title settings__title--voice">Voice Settings</h2>
+    <select name="language" class="input__select settings__language">
     </select>
-
-    <h2>API Key</h2>
-    <input type="text" id="apiKey" placeholder="API Key" requried>
-    <a class="button--filled" href="https://github.com/pgmichael/WaveNet-for-Chrome" target="_blank">View documentation</a>
+    <select name="locale" class="input__select settings__locale">
+    </select>
+    <div class="settings__range-container settings__range-container--speed">
+      <label for="" class="settings__range-label">Speed</label>
+      <span class="settings__range-value settings__range-value--speed">undefined</span>
+      <input type="range" value="1" min="0.25" max="3" id="pitch" step="0.01" class="input__range settings__speed settings__range settings__range--speed">
+    </div>
+    <div class="settings__range-container settings__range-container--pitch">
+      <label for="" class="settings__range-label">Pitch</label>
+      <span class="settings__range-value settings__range-value--pitch">undefined</span>
+      <input type="range" value="0" min="-20" max="20" id="pitch" step="1" class="input__range settings__pitch settings__range settings__range--speed">
+    </div>
+    <h2 class="settings__title settings__title--api-key">API Key<span class="helper"></span></h2>
+    <input type="text" class="settings__api-key input__text" placeholder="API Key">
   </form>
+  <footer class="footer">
+    <a class="button" href="https://github.com/pgmichael/WaveNet-for-Chrome" target="_blank">View documentation</a>
+  </footer>
   <script src="../js/popup.js"></script>
 </body>
 
