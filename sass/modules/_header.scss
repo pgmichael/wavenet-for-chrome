@@ -1,0 +1,38 @@
+.header {
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  grid-template-areas:
+  "logo title"
+  "logo subtitle";
+  column-gap: 15px;
+  row-gap: 5px;
+  padding: 15px;
+
+  background-color: $white;
+  border-bottom: 1px solid $accentGrey;
+}
+
+.header__logo {
+  grid-area: logo;
+  max-width: 100%;
+}
+
+.header__title {
+  grid-area: title;
+
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.header__title--blue {
+  font-size: inherit;
+  font-weight: inherit;
+  color: $blue;
+}
+
+.header__subtitle {
+  grid-area: subtitle;
+
+  font-size: 14px;
+  font-weight: 300;
+}
