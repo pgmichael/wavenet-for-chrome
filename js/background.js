@@ -6,6 +6,10 @@ class WaveNet {
 
 	start(string) {
 		chrome.storage.sync.get(null, async (settings) => {
+			if (!this.validateSettings(settings)) {
+				return
+			}
+
 			let request = JSON.stringify({
 				audioConfig: {
 					audioEncoding: 'LINEAR16',
@@ -16,8 +20,8 @@ class WaveNet {
 					text: string
 				},
 				voice: {
-					languageCode: 'en-US',
-					name: settings.voice
+					languageCode: settings.locale.split('-').slice(0, 2).join('-'),
+					name: settings.locale
 				}
 			});
 
@@ -32,6 +36,15 @@ class WaveNet {
 			this.speaker.src = `data:audio/wav;base64,${json.audioContent}`;
 			this.speaker.play();
 		});
+	}
+
+	validateSettings(settings) {
+		if (settings.apiKey === undefined) {
+			alert(`You must add your Google Cloud's text-to-speech API Key in the extension's popup.`);
+			return false
+		}
+
+		return true;
 	}
 
 	stop() {

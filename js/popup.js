@@ -1,66 +1,161 @@
-// Retreive settings upon popup opening.
+// Supported languages and voices by Cloud Text-to-Speech
+const languages = {
+	"English": {
+		voices: [
+			"en-US-Wavenet-A",
+			"en-US-Wavenet-B",
+			"en-US-Wavenet-C",
+			"en-US-Wavenet-D",
+			"en-US-Wavenet-E",
+			"en-US-Wavenet-F",
+			"en-AU-Wavenet-A",
+			"en-AU-Wavenet-B",
+			"en-AU-Wavenet-C",
+			"en-AU-Wavenet-D",
+			"en-GB-Wavenet-A",
+			"en-GB-Wavenet-B",
+			"en-GB-Wavenet-C",
+			"en-GB-Wavenet-D",
+		]
+	},
+	"Deutsch": {
+		voices: [
+			"de-DE-Wavenet-A",
+			"de-DE-Wavenet-B",
+			"de-DE-Wavenet-C",
+			"de-DE-Wavenet-D",
+		]
+	},
+	"Français": {
+		voices: [
+			"fr-FR-Wavenet-A",
+			"fr-FR-Wavenet-B",
+			"fr-FR-Wavenet-C",
+			"fr-FR-Wavenet-D",
+		]
+	},
+	"Italiano": {
+		voices: [
+			"it-IT-Wavenet-A",
+		]
+	},
+	"Nederlands": {
+		voices: [
+			"nl-NL-Wavenet-A",
+		]
+	},
+	"日本語": {
+		voices: [
+			"ja-JP-Standard-A",
+		]
+	}
+}
+
+let languageInput = document.querySelector('.settings__language');
+let localeInput = document.querySelector('.settings__locale');
+let speedInput = document.querySelector('.settings__speed');
+let pitchInput = document.querySelector('.settings__pitch');
+let pitchValue = document.querySelector('.settings__range-value--pitch');
+let speedValue = document.querySelector('.settings__range-value--speed');
+let apiKeyInput = document.querySelector('.settings__api-key');
+
+function loadLanguages(selectedLanguage) {
+	languageInput.innerHTML = ``;
+	for (const key of Object.keys(languages)) {
+		languageInput.innerHTML += `<option value="${key}">${key}</option>`;
+	}
+	let selectedOption = document.querySelector(`.settings__language option[value=${selectedLanguage}]`);
+	selectedOption.selected = true;
+}
+
+function loadLocales() {
+	localeInput.innerHTML = ``;
+	languages[languageInput.value].voices.forEach(voice => {
+		localeInput.innerHTML += `<option value="${voice}">${voice}</option>`;
+	});
+	localeInput.options[0].selected = true;
+}
+
+// Retreive settings upon popup opening. If values are null, set default values.
 chrome.storage.sync.get(null, (data) => {
-	if (data.apiKey !== undefined) {
-		document.querySelector('#apiKey').value = data.apiKey;
+	if (data.apiKey === undefined) {
+		chrome.storage.sync.set({ apiKey: "" });
+	} else {
+		apiKeyInput.value = data.apiKey;
 	}
 
-	if (data.voice === undefined) {
-		chrome.storage.sync.set({
-			voice: document.querySelector('#voice').value
-		});
+	if (data.language === undefined) {
+		chrome.storage.sync.set({ language: 'English' });
+		loadLanguages('English');
 	} else {
-		document.querySelector('#voice').value = data.voice;
+		languageInput.value = data.language;
+		loadLanguages(data.language);
+	}
+
+	loadLocales();
+	if (data.locale === undefined) {
+		chrome.storage.sync.set({ locale: 'en-US-Wavenet-A' });
+	} else {
+		localeInput.value = data.locale;
 	}
 
 	if (data.speed === undefined) {
-		chrome.storage.sync.set({
-			speed: document.querySelector('#speed').value
-		});
+		speedInput.value = 1;
+		speedValue.innerHTML = 1;
+		chrome.storage.sync.set({ speed: 1 });
 	} else {
-		document.querySelector('#speed').value = data.speed;
-		document.querySelector('#speedValue').innerHTML = data.speed;
+		speedInput.value = data.speed;
+		speedValue.innerHTML = data.speed;
 	}
 
 	if (data.pitch === undefined) {
-		chrome.storage.sync.set({
-			pitch: document.querySelector('#pitch').value
-		});
+		pitchInput.value = 0;
+		pitchValue.innerHTML = 0;
+		chrome.storage.sync.set({ pitch: 0 });
 	} else {
-		document.querySelector('#pitch').value = data.pitch;
-		document.querySelector('#pitchValue').innerHTML = data.pitch;
+		pitchInput.value = data.pitch;
+		pitchValue.innerHTML = data.pitch;
 	}
 });
 
-// EVENT LISTENERS
-document.querySelector('#apiKey').addEventListener('input', (event) => {
+// Settings from event listener
+apiKeyInput.addEventListener('change', (event) => {
 	chrome.storage.sync.set({
 		apiKey: event.srcElement.value
 	});
 });
 
-document.querySelector('#voice').addEventListener('input', (event) => {
+localeInput.addEventListener('change', (event) => {
 	chrome.storage.sync.set({
-		voice: event.srcElement.value
+		locale: event.srcElement.value
 	});
+})
+
+languageInput.addEventListener('change', (event) => {
+	chrome.storage.sync.set({
+		language: event.srcElement.value
+	});
+	loadLocales();
+	chrome.storage.sync.set({
+		locale: localeInput.options[localeInput.selectedIndex].value
+	})
 });
 
-const speedSlider = document.querySelector('#speed');
-speedSlider.addEventListener('input', (event) => {
-	document.querySelector('#speedValue').innerHTML = event.srcElement.value;
+speedInput.addEventListener('input', (event) => {
+	speedValue.innerHTML = event.srcElement.value
 });
 
-speedSlider.addEventListener('mouseup', (event) => {
+speedInput.addEventListener('mouseup', (event) => {
 	chrome.storage.sync.set({
 		speed: event.srcElement.value
 	});
 });
 
-const pitchSlider = document.querySelector('#pitch');
-pitchSlider.addEventListener('input', (event) => {
-	document.querySelector('#pitchValue').innerHTML = event.srcElement.value;
+pitchInput.addEventListener('input', (event) => {
+	pitchValue.innerHTML = event.srcElement.value;
 });
 
-pitchSlider.addEventListener('mouseup', (event) => {
+pitchInput.addEventListener('mouseup', (event) => {
 	chrome.storage.sync.set({
 		pitch: event.srcElement.value
 	});
