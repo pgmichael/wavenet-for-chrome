@@ -11,7 +11,7 @@ Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to
 
 ## Features
 ### Currently available
-* Support for all Google WaveNet voices.
+* Support for all Google WaveNet voices and languages.
 * Ajustable pitch and speed.
 
 ### Planned
