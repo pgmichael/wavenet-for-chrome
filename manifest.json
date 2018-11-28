@@ -15,7 +15,8 @@
   },
   "permissions": [
     "contextMenus",
-    "storage"
+    "storage",
+    "downloads"
   ],
   "browser_action": {
     "default_title": "WaveNet for Chrome",
