@@ -67,13 +67,13 @@ class WaveNet {
 const waveNet = new WaveNet();
 
 chrome.contextMenus.create({
-	title: 'Read',
+	title: 'Read Aloud',
 	contexts: ['selection'],
 	onclick: info => waveNet.start(info.selectionText)
 });
 
 chrome.contextMenus.create({
-	title: 'Download',
+	title: 'Download as MP3',
 	contexts: ['selection'],
 	onclick: info => waveNet.download(info.selectionText)
 });
