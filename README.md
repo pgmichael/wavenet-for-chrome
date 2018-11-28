@@ -13,8 +13,9 @@ Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to
 ### Currently available
 * Support for all Google WaveNet voices and languages.
 * Ajustable pitch and speed.
+* Download selected text to and MP3 file.
 
-### Planned
+### Suggested features
 * Shortcuts to start speaking.
 * Live sentence highlighting.
 * Skip or replay sentences and paragraphs.
