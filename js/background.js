@@ -2,40 +2,61 @@ class WaveNet {
 	constructor() {
 		this.speaker = new Audio();
 		this.speaker.src = '';
+		this.speaker.addEventListener("ended", () => this.stop())
 	}
 
-	start(string) {
+	download(string) {
 		chrome.storage.sync.get(null, async (settings) => {
-			if (!this.validateSettings(settings)) {
-				return
+			if (!this.validateSettings(settings)) return
+
+			let audioContent = await this.getAudioContent(settings, string)
+			chrome.downloads.download({
+				'url': `data:audio/mp3;base64,${audioContent}`,
+				'filename': 'download.mp3'
+			})
+		})
+	}
+
+	async start(string) {
+		chrome.storage.sync.get(null, async (settings) => {
+			if (!this.validateSettings(settings)) return
+
+			let audioContent = await this.getAudioContent(settings, string)
+			this.speaker.src = `data:audio/wav;base64,${audioContent}`
+			await this.speaker.play()
+			chrome.contextMenus.update('stop', { enabled: true })
+		})
+	}
+
+	stop() {
+		this.speaker.src = ''
+		chrome.contextMenus.update('stop', { enabled: false })
+	}
+
+	async getAudioContent(settings, string) {
+		let request = JSON.stringify({
+			audioConfig: {
+				audioEncoding: 'LINEAR16',
+				pitch: settings.pitch,
+				speakingRate: settings.speed
+			},
+			input: {
+				text: string
+			},
+			voice: {
+				languageCode: settings.locale.split('-').slice(0, 2).join('-'),
+				name: settings.locale
 			}
+		})
 
-			let request = JSON.stringify({
-				audioConfig: {
-					audioEncoding: 'LINEAR16',
-					pitch: settings.pitch,
-					speakingRate: settings.speed
-				},
-				input: {
-					text: string
-				},
-				voice: {
-					languageCode: settings.locale.split('-').slice(0, 2).join('-'),
-					name: settings.locale
-				}
-			});
+		let response = await fetch(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${settings.apiKey}`, { method: 'POST', body: request });
+		let json = await response.json()
+		if (!response.ok) {
+			alert(json.error.message) // TODO: Better error handling
+			return
+		}
 
-			let response = await fetch(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${settings.apiKey}`, { method: 'POST', body: request });
-			let json = await response.json();
-			if (!response.ok) {
-				// TODO: Better error handling
-				alert(json.error.message);
-				return;
-			}
-
-			this.speaker.src = `data:audio/wav;base64,${json.audioContent}`;
-			this.speaker.play();
-		});
+		return json.audioContent
 	}
 
 	validateSettings(settings) {
@@ -44,20 +65,30 @@ class WaveNet {
 			return false
 		}
 
-		return true;
-	}
-
-	stop() {
-		this.speaker.src = '';
+		return true
 	}
 }
 
 const waveNet = new WaveNet();
 
 chrome.contextMenus.create({
-	title: 'Read this by WaveNet for Chrome',
+	id: 'start',
+	title: 'Start Speaking',
 	contexts: ['selection'],
-	onclick: (info) => {
-		waveNet.start(info.selectionText);
-	}
+	onclick: info => waveNet.start(info.selectionText)
+});
+
+chrome.contextMenus.create({
+	id: 'stop',
+	title: 'Stop Speaking',
+	contexts: ['selection'],
+	onclick: _ => waveNet.stop(),
+	enabled: false
+});
+
+chrome.contextMenus.create({
+	id: 'download',
+	title: 'Download as MP3',
+	contexts: ['selection'],
+	onclick: info => waveNet.download(info.selectionText)
 });
