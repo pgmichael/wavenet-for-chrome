@@ -2,6 +2,7 @@ class WaveNet {
 	constructor() {
 		this.speaker = new Audio();
 		this.speaker.src = '';
+		this.speaker.addEventListener("ended", () => this.stop())
 	}
 
 	download(string) {
