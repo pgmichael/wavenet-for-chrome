@@ -16,14 +16,20 @@ class WaveNet {
 		})
 	}
 
-	start(string) {
+	async start(string) {
 		chrome.storage.sync.get(null, async (settings) => {
 			if (!this.validateSettings(settings)) return
 
 			let audioContent = await this.getAudioContent(settings, string)
 			this.speaker.src = `data:audio/wav;base64,${audioContent}`
-			this.speaker.play()
+			await this.speaker.play()
+			chrome.contextMenus.update('stop', { enabled: true })
 		})
+	}
+
+	stop() {
+		this.speaker.src = ''
+		chrome.contextMenus.update('stop', { enabled: false })
 	}
 
 	async getAudioContent(settings, string) {
@@ -60,19 +66,27 @@ class WaveNet {
 
 		return true
 	}
-
-	stop() { this.speaker.src = '' }
 }
 
 const waveNet = new WaveNet();
 
 chrome.contextMenus.create({
-	title: 'Read Aloud',
+	id: 'start',
+	title: 'Start Speaking',
 	contexts: ['selection'],
 	onclick: info => waveNet.start(info.selectionText)
 });
 
 chrome.contextMenus.create({
+	id: 'stop',
+	title: 'Stop Speaking',
+	contexts: ['selection'],
+	onclick: _ => waveNet.stop(),
+	enabled: false
+});
+
+chrome.contextMenus.create({
+	id: 'download',
 	title: 'Download as MP3',
 	contexts: ['selection'],
 	onclick: info => waveNet.download(info.selectionText)
