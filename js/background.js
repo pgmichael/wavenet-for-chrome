@@ -34,7 +34,7 @@ class WaveNet {
 	}
 
 	async getAudioContent(settings, string) {
-		let request = JSON.stringify({
+		let request = {
 			audioConfig: {
 				audioEncoding: 'LINEAR16',
 				pitch: settings.pitch,
@@ -47,7 +47,14 @@ class WaveNet {
 				languageCode: settings.locale.split('-').slice(0, 2).join('-'),
 				name: settings.locale
 			}
-		})
+		}
+
+		if (this.isSSML(string)) {
+			request.input.ssml = request.input.text
+			delete request.input.text
+		}
+
+		request = JSON.stringify(request)
 
 		let response = await fetch(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${settings.apiKey}`, { method: 'POST', body: request });
 		let json = await response.json()
@@ -66,6 +73,10 @@ class WaveNet {
 		}
 
 		return true
+	}
+
+	isSSML(string) {
+		return string.startsWith('<speak>') && string.endsWith('</speak>')
 	}
 }
 
