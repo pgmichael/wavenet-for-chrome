@@ -15,7 +15,7 @@ Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to
 * Ajustable pitch and speed.
 * Download selected text to an MP3 file.
 * [SSML support](https://developers.google.com/actions/reference/ssml)
-* Shortcuts to start speaking (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on all other platforms & [modfiable through browser settings](chrome://extensions/shortcuts)).
+* Shortcuts to start speaking (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on all other platforms & modfiable through the following URL: chrome://extensions/shortcuts).
 
 ### Suggested features
 * Split large queries into smaller one to prevent the 5000 character limit.
