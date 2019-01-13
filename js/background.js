@@ -103,3 +103,11 @@ chrome.contextMenus.create({
 	contexts: ['selection'],
 	onclick: info => waveNet.download(info.selectionText)
 });
+
+chrome.commands.onCommand.addListener((command) => {
+	if (command === "speak")
+		chrome.tabs.executeScript(
+			{ code: "window.getSelection().toString();" },
+			(selection) => waveNet.start(selection[0])
+		)
+});
