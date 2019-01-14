@@ -1,7 +1,7 @@
 {
   "name": "wavenet-for-chrome",
-  "version": "1.4.0",
-  "description": "A wrapper for Google WaveNet’s text-to-speech.",
+  "version": "1.4.1",
+  "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "main": ".eslintrc.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
