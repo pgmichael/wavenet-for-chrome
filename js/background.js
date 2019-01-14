@@ -1,7 +1,7 @@
 class WaveNet {
 	constructor() {
-		this.speaker = new Audio();
-		this.speaker.src = '';
+		this.speaker = new Audio()
+		this.speaker.src = ''
 		this.speaker.addEventListener("ended", () => this.stop())
 	}
 
@@ -68,7 +68,7 @@ class WaveNet {
 
 	validateSettings(settings) {
 		if (settings.apiKey === undefined) {
-			alert(`You must add your Google Cloud's text-to-speech API Key in the extension's popup.`);
+			alert(`You must add your Google Cloud's text-to-speech API Key in the extension's popup.`)
 			return false
 		}
 
@@ -80,34 +80,37 @@ class WaveNet {
 	}
 }
 
-const waveNet = new WaveNet();
+const waveNet = new WaveNet()
 
-chrome.contextMenus.create({
-	id: 'start',
-	title: 'Start Speaking',
-	contexts: ['selection'],
-	onclick: info => waveNet.start(info.selectionText)
-});
+chrome.commands.getAll((commands) => {
+	const startCommand = commands.find((element) => element.name === "speak")
+	chrome.contextMenus.create({
+		id: 'start',
+		title: `Start Speaking (${startCommand.shortcut})`,
+		contexts: ['selection'],
+		onclick: info => waveNet.start(info.selectionText)
+	})
 
-chrome.contextMenus.create({
-	id: 'stop',
-	title: 'Stop Speaking',
-	contexts: ['selection'],
-	onclick: _ => waveNet.stop(),
-	enabled: false
-});
+	chrome.contextMenus.create({
+		id: 'stop',
+		title: 'Stop Speaking',
+		contexts: ['selection'],
+		onclick: _ => waveNet.stop(),
+		enabled: false
+	})
 
-chrome.contextMenus.create({
-	id: 'download',
-	title: 'Download as MP3',
-	contexts: ['selection'],
-	onclick: info => waveNet.download(info.selectionText)
-});
+	chrome.contextMenus.create({
+		id: 'download',
+		title: 'Download as MP3',
+		contexts: ['selection'],
+		onclick: info => waveNet.download(info.selectionText)
+	})
 
-chrome.commands.onCommand.addListener((command) => {
-	if (command === "speak")
-		chrome.tabs.executeScript(
-			{ code: "window.getSelection().toString();" },
-			(selection) => waveNet.start(selection[0])
-		)
-});
+	chrome.commands.onCommand.addListener((command) => {
+		if (command === "speak")
+			chrome.tabs.executeScript(
+				{ code: "window.getSelection().toString();" },
+				(selection) => waveNet.start(selection[0])
+			)
+	})
+})
