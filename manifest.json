@@ -2,7 +2,7 @@
   "name": "WaveNet for Chrome",
   "version": "1.4.0",
   "manifest_version": 2,
-  "description": "A wrapper for Google WaveNet’s text-to-speech services.",
+  "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "icons": {
     "19": "images/icon_19.png",
     "38": "images/icon_38.png",
