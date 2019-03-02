@@ -48,6 +48,55 @@ const languages = {
 		voices: [
 			"ja-JP-Standard-A",
 		]
+	},
+	"Dansk": {
+		voices: [
+			"da-DK-Wavenet-A"
+		]
+	},
+	"Polskie": {
+		voices: [
+			"pl-PL-Wavenet-A",
+			"pl-PL-Wavenet-B",
+			"pl-PL-Wavenet-C",
+			"pl-PL-Wavenet-D",
+		]
+	},
+	"Português": {
+		voices: [
+			"pt-BR-Wavenet-A",
+			"pt-PT-Wavenet-A",
+			"pt-PT-Wavenet-B",
+			"pt-PT-Wavenet-C",
+			"pt-PT-Wavenet-D",
+		]
+	},
+	"Pусский": {
+		voices: [
+			"ru-RU-Wavenet-A",
+			"ru-RU-Wavenet-B",
+			"ru-RU-Wavenet-C",
+			"ru-RU-Wavenet-D",
+		]
+	},
+	"Slovenský": {
+		voices: [
+			"sk-SK-Wavenet-A",
+		]
+	},
+	"Türk": {
+		voices: [
+			"tr-TR-Wavenet-A",
+			"tr-TR-Wavenet-B",
+			"tr-TR-Wavenet-C",
+			"tr-TR-Wavenet-D",
+			"tr-TR-Wavenet-E",
+		]
+	},
+	"Yкраїнський": {
+		voices: [
+			"uk-UA-Wavenet-A",
+		]
 	}
 }
 
