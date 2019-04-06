@@ -97,6 +97,14 @@ const languages = {
 		voices: [
 			"uk-UA-Wavenet-A",
 		]
+	},
+	"한국어": {
+		voices: [
+			"ko-KR-Wavenet-A",
+			"ko-KR-Wavenet-B",
+			"ko-KR-Wavenet-C",
+			"ko-KR-Wavenet-D",
+		]
 	}
 }
 
