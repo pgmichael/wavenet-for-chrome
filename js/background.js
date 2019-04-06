@@ -10,10 +10,13 @@ class WaveNet {
 			if (!this.validateSettings(settings)) return
 
 			let audioContent = await this.getAudioContent(settings, string)
-			chrome.downloads.download({
-				'url': `data:audio/mp3;base64,${audioContent}`,
-				'filename': 'download.mp3'
-			})
+			if (audioContent !== null) {
+				const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
+				chrome.downloads.download({
+					'url': URL.createObjectURL(blob),
+					'filename': 'download.mp3'
+				})
+			}
 		})
 	}
 
