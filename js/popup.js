@@ -105,6 +105,15 @@ const languages = {
 			"ko-KR-Wavenet-C",
 			"ko-KR-Wavenet-D",
 		]
+	},
+	"Norsk": {
+		voices: [
+			"nb-no-Wavenet-A",
+			"nb-no-Wavenet-B",
+			"nb-no-Wavenet-C",
+			"nb-no-Wavenet-D",
+			"nb-no-Wavenet-E",
+		]
 	}
 }
 
