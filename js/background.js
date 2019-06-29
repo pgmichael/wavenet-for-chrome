@@ -9,7 +9,7 @@ class WaveNet {
 		chrome.storage.sync.get(null, async (settings) => {
 			if (!this.validateSettings(settings)) return
 
-			let audioContent = await this.getAudioContent(settings, string)
+			let audioContent = await this.getAudioContent(settings, 'LINEAR16', string)
 			if (audioContent !== null) {
 				const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
 				chrome.downloads.download({
@@ -24,8 +24,8 @@ class WaveNet {
 		chrome.storage.sync.get(null, async (settings) => {
 			if (!this.validateSettings(settings)) return
 
-			let audioContent = await this.getAudioContent(settings, string)
-			this.speaker.src = `data:audio/wav;base64,${audioContent}`
+			let audioContent = await this.getAudioContent(settings, 'OGG_OPUS', string)
+			this.speaker.src = `data:audio/ogg;base64,${audioContent}`
 			await this.speaker.play()
 			chrome.contextMenus.update('stop', { enabled: true })
 		})
@@ -36,10 +36,10 @@ class WaveNet {
 		chrome.contextMenus.update('stop', { enabled: false })
 	}
 
-	async getAudioContent(settings, string) {
+	async getAudioContent(settings, audioEncoding, string) {
 		let request = {
 			audioConfig: {
-				audioEncoding: 'LINEAR16',
+				audioEncoding: audioEncoding,
 				pitch: settings.pitch,
 				speakingRate: settings.speed
 			},
