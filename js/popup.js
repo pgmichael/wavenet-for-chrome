@@ -2,12 +2,6 @@
 const languages = {
 	"English": {
 		voices: [
-			"en-US-Wavenet-A",
-			"en-US-Wavenet-B",
-			"en-US-Wavenet-C",
-			"en-US-Wavenet-D",
-			"en-US-Wavenet-E",
-			"en-US-Wavenet-F",
 			"en-AU-Wavenet-A",
 			"en-AU-Wavenet-B",
 			"en-AU-Wavenet-C",
@@ -16,6 +10,15 @@ const languages = {
 			"en-GB-Wavenet-B",
 			"en-GB-Wavenet-C",
 			"en-GB-Wavenet-D",
+			"en-IN-Wavenet-A",
+			"en-IN-Wavenet-B",
+			"en-IN-Wavenet-C",
+			"en-US-Wavenet-A",
+			"en-US-Wavenet-B",
+			"en-US-Wavenet-C",
+			"en-US-Wavenet-D",
+			"en-US-Wavenet-E",
+			"en-US-Wavenet-F",
 		]
 	},
 	"Deutsch": {
@@ -28,6 +31,10 @@ const languages = {
 	},
 	"Français": {
 		voices: [
+			"fr-CA-Wavenet-A",
+			"fr-CA-Wavenet-B",
+			"fr-CA-Wavenet-C",
+			"fr-CA-Wavenet-D",
 			"fr-FR-Wavenet-A",
 			"fr-FR-Wavenet-B",
 			"fr-FR-Wavenet-C",
@@ -42,11 +49,18 @@ const languages = {
 	"Nederlands": {
 		voices: [
 			"nl-NL-Wavenet-A",
+			"nl-NL-Wavenet-B",
+			"nl-NL-Wavenet-C",
+			"nl-NL-Wavenet-D",
+			"nl-NL-Wavenet-E",
 		]
 	},
 	"日本語": {
 		voices: [
-			"ja-JP-Standard-A",
+			"ja-JP-Wavenet-A",
+			"ja-JP-Wavenet-B",
+			"ja-JP-Wavenet-C",
+			"ja-JP-Wavenet-D",
 		]
 	},
 	"Dansk": {
@@ -60,6 +74,7 @@ const languages = {
 			"pl-PL-Wavenet-B",
 			"pl-PL-Wavenet-C",
 			"pl-PL-Wavenet-D",
+			"pl-PL-Wavenet-E",
 		]
 	},
 	"Português": {
@@ -108,11 +123,70 @@ const languages = {
 	},
 	"Norsk": {
 		voices: [
-			"nb-no-Wavenet-A",
-			"nb-no-Wavenet-B",
-			"nb-no-Wavenet-C",
-			"nb-no-Wavenet-D",
-			"nb-no-Wavenet-E",
+			"nb-NO-Wavenet-A",
+			"nb-NO-Wavenet-B",
+			"nb-NO-Wavenet-C",
+			"nb-NO-Wavenet-D",
+			"nb-NO-Wavenet-E",
+		]
+	},
+	"العربية": {
+		voices: [
+			"ar-XA-Wavenet-A",
+			"ar-XA-Wavenet-B",
+			"ar-XA-Wavenet-C"
+		]
+	},
+	"Čeština": {
+		voices: [
+			"cs-CZ-Wavenet-A"
+		]
+	},
+	"Ελληνικά": {
+		voices: [
+			"el-GR-Wavenet-A"
+		]
+	},
+	"Suomi": {
+		voices: [
+			"fi-FI-Wavenet-A",
+		]
+	},
+	"Filipino": {
+		voices: [
+			"fil-PH-Wavenet-A",
+		]
+	},
+	"हिन्दी": {
+		voices: [
+			"hi-IN-Wavenet-A",
+			"hi-IN-Wavenet-B",
+			"hi-IN-Wavenet-C",
+		]
+	},
+	"Magyar": {
+		voices: [
+			"hu-HU-Wavenet-A",
+		]
+	},
+	"Bahasa Indonesia": {
+		voices: [
+			"id-ID-Wavenet-A",
+			"id-ID-Wavenet-B",
+			"id-ID-Wavenet-C",
+		]
+	},
+	"Svenska": {
+		voices: [
+			"sv-SE-Wavenet-A",
+		]
+	},
+	"Tiếng Việt": {
+		voices: [
+			"vi-VN-Wavenet-A",
+			"vi-VN-Wavenet-B",
+			"vi-VN-Wavenet-C",
+			"vi-VN-Wavenet-D",
 		]
 	}
 }
