@@ -85,6 +85,15 @@ class WaveNet {
 
 const waveNet = new WaveNet()
 
+var convertSelection = `
+	var selectionContents = window.getSelection().getRangeAt(0).cloneContents();
+	var imgs = selectionContents.querySelectorAll('img');
+	for(const img of imgs) {
+		img.outerHTML = img.alt;
+	}
+	selectionContents.textContent;
+`
+
 chrome.commands.getAll((commands) => {
 	const startCommand = commands.find((element) => element.name === "speak")
 	chrome.contextMenus.create({
@@ -112,7 +121,7 @@ chrome.commands.getAll((commands) => {
 	chrome.commands.onCommand.addListener((command) => {
 		if (command === "speak")
 			chrome.tabs.executeScript(
-				{ code: "window.getSelection().toString();" },
+				{ code: convertSelection },
 				(selection) => waveNet.start(selection[0])
 			)
 	})
