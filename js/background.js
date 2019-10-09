@@ -89,7 +89,8 @@ var convertSelection = `
 	var selectionContents = window.getSelection().getRangeAt(0).cloneContents();
 	var imgs = selectionContents.querySelectorAll('img');
 	for(const img of imgs) {
-		img.outerHTML = img.alt;
+		var altText = document.createTextNode(img.alt);
+		img.parentNode.replaceChild(altText, img);
 	}
 	selectionContents.textContent;
 `
