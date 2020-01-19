@@ -26,6 +26,13 @@
         "mac": "Command+Shift+S"
       },
       "description": "Start speaking"
+    },
+    "download": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Download selection"
     }
   },
   "browser_action": {
