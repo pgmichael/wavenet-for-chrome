@@ -23,5 +23,18 @@ Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to
 * Skip or replay sentences and paragraphs.
 * Multimedia functions with onscreen display.
 
+## Development build
+```
+npm install
+npm run watch
+```
+
+## Production build
+```
+npm run build
+```
+
+You can then load the unpacked extension from the `dist` folder.
+
 ## License
 [MIT](/LICENSE)
