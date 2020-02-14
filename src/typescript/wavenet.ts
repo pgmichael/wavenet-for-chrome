@@ -1,6 +1,3 @@
-import ID3Writer from "browser-id3-writer";
-import getBlobDuration from 'get-blob-duration'
-
 export default class WaveNet {
   speaker: HTMLAudioElement;
 
@@ -14,16 +11,13 @@ export default class WaveNet {
     chrome.storage.sync.get(null, async (settings) => {
       if (!this.validateSettings(settings)) return
 
-      let audioContent = await this.getAudioContent(settings, input)
+      let audioContent = await this.getAudioContent(settings, input, 'MP3')
       if (audioContent === null) return
 
-      const writer = new ID3Writer(Uint8Array.from(atob(audioContent), c => c.charCodeAt(0)))
-      writer.setFrame('TLEN', Math.floor(await getBlobDuration(writer.getBlob()) * 1000))
-      writer.addTag();
-
+      const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
       chrome.downloads.download({
-        url: URL.createObjectURL(writer.getBlob()),
-        filename: 'download.mp3'
+        url: URL.createObjectURL(blob),
+        filename: `download.mp3`
       })
     })
   }
@@ -32,7 +26,7 @@ export default class WaveNet {
     chrome.storage.sync.get(null, async (settings) => {
       if (!this.validateSettings(settings)) return
 
-      let audioContent = await this.getAudioContent(settings, input)
+      let audioContent = await this.getAudioContent(settings, input, 'OGG_OPUS')
       this.speaker.src = `data:audio/ogg;base64,${audioContent}`
       await this.speaker.play()
       chrome.contextMenus.update('stop', { enabled: true })
@@ -44,10 +38,10 @@ export default class WaveNet {
     chrome.contextMenus.update('stop', { enabled: false })
   }
 
-  private async getAudioContent(settings, input: string): Promise<string> {
+  private async getAudioContent(settings: any, input: string, audioEncoding: string): Promise<string> {
     let request = {
       audioConfig: {
-        audioEncoding: 'OGG_OPUS',
+        audioEncoding: audioEncoding,
         pitch: settings.pitch,
         speakingRate: settings.speed
       },
