@@ -11,7 +11,45 @@ export default class WaveNet {
     chrome.storage.sync.get(null, async (settings) => {
       if (!this.validateSettings(settings)) return
 
-      let audioContent = await this.getAudioContent(settings, input, 'MP3')
+      if(input.length > 4999){
+        var curparagraph = ""
+        var paragraphs = []
+        var paralen
+        //Taken shamelessly from https://www.sitepoint.com/community/t/choose-whole-sentences-and-only-whole-sentences-reliably-with-regex/8075/4
+        var regex1 = new RegExp(/["’]?[A-Z][^.?!]+((?![.?!][’"]?\s["’]?[A-Z][^.?!]).)+[.?!’"]+/g)
+        var allsentences
+        
+        allsentences = regex1.exec(input)
+        paralen = curparagraph.length + allsentences[0].length
+        while (allsentences) {
+          while (paralen < 4999) {
+            curparagraph = curparagraph + " " + allsentences[0]
+            allsentences = regex1.exec(input);
+            if (allsentences != null) {
+              paralen = curparagraph.length + allsentences[0].length;
+            }
+            else {
+              break
+            }
+          }
+          paragraphs.push(curparagraph)
+          paralen = 0
+          curparagraph = ""
+        }       
+
+      } else {
+        curparagraph = input
+      }
+
+      this.getDownloads(paragraphs, settings)
+    })
+  }
+
+  public async getDownloads(paras, settings)
+  {
+    paras.forEach(async paragraph => {
+
+      let audioContent = await this.getAudioContent(settings, paragraph, 'MP3')
       if (audioContent === null) return
 
       const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
