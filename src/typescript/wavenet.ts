@@ -10,10 +10,11 @@ export default class WaveNet {
   public download(input: string) {
     chrome.storage.sync.get(null, async (settings) => {
       if (!this.validateSettings(settings)) return
-
+      
+      var paragraphs = []
+      
       if(input.length > 4999){
         var curparagraph = ""
-        var paragraphs = []
         var paralen
         //Taken shamelessly from https://www.sitepoint.com/community/t/choose-whole-sentences-and-only-whole-sentences-reliably-with-regex/8075/4
         var regex1 = new RegExp(/["’]?[A-Z][^.?!]+((?![.?!][’"]?\s["’]?[A-Z][^.?!]).)+[.?!’"]+/g)
@@ -38,7 +39,7 @@ export default class WaveNet {
         }       
 
       } else {
-        curparagraph = input
+        paragraphs.push(input)
       }
 
       this.getDownloads(paragraphs, settings)
@@ -47,17 +48,23 @@ export default class WaveNet {
 
   public async getDownloads(paras, settings)
   {
-    paras.forEach(async paragraph => {
-
+    var i = 0
+    for (const paragraph of paras) {
       let audioContent = await this.getAudioContent(settings, paragraph, 'MP3')
       if (audioContent === null) return
+      const digitnumber = ("00" + i).substr(-3,3);
 
-      const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
-      chrome.downloads.download({
-        url: URL.createObjectURL(blob),
-        filename: `download.mp3`
+      fetch(`data:audio/mp3;base64,${audioContent}`)
+        .then(response => response.blob())
+        .then(function (myBlob) {
+          chrome.downloads.download({
+            url: URL.createObjectURL(myBlob),
+            filename: "download" + digitnumber + ".mp3"
+        })
       })
-    })
+
+      i++
+    };    
   }
 
   public async start(input: string) {
