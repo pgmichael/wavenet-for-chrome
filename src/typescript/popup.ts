@@ -30,7 +30,6 @@ function loadLocales() {
 
 function setup() {
   chrome.storage.sync.get(null, async (data) => {
-    console.log(data)
     if (data.speed === undefined) {
       speedInput.value = '1'
       speedValue.innerHTML = '1'
