@@ -15,6 +15,14 @@ export function isSSML(text: string) {
 }
 
 // Chrome extension helpers
+
+export type AudioEncoding =
+  | PlaybackEncoding
+  | DownloadEncoding
+
+type PlaybackEncoding = "OGG_OPUS"
+type DownloadEncoding = "MP3"
+
 export interface ExtensionSettings {
   apiKey: string
 

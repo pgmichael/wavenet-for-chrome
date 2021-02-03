@@ -1,61 +1,88 @@
-import { splitSentences, getExtensionSettings, isSSML } from "./helpers"
+import { splitSentences, getExtensionSettings, isSSML, AudioEncoding } from "./helpers"
 
 export default class WaveNet {
-  private AudioElement: HTMLAudioElement
+  private audioElement: HTMLAudioElement
 
   constructor() {
-    this.AudioElement = new Audio()
-    this.AudioElement.src = ''
+    this.audioElement = new Audio()
+    this.audioElement.src = ''
   }
 
-  public async download(input: string) {
-    let audio = await this.fetchFromAPI(input, 'MP3')
-    if (audio === null) return
+  public async download(text: string) {
+    // TODO: SSML support for text with over 5000 characters.
+    if (isSSML(text)) {
+      const fetchedAudio = await fetch(`data:audio/mp3;base64,${await this.textToSpeech(text, 'MP3')}`)
 
-    const blob = await (await fetch(`data:audio/mp3;base64,${audio}`)).blob()
+      const blob = await fetchedAudio.blob()
+
+      chrome.downloads.download({ url: URL.createObjectURL(blob), filename: `download.mp3` })
+
+      return
+    }
+
+    const sentences = splitSentences(text)
+
+    const audioPromiseArray = sentences.map(async text => await this.textToSpeech(text, "MP3"))
+
+    const audioArray = await Promise.all(audioPromiseArray)
+
+    const concatenatedAudio = audioArray.map(data => atob(data)).join()
+
+    const blob = await (await fetch("data:audio/mp3;base64," + btoa(concatenatedAudio))).blob()
 
     chrome.downloads.download({ url: URL.createObjectURL(blob), filename: `download.mp3` })
   }
 
   public async start(text: string) {
-    let playbackQueue = splitSentences(text).reverse()
+    // TODO: SSML support for text with over 5000 characters.
+    if (isSSML(text)) {
+      this.play(await this.textToSpeech(text, "OGG_OPUS"))
 
-    let cachedAudio = null
-    const playNext = async () => {
-      this.AudioElement.onended = () => playNext()
-      let currentChunk = playbackQueue.pop()
-
-      if (typeof currentChunk === 'undefined') return
-
-      let audio = cachedAudio
-      if (audio == null)
-        audio = await this.fetchFromAPI(currentChunk, 'OGG_OPUS')
-
-      this.AudioElement.src = `data:audio/ogg;base64,${await audio}`
-      this.AudioElement.play()
-
-      const nextChunk = playbackQueue[playbackQueue.length - 1]
-      if (nextChunk != null)
-        cachedAudio = this.fetchFromAPI(nextChunk, 'OGG_OPUS')
+      return
     }
 
-    playNext()
+    this.playbackTextQueue(splitSentences(text).reverse())
+  }
 
-    chrome.contextMenus.update('stop', { enabled: true })
+  private async playbackTextQueue(queue: string[], carry: Promise<string> | string = null) {
+    this.audioElement.onended = () => this.playbackTextQueue(queue, carry)
+
+    const poppedElement = queue.pop()
+
+    if (typeof poppedElement === 'undefined') {
+      this.stop()
+
+      return
+    }
+
+    if (carry == null) carry = await this.textToSpeech(poppedElement, "OGG_OPUS")
+
+    this.play(await carry)
+
+    const nextElement = queue[queue.length - 1]
+
+    if (nextElement != null) carry = this.textToSpeech(nextElement, "OGG_OPUS")
   }
 
   public stop() {
-    this.AudioElement.src = ''
+    this.audioElement.src = ''
 
     chrome.contextMenus.update('stop', { enabled: false })
   }
 
-  private async fetchFromAPI(text: string, audioEncoding: string): Promise<string> {
+  private play(audio: string) {
+    this.audioElement.src = `data:audio/ogg;base64,${audio}`
+    this.audioElement.play()
+
+    chrome.contextMenus.update('stop', { enabled: true })
+  }
+
+  private async textToSpeech(text: string, encoding: AudioEncoding): Promise<string> {
     const settings = await getExtensionSettings()
 
     let request = {
       audioConfig: {
-        audioEncoding: audioEncoding,
+        audioEncoding: encoding,
         pitch: settings.pitch,
         speakingRate: settings.speed
       },
@@ -76,9 +103,10 @@ export default class WaveNet {
 
     let response = await fetch(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${settings.apiKey}`,
       { method: 'POST', body: JSON.stringify(request) }
-    );
+    )
 
     let json = await response.json()
+
     if (!response.ok) {
       alert(json.error.message) // TODO: Better error handling
       return
