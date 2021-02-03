@@ -1,44 +1,58 @@
+import { splitSentences, getExtensionSettings, isSSML } from "./helpers"
+
 export default class WaveNet {
-  speaker: HTMLAudioElement;
+  private AudioElement: HTMLAudioElement
 
   constructor() {
-    this.speaker = new Audio()
-    this.speaker.src = ''
-    this.speaker.addEventListener("ended", () => this.stop())
+    this.AudioElement = new Audio()
+    this.AudioElement.src = ''
   }
 
-  public download(input: string) {
-    chrome.storage.sync.get(null, async (settings) => {
-      if (!this.validateSettings(settings)) return
+  public async download(input: string) {
+    let audio = await this.fetchFromAPI(input, 'MP3')
+    if (audio === null) return
 
-      let audioContent = await this.getAudioContent(settings, input, 'MP3')
-      if (audioContent === null) return
+    const blob = await (await fetch(`data:audio/mp3;base64,${audio}`)).blob()
 
-      const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
-      chrome.downloads.download({
-        url: URL.createObjectURL(blob),
-        filename: `download.mp3`
-      })
-    })
+    chrome.downloads.download({ url: URL.createObjectURL(blob), filename: `download.mp3` })
   }
 
-  public async start(input: string) {
-    chrome.storage.sync.get(null, async (settings) => {
-      if (!this.validateSettings(settings)) return
+  public async start(text: string) {
+    let playbackQueue = splitSentences(text).reverse()
 
-      let audioContent = await this.getAudioContent(settings, input, 'OGG_OPUS')
-      this.speaker.src = `data:audio/ogg;base64,${audioContent}`
-      await this.speaker.play()
-      chrome.contextMenus.update('stop', { enabled: true })
-    })
+    let cachedAudio = null
+    const playNext = async () => {
+      this.AudioElement.onended = () => playNext()
+      let currentChunk = playbackQueue.pop()
+
+      if (typeof currentChunk === 'undefined') return
+
+      let audio = cachedAudio
+      if (audio == null)
+        audio = await this.fetchFromAPI(currentChunk, 'OGG_OPUS')
+
+      this.AudioElement.src = `data:audio/ogg;base64,${await audio}`
+      this.AudioElement.play()
+
+      const nextChunk = playbackQueue[playbackQueue.length - 1]
+      if (nextChunk != null)
+        cachedAudio = this.fetchFromAPI(nextChunk, 'OGG_OPUS')
+    }
+
+    playNext()
+
+    chrome.contextMenus.update('stop', { enabled: true })
   }
 
   public stop() {
-    this.speaker.src = ''
+    this.AudioElement.src = ''
+
     chrome.contextMenus.update('stop', { enabled: false })
   }
 
-  private async getAudioContent(settings: any, input: string, audioEncoding: string): Promise<string> {
+  private async fetchFromAPI(text: string, audioEncoding: string): Promise<string> {
+    const settings = await getExtensionSettings()
+
     let request = {
       audioConfig: {
         audioEncoding: audioEncoding,
@@ -46,7 +60,7 @@ export default class WaveNet {
         speakingRate: settings.speed
       },
       input: {
-        text: input,
+        text: text,
         ssml: undefined
       },
       voice: {
@@ -55,7 +69,7 @@ export default class WaveNet {
       }
     }
 
-    if (this.isSSML(input)) {
+    if (isSSML(text)) {
       request.input.ssml = request.input.text
       delete request.input.text
     }
@@ -71,18 +85,5 @@ export default class WaveNet {
     }
 
     return json.audioContent
-  }
-
-  private validateSettings(settings): boolean {
-    if (!settings.apiKey || !settings.locale) {
-      alert(`You must add your Google Cloud's text-to-speech API Key in the extension's popup.`)
-      return false
-    }
-
-    return true
-  }
-
-  private isSSML(string): boolean {
-    return string.startsWith('<speak>') && string.endsWith('</speak>')
   }
 }
