@@ -4,8 +4,9 @@ export function splitSentences(text: string): string[] {
   let matches: string[] = []
 
   let currentMatch: RegExpExecArray;
-  while (currentMatch = regex.exec(text))
-    matches.push(currentMatch[0])
+  while (currentMatch = regex.exec(text)) matches.push(currentMatch[0])
+
+  if (matches.length < 1) return [text]
 
   return matches
 }
