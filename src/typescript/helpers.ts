@@ -16,7 +16,6 @@ export function isSSML(text: string) {
 }
 
 // Chrome extension helpers
-
 export type AudioEncoding =
   | PlaybackEncoding
   | DownloadEncoding

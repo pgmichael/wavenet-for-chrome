@@ -1,6 +1,6 @@
 {
   "name": "WaveNet for Chrome",
-  "version": "2.0.1",
+  "version": "2.1.1",
   "manifest_version": 2,
   "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "icons": {
