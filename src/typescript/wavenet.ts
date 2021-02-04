@@ -1,52 +1,93 @@
+import { splitSentences, getExtensionSettings, isSSML, AudioEncoding } from "./helpers"
+
 export default class WaveNet {
-  speaker: HTMLAudioElement;
+  private audioElement: HTMLAudioElement
 
   constructor() {
-    this.speaker = new Audio()
-    this.speaker.src = ''
-    this.speaker.addEventListener("ended", () => this.stop())
+    this.audioElement = new Audio()
+    this.audioElement.src = ''
   }
 
-  public download(input: string) {
-    chrome.storage.sync.get(null, async (settings) => {
-      if (!this.validateSettings(settings)) return
+  public async download(text: string) {
+    // TODO: SSML support for text with over 5000 characters.
+    if (isSSML(text)) {
+      const fetchedAudio = await fetch(`data:audio/mp3;base64,${await this.textToSpeech(text, 'MP3')}`)
 
-      let audioContent = await this.getAudioContent(settings, input, 'MP3')
-      if (audioContent === null) return
+      const blob = await fetchedAudio.blob()
 
-      const blob = await (await fetch(`data:audio/mp3;base64,${audioContent}`)).blob()
-      chrome.downloads.download({
-        url: URL.createObjectURL(blob),
-        filename: `download.mp3`
-      })
-    })
+      chrome.downloads.download({ url: URL.createObjectURL(blob), filename: `download.mp3` })
+
+      return
+    }
+
+    const sentences = splitSentences(text)
+
+    const audioPromiseArray = sentences.map(async text => await this.textToSpeech(text, "MP3"))
+
+    const audioArray = await Promise.all(audioPromiseArray)
+
+    const concatenatedAudio = audioArray.map(data => atob(data)).join()
+
+    const blob = await (await fetch("data:audio/mp3;base64," + btoa(concatenatedAudio))).blob()
+
+    chrome.downloads.download({ url: URL.createObjectURL(blob), filename: `download.mp3` })
   }
 
-  public async start(input: string) {
-    chrome.storage.sync.get(null, async (settings) => {
-      if (!this.validateSettings(settings)) return
+  public async start(text: string) {
+    // TODO: SSML support for text with over 5000 characters.
+    if (isSSML(text)) {
+      this.play(await this.textToSpeech(text, "OGG_OPUS"))
 
-      let audioContent = await this.getAudioContent(settings, input, 'OGG_OPUS')
-      this.speaker.src = `data:audio/ogg;base64,${audioContent}`
-      await this.speaker.play()
-      chrome.contextMenus.update('stop', { enabled: true })
-    })
+      return
+    }
+
+    this.playbackTextQueue(splitSentences(text).reverse())
+  }
+
+  private async playbackTextQueue(queue: string[], carry: Promise<string> | string = null) {
+    this.audioElement.onended = () => this.playbackTextQueue(queue, carry)
+
+    const poppedElement = queue.pop()
+
+    if (typeof poppedElement === 'undefined') {
+      this.stop()
+
+      return
+    }
+
+    if (carry == null) carry = await this.textToSpeech(poppedElement, "OGG_OPUS")
+
+    this.play(await carry)
+
+    const nextElement = queue[queue.length - 1]
+
+    if (nextElement != null) carry = this.textToSpeech(nextElement, "OGG_OPUS")
   }
 
   public stop() {
-    this.speaker.src = ''
+    this.audioElement.src = ''
+
     chrome.contextMenus.update('stop', { enabled: false })
   }
 
-  private async getAudioContent(settings: any, input: string, audioEncoding: string): Promise<string> {
+  private play(audio: string) {
+    this.audioElement.src = `data:audio/ogg;base64,${audio}`
+    this.audioElement.play()
+
+    chrome.contextMenus.update('stop', { enabled: true })
+  }
+
+  private async textToSpeech(text: string, encoding: AudioEncoding): Promise<string> {
+    const settings = await getExtensionSettings()
+
     let request = {
       audioConfig: {
-        audioEncoding: audioEncoding,
+        audioEncoding: encoding,
         pitch: settings.pitch,
         speakingRate: settings.speed
       },
       input: {
-        text: input,
+        text: text,
         ssml: undefined
       },
       voice: {
@@ -55,34 +96,22 @@ export default class WaveNet {
       }
     }
 
-    if (this.isSSML(input)) {
+    if (isSSML(text)) {
       request.input.ssml = request.input.text
       delete request.input.text
     }
 
     let response = await fetch(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${settings.apiKey}`,
       { method: 'POST', body: JSON.stringify(request) }
-    );
+    )
 
     let json = await response.json()
+
     if (!response.ok) {
       alert(json.error.message) // TODO: Better error handling
       return
     }
 
     return json.audioContent
-  }
-
-  private validateSettings(settings): boolean {
-    if (!settings.apiKey || !settings.locale) {
-      alert(`You must add your Google Cloud's text-to-speech API Key in the extension's popup.`)
-      return false
-    }
-
-    return true
-  }
-
-  private isSSML(string): boolean {
-    return string.startsWith('<speak>') && string.endsWith('</speak>')
   }
 }
