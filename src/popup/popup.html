@@ -5,13 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="../sass/index.scss">
-  <title>WaveNet for Chrome</title>
+  <title>Wavenet for Chrome</title>
+  <link rel="stylesheet" href="./popup.css">
+  <script src="./popup.js" async defer></script>
 </head>
 
 <body class="app">
   <header class="header">
-    <img src="../images/icon_128.png" alt="WaveNet for Chrome logo" class="header__logo">
+    <img src="../assets/images/icon_128.png" alt="WaveNet for Chrome logo" class="header__logo">
     <h1 class="header__title"><span class="header__title--blue">WaveNet</span> for Chrome</h1>
     <h2 class="header__subtitle">A wrapper for Google Cloud's text-to-speech services.</h2>
   </header>
@@ -19,7 +20,7 @@
   <form class="settings">
     <h2 class="settings__title settings__title--voice">Voice Settings</h2>
     <select name="language" class="input__select settings__language">
-        <option value="" disabled selected>Language</option>
+      <option value="" disabled selected>Language</option>
     </select>
     <select name="locale" class="input__select settings__locale">
       <option value="" disabled selected>Locale</option>
@@ -41,9 +42,9 @@
   </form>
 
   <footer class="footer">
-    <a class="button" href="https://github.com/pgmichael/WaveNet-for-Chrome" target="_blank">View documentation</a>
+    <a class="button" href="https://github.com/wavenet-for-chrome/extension#wavenet-for-chrome" target="_blank">View
+      documentation</a>
   </footer>
-  <script src="../typescript/popup.ts"></script>
 </body>
 
 

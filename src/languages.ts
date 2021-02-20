@@ -1,4 +1,7 @@
-const BCP47Languages = {
+/**
+ * This file contains all supported BCP47 language tags.
+ */
+const BCP47Languages: { [key: string]: { name: string, displayName: string } } = {
   aa: {
     name: 'Afar',
     displayName: 'Afaraf',
@@ -743,6 +746,6 @@ const BCP47Languages = {
     name: 'Zulu',
     displayName: 'isiZulu',
   },
-} as {[key: string]: {name: string, displayName: string}}
+}
 
 export default BCP47Languages

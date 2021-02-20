@@ -1,4 +1,8 @@
-import BCP47Languages from "./languages"
+import { getExtensionInformation } from "../helpers"
+import BCP47Languages from "../languages"
+import { initSentry } from "../sentry"
+
+initSentry(await getExtensionInformation())
 
 const languages = {} as { [language: string]: string[] }
 

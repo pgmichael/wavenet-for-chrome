@@ -1,16 +1,16 @@
 {
-  "name": "WaveNet for Chrome",
-  "version": "2.1.1",
+  "name": "Wavenet for Chrome",
+  "version": "3",
   "manifest_version": 2,
   "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "icons": {
-    "19": "images/icon_19.png",
-    "38": "images/icon_38.png",
-    "128": "images/icon_128.png"
+    "19": "assets/images/icon_19.png",
+    "38": "assets/images/icon_38.png",
+    "128": "assets/images/icon_128.png"
   },
   "background": {
     "scripts": [
-      "typescript/background.js"
+      "background.js"
     ]
   },
   "permissions": [
@@ -36,14 +36,14 @@
     }
   },
   "browser_action": {
-    "default_title": "WaveNet for Chrome",
+    "default_title": "Wavenet for Chrome",
     "default_icon": {
-      "16": "images/icon_16.png",
-      "19": "images/icon_19.png",
-      "38": "images/icon_38.png",
-      "48": "images/icon_48.png"
+      "16": "assets/images/icon_16.png",
+      "19": "assets/images/icon_19.png",
+      "38": "assets/images/icon_38.png",
+      "48": "assets/images/icon_48.png"
     },
-    "default_popup": "html/popup.html"
+    "default_popup": "popup/popup.html"
   },
-  "homepage_url": "https://github.com/pgmichael/wavenet-for-chrome"
+  "homepage_url": "https://github.com/wavenet-for-chrome/extension"
 }

@@ -1,6 +1,6 @@
 import { splitSentences, getExtensionSettings, isSSML, AudioEncoding } from "./helpers"
 
-export default class WaveNet {
+class Synthesizer {
   private audioElement: HTMLAudioElement
 
   constructor() {
@@ -22,11 +22,11 @@ export default class WaveNet {
 
     const sentences = splitSentences(text)
 
-    const audioPromiseArray = sentences.map(async text => await this.textToSpeech(text, "MP3"))
+    const audioPromiseArray = sentences.map(async x => await this.textToSpeech(x, "MP3"))
 
     const audioArray = await Promise.all(audioPromiseArray)
 
-    const concatenatedAudio = audioArray.map(data => atob(data)).join()
+    const concatenatedAudio = audioArray.map(x => atob(x)).join()
 
     const blob = await (await fetch("data:audio/mp3;base64," + btoa(concatenatedAudio))).blob()
 
@@ -115,3 +115,5 @@ export default class WaveNet {
     return json.audioContent
   }
 }
+
+export default new Synthesizer()
