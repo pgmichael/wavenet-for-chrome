@@ -1,0 +1,6 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "typescript.format.semicolons": "remove",
+  "typescript.preferences.quoteStyle": "double"
+}

@@ -1,12 +1,12 @@
 // Utilities
-@import './utilities/colors';
-@import './utilities/buttons';
-@import './utilities/inputs';
+@import './styles/utilities/colors';
+@import './styles/utilities/buttons';
+@import './styles/utilities/inputs';
 
 // Modules
-@import './modules/header';
-@import './modules/footer';
-@import './modules/settings-form';
+@import './styles/modules/header';
+@import './styles/modules/footer';
+@import './styles/modules/settings-form';
 
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Rubik:300,400,500');
