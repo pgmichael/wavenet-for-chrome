@@ -10,8 +10,8 @@ export function initSentry(extensionInformation: ExtensionInformation) {
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 1.0,
     beforeSend: event => {
-      delete event.user?.ip_address
-      delete event.request?.url
+      if (event.user?.ip_address) delete event.user.ip_address
+      if (event.request?.url) delete event.request.url
 
       return event
     }
