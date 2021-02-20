@@ -1,27 +1,29 @@
 {
   "name": "wavenet-for-chrome",
-  "version": "2.1.1",
+  "version": "3",
   "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "scripts": {
-    "watch": "npm-run-all --parallel watch:cpx watch:parcel",
-    "watch:cpx": "cpx src/**/*.{json,png,svg} dist --watch --verbose",
-    "watch:parcel": "parcel watch src/html/popup.html src/typescript/background.ts --no-hmr",
-    "build": "npm-run-all --parallel watch:cpx watch:parcel",
-    "build:cpx": "cpx src/**/*.{json,png,svg} dist --watch --verbose",
-    "build:parcel": "parcel build src/html/popup.html src/typescript/background.ts"
+    "start": "webpack --watch",
+    "build": "webpack"
   },
   "author": "Michael Poirier-Ginter",
   "license": "MIT",
   "devDependencies": {
+    "@sentry/types": "^6.2.0",
     "@types/chrome": "0.0.88",
-    "cpx": "^1.5.0",
-    "npm-run-all": "^4.1.5",
-    "parcel-bundler": "^1.12.3",
-    "sass": "^1.22.10",
-    "typescript": "^3.6.2"
+    "copy-webpack-plugin": "^7.0.0",
+    "file-loader": "^6.2.0",
+    "node-sass": "^5.0.0",
+    "sass": "^1.32.8",
+    "sass-loader": "^11.0.1",
+    "ts-loader": "^8.0.17",
+    "typescript": "^3.6.2",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0"
   },
   "dependencies": {
-    "browser-id3-writer": "^4.2.0",
-    "get-blob-duration": "^1.1.0"
+    "@sentry/browser": "^6.2.0",
+    "@sentry/tracing": "^6.2.0",
+    "@sentry/utils": "^6.2.0"
   }
 }
