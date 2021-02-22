@@ -37,23 +37,28 @@ chrome.commands.onCommand.addListener(command => {
         { code: convertSelection },
         selection => Synthesizer.start(selection[0])
       )
-      break;
+      break
     case "download":
       chrome.tabs.executeScript(
         { code: convertSelection },
         selection => Synthesizer.download(selection[0])
       )
-      break;
+      break
   }
 })
 
 // Get the selected text and adds imgs alt tags into text
 const convertSelection = `
-    var selectionContents = window.getSelection().getRangeAt(0).cloneContents();
-		var imgs = selectionContents.querySelectorAll('img');
-		for(const img of imgs) {
-			var altText = document.createTextNode(img.alt);
-			img.parentNode.replaceChild(altText, img);
-		}
-		selectionContents.textContent;
+function retrieveSelection() {
+  const selectionContents = window.getSelection().getRangeAt(0).cloneContents()
+  const imgs = selectionContents.querySelectorAll('img')
+  for (const img of imgs) {
+    const altText = document.createTextNode(img.alt)
+    img.parentNode.replaceChild(altText, img)
+  }
+
+  return selectionContents.textContent
+}
+
+retrieveSelection()
 `
