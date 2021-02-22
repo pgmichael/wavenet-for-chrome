@@ -44,7 +44,7 @@ const popupCfg = {
       }
     ]
   })],
-  devtool: "inline-source-map",
+  devtool: "source-map",
   experiments: { topLevelAwait: true },
 }
 
@@ -59,7 +59,7 @@ const backgroundCfg = {
   module: {
     rules: [{ test: /\.tsx?$/, loader: "ts-loader" }]
   },
-  devtool: "inline-source-map",
+  devtool: "source-map",
   experiments: { topLevelAwait: true },
 }
 

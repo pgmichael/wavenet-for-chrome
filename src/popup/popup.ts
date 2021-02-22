@@ -62,7 +62,9 @@ function setup() {
 
     apiKeyInput.value = data.apiKey
     const response = await fetch(`https://texttospeech.googleapis.com/v1beta1/voices?key=${data.apiKey}`)
+
     if (!response.ok) alert('There was an error fetching the list of voices. Make sure your API key is valid.')
+
     const responseJson = await response.json()
 
     for (const voice of responseJson.voices) {
