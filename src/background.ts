@@ -10,7 +10,7 @@ const downloadCommand = commands.find(element => element.name === "download")
 
 chrome.contextMenus.create({
   id: 'start',
-  title: `Start Speaking${startCommand.shortcut ?? ` (${startCommand.shortcut})`}`,
+  title: `Start Speaking${startCommand.shortcut ? ` (${startCommand.shortcut})` : ""}`,
   contexts: ['selection'],
   onclick: info => Synthesizer.start(info.selectionText)
 })
@@ -25,7 +25,7 @@ chrome.contextMenus.create({
 
 chrome.contextMenus.create({
   id: 'download',
-  title: `Download as MP3${downloadCommand.shortcut ?? ` (${downloadCommand.shortcut})`}`,
+  title: `Download as MP3 ${downloadCommand.shortcut ? ` (${downloadCommand.shortcut})` : ""}`,
   contexts: ['selection'],
   onclick: info => Synthesizer.download(info.selectionText)
 })
