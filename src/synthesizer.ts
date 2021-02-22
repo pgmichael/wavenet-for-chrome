@@ -9,6 +9,8 @@ class Synthesizer {
   }
 
   public async download(text: string) {
+    if (!text) return
+
     // TODO: SSML support for text with over 5000 characters.
     if (isSSML(text)) {
       const fetchedAudio = await fetch(`data:audio/mp3;base64,${await this.textToSpeech(text, 'MP3')}`)
@@ -34,6 +36,12 @@ class Synthesizer {
   }
 
   public async start(text: string) {
+    if (!text) {
+      this.stop()
+
+      return
+    }
+
     // TODO: SSML support for text with over 5000 characters.
     if (isSSML(text)) {
       this.play(await this.textToSpeech(text, "OGG_OPUS"))

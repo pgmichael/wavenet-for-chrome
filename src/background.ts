@@ -50,7 +50,7 @@ chrome.commands.onCommand.addListener(command => {
 // Get the selected text and adds imgs alt tags into text
 const convertSelection = `
 function retrieveSelection() {
-  const selectionContents = window.getSelection().getRangeAt(0).cloneContents()
+  const selectionContents = window.getSelection()?.getRangeAt(0).cloneContents()
   const imgs = selectionContents.querySelectorAll('img')
   for (const img of imgs) {
     const altText = document.createTextNode(img.alt)
