@@ -16,10 +16,13 @@ let speedValue = document.querySelector('.settings__range-value--speed')
 
 function loadLanguages(selectedLanguage) {
   languageInput.innerHTML = ``
-  for (const key of Object.keys(languages)) {
+
+  for (const key of Object.keys(languages))
     languageInput.innerHTML += `<option value="${key}">${key}</option>`
-  }
-  let selectedOption: HTMLOptionElement = document.querySelector(`.settings__language option[value=${selectedLanguage}]`)
+
+  let selectedOption: HTMLOptionElement = document.querySelector(
+    `.settings__language option[value="${selectedLanguage}"]`
+  )
 
   selectedOption.selected = true
 }
