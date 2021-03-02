@@ -1,14 +1,6 @@
 // Text helpers
 export function splitSentences(text: string): string[] {
-  const regex = new RegExp(/["’]?[A-Z][^.?!]+((?![.?!][’"]?\s["’]?[A-Z][^.?!]).)+[.?!’"]+/g)
-  let matches: string[] = []
-  let currentMatch: RegExpExecArray
-
-  while (currentMatch = regex.exec(text)) matches.push(currentMatch[0])
-
-  if (matches.length < 1) return [text]
-
-  return matches
+  return text.split(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s/gm)
 }
 
 export function isSSML(text: string): boolean {
