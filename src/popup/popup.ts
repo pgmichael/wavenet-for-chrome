@@ -29,9 +29,27 @@ function loadLanguages(selectedLanguage) {
 
 function loadLocales() {
   localeInput.innerHTML = ``
-  languages[languageInput.value].forEach(voice => {
+
+  const sortedLocales = languages[languageInput.value].sort((a, b) => {
+    const aType = a.split('-')[2]
+    const bType = b.split('-')[2]
+
+    if (aType < bType) return -1
+    if (aType > bType) return 1
+    return 0
+  })
+
+  let currentType = ''
+  sortedLocales.forEach(voice => {
+    const type = voice.split('-')[2]
+    if (currentType !== type) {
+      localeInput.innerHTML += `<optgroup label="${type}"></optgroup>`
+      currentType = type
+    }
+
     localeInput.innerHTML += `<option value="${voice}">${voice}</option>`
   })
+
   localeInput.options[0].selected = true
 }
 
