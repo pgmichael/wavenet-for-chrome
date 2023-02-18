@@ -69,7 +69,12 @@ function setup() {
 
     for (const voice of responseJson.voices) {
       let languageCode = voice.languageCodes[0].split('-')[0]
-      if (!voice.name.includes('Wavenet') && !voice.name.includes('Neural2')) continue
+      if (!voice.name.includes('Wavenet') &&
+          !voice.name.includes('Neural2') &&
+          !voice.name.includes('Studio') &&
+          !voice.name.includes('News')) {
+        continue
+      }
 
       try {
         let language: string = BCP47Languages[languageCode].displayName
