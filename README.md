@@ -11,7 +11,7 @@ Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to
 
 ## Features
 ### Currently available
-* Support for all Google WaveNet voices and languages.
+* Support for all Google WaveNet, Neural2, News, Studio voices and languages.
 * Ajustable pitch and speed.
 * Download selected text to an MP3 file.
 * [SSML support for text under 5000 characters](https://developers.google.com/actions/reference/ssml)
