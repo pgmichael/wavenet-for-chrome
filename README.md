@@ -1,4 +1,4 @@
-# WaveNet for Chrome
+# Wavenet for Chrome
 A wrapper for Google Cloud’s text-to-speech services that transforms highlighted text into high-quality natural sounding audio.
 
 ## How to use
