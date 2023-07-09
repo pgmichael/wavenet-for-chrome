@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node build.js --watch",
     "build": "node build.js",
+    "release": "node build.js --release",
     "lint": "npx eslint src",
     "fix": "npx eslint --fix src"
   },

@@ -14,7 +14,10 @@ import { sentryEsbuildPlugin } from '@sentry/esbuild-plugin'
 // Define command line args
 const watch = process.argv.includes('--watch')
 
-// Define env variables
+const release = process.argv.includes('--release')
+if (release) process.env.ENVIROMENT = 'production'
+
+// Define env variables for build
 const define = {}
 for (const k in process.env) {
   if (k.startsWith('SECRET_')) continue
@@ -50,7 +53,11 @@ const entryPoints = [
   'src/offscreen.js'
 ]
 
-build('initial build')
+await build('initial build')
+
+if (release) {
+  execSync('rm -f dist.zip && zip -r dist.zip dist', console.log)
+}
 
 // ---------------------------------------------
 function handleChange(filePath) {
