@@ -48,5 +48,6 @@ export default {
     48: 'assets/icons/icon_48.png',
     128: 'assets/icons/icon_128.png',
     1000: 'assets/icons/icon_1000.png'
-  }
+  },
+  homepage_url: 'https://github.com/pgmichael/wavenet-for-chrome'
 }
