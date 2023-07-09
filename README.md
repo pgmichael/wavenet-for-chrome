@@ -13,9 +13,9 @@ Transforms highlighted text into high-quality natural sounding audio using [Goog
 
 ### Using your own API key
 * [Generate an API Key using Google Cloud's Console](https://www.youtube.com/watch?v=1n8xlVNWEZ0).
-* Paste the API Key in the extension's popup menu (under Billing > Use your API key).
+* Paste the API Key in the extension's popup menu (under Preferences > Credentials).
 
-Usage will be charged through your Google Cloud account as per their pricing policy.
+Usage will be charged through your Google Cloud account as per their [pricing policy](https://cloud.google.com/text-to-speech/pricing).
 
 ## Development
 If you're interested in contributing, you can easily get started by running the following commands and loading the unpacked extension from the `dist` folder.
