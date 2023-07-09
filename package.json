@@ -11,6 +11,7 @@
   "devDependencies": {
     "@sentry/types": "^6.2.0",
     "@types/chrome": "0.0.88",
+    "@types/node": "^17.0.41",
     "copy-webpack-plugin": "^7.0.0",
     "file-loader": "^6.2.0",
     "sass": "^1.32.8",
