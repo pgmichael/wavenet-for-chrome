@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Heartbeat } from './helpers/heartbeat.js';
+import { Heartbeat } from './helpers/heartbeat.js'
 
 // Bootstrapper ----------------------------------------------------------------
 (async function Bootstrap() {

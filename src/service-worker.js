@@ -109,6 +109,16 @@ const handlers = {
     const voice = sync.voices[sync.language]
     const count = text.length
 
+    if (!sync.apiKey || !sync.apiKeyValid) {
+      return dispatch({
+        id: 'error',
+        payload: {
+          title: 'API key is missing or invalid',
+          message: 'Ensure your API key is valid and try again.'
+        }
+      })
+    }
+
     let ssml
     if (text.isSSML()) {
       ssml = text
