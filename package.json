@@ -1,27 +1,37 @@
 {
-  "name": "wavenet-for-chrome",
-  "version": "6",
-  "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
+  "name": "wavenet-for-chrome-extension",
+  "version": "8.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack"
+    "start": "node build.js --watch",
+    "build": "node build.js",
+    "lint": "npx eslint src",
+    "fix": "npx eslint --fix src"
   },
-  "author": "Michael Poirier-Ginter",
-  "license": "MIT",
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "@sentry/types": "^6.2.0",
-    "@types/chrome": "0.0.88",
-    "copy-webpack-plugin": "^7.0.0",
-    "file-loader": "^6.2.0",
-    "sass": "^1.32.8",
-    "sass-loader": "^11.1.1",
-    "ts-loader": "^8.0.17",
-    "typescript": "^3.6.2",
-    "webpack": "^5.76.0",
-    "webpack-cli": "^4.5.0"
+    "@sentry/types": "^7.57.0",
+    "@types/chrome": "^0.0.220",
+    "eslint": "^8.35.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.2",
+    "tailwindcss": "^3.2.7"
   },
   "dependencies": {
-    "@sentry/browser": "^6.2.0",
-    "@sentry/tracing": "^6.2.0"
+    "@sentry/browser": "^7.43.0",
+    "@sentry/tracing": "^7.43.0",
+    "dotenv": "^16.0.3",
+    "esbuild": "^0.17.11",
+    "fuse.js": "^6.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.2"
   }
 }

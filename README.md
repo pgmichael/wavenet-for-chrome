@@ -1,36 +1,31 @@
 # Wavenet for Chrome
-A wrapper for Google Cloud’s text-to-speech services that transforms highlighted text into high-quality natural sounding audio.
-
-## How to use
-* [Download the chrome extension in the Chrome store](https://chrome.google.com/webstore/detail/wavenet-for-chrome/iefankigbnlnlaolflbcopliocibkffc).
-* [Generate an API Key using Google Cloud's Console](https://www.youtube.com/watch?v=1n8xlVNWEZ0).
-* Paste the API Key in the extension's popup menu.
-* Right click on highlighted text and click "Read this by WaveNet for Chrome".
-
-Note: Although WaveNet for Chrome is a free extension and Google Cloud's text-to-speech services offer the first 1 million characters free of charge, the regular pricing is [$16.00USD per 1 million characters](https://cloud.google.com/text-to-speech/pricing).
+Transforms highlighted text into high-quality natural sounding audio using [Google Cloud's Text-to-Speech](https://cloud.google.com/text-to-speech).
 
 ## Features
-### Currently available
 * Support for all Google WaveNet, Neural2, News, Studio voices and languages.
-* Ajustable pitch and speed.
-* Download selected text to an MP3 file.
-* [SSML support for text under 5000 characters](https://developers.google.com/actions/reference/ssml)
-* Shortcuts to start speaking (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on all other platforms & modfiable through the following URL: chrome://extensions/shortcuts).
-* Splits texts into sentences to prevent the 5000 character limit as well as reducing Google API usage.
+* Adjustable pitch and speed.
+* Download selected text to an MP3, WAV or OGG file.
+* [SSML support](https://developers.google.com/actions/reference/ssml)
+* Shortcut to read aloud (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on windows)
+* Shortcut to download selected text (`Cmd+Shift+E` on macOS and `Ctrl+Shift+E` on windows)
+* Chunk selected text into sentences to bypass the 5000 character limit and lower usage cost.
+* Use your own Google Cloud API key.
 
-## Development build
+### Using your own API key
+* [Generate an API Key using Google Cloud's Console](https://www.youtube.com/watch?v=1n8xlVNWEZ0).
+* Paste the API Key in the extension's popup menu (under Billing > Use your API key).
+
+Usage will be charged through your Google Cloud account as per their pricing policy.
+
+## Development
+If you're interested in contributing, you can easily get started by running the following commands and loading the unpacked extension from the `dist` folder.
+
 ```
 npm install
 
-npm run watch
+npm run start
 ```
 
-## Production build
-```
-npm run build
-```
-
-You can then load the unpacked extension from the `dist` folder.
 
 ## License
 [MIT](/LICENSE)
