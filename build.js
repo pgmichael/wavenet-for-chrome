@@ -9,6 +9,7 @@ import esbuild from 'esbuild'
 import { exec, execSync } from 'child_process'
 import manifest from './manifest.js'
 import { watchFilesInDir } from './src/helpers/watch-files-in-dir.js'
+import { sentryEsbuildPlugin } from '@sentry/esbuild-plugin'
 
 // Define command line args
 const watch = process.argv.includes('--watch')
@@ -16,6 +17,8 @@ const watch = process.argv.includes('--watch')
 // Define env variables
 const define = {}
 for (const k in process.env) {
+  if (k.startsWith('SECRET_')) continue
+
   define[`process.env.${k}`] = JSON.stringify(process.env[k])
 }
 
@@ -57,17 +60,29 @@ function handleChange(filePath) {
   if (isEntryPoint || isJsx) build(`${filePath} changed`)
 }
 
-function build(reason) {
+async function build(reason) {
   const start = performance.now()
   let success = true
 
+  const plugins = []
+  if (process.env.SECRET_SENTRY_AUTH_TOKEN && !watch) {
+    plugins.push(
+      sentryEsbuildPlugin({
+        org: 'wavenet-for-chrome',
+        project: 'extension',
+        authToken: process.env.SECRET_SENTRY_AUTH_TOKEN
+      })
+    )
+  }
+
   try {
-    const result = esbuild.buildSync({
+    const result = await esbuild.build({
       entryPoints,
       bundle: true,
-      minify: !watch,
+      minify: true,
       sourcemap: true,
       outdir: 'dist',
+      plugins,
       define
     })
 

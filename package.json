@@ -13,6 +13,7 @@
   "author": "Michael Poirier-Ginter <michael.poirierginter@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@sentry/esbuild-plugin": "^2.4.0",
     "@sentry/types": "^7.57.0",
     "@types/chrome": "^0.0.220",
     "eslint": "^8.35.0",
