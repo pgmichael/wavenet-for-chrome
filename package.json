@@ -1,7 +1,7 @@
 {
   "name": "wavenet-for-chrome-extension",
   "version": "8.0.0",
-  "description": "",
+  "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,8 +10,8 @@
     "lint": "npx eslint src",
     "fix": "npx eslint --fix src"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Michael Poirier-Ginter <michael.poirierginter@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@sentry/types": "^7.57.0",
     "@types/chrome": "^0.0.220",
