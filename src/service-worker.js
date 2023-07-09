@@ -135,8 +135,8 @@ const handlers = {
 
     const audioContent = (await response.json()).audioContent
 
-    // TODO(mike): Wrap the handlers object in a Proxy so that we can intercept calls
-    // to the object and log them to the analytics server with only the bare minimum of data.
+    // TODO(mike): pass more details about the request to the analytics endpoint
+    // so we can better understand how the extension is being used.
     fetch('https://tunnel.pgmichael.com/analytics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -329,23 +329,24 @@ async function migrateSyncStorage() {
 
   // Extensions with version < 8 had a different storage structure.
   // We need to migrate them to the new structure before we can use them.
-  if (!sync.locale || Number(chrome.runtime.getManifest().version) >= 8) return
+  if (sync.voices || Number(chrome.runtime.getManifest().version) < 8) return
 
   await chrome.storage.sync.clear()
-  const oldVoice = sync.language
-  const oldPitch = sync.pitch
+  const oldLocale = sync.locale
   const oldSpeed = sync.speed
+  const oldVoiceParts = oldLocale.split('-')
 
-  const language = [oldVoice.split('-')[0], oldVoice.split('-')[1]].join('-')
-  const voices = { [language]: oldVoice }
-  const pitch = Number(oldPitch)
+  const language = [oldVoiceParts[0], oldVoiceParts[1]].join('-')
+  const voices = { [language]: oldLocale }
+  const pitch = 0 // Hard reset pitch to 0. Old pitch values were not compatible with the new API.
   const speed = Number(oldSpeed)
   const apiKey = sync.apiKey
+  const locale = sync.locale
 
   // Assume the old key is valid until proven otherwise
-  const apiKeyValid = apiKey ? true : undefined
+  const apiKeyValid = apiKey?.length ? true : undefined
 
-  await chrome.storage.sync.set({ voices, pitch, speed, language, apiKey })
+  await chrome.storage.sync.set({ voices, pitch, speed, language, apiKey, apiKeyValid })
 }
 
 async function setLanguages() {
@@ -443,7 +444,6 @@ async function dispatch(event, { context } = {}) {
 
 function createStorageListener() {
   chrome.storage.onChanged.addListener(function(changes) {
-    console.warn('fuck')
     const value = changes.downloadEncoding
     if (!value) return
 
