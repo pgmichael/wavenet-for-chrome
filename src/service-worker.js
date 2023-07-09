@@ -332,21 +332,28 @@ async function migrateSyncStorage() {
   if (sync.voices || Number(chrome.runtime.getManifest().version) < 8) return
 
   await chrome.storage.sync.clear()
-  const oldLocale = sync.locale
-  const oldSpeed = sync.speed
-  const oldVoiceParts = oldLocale.split('-')
 
-  const language = [oldVoiceParts[0], oldVoiceParts[1]].join('-')
-  const voices = { [language]: oldLocale }
-  const pitch = 0 // Hard reset pitch to 0. Old pitch values were not compatible with the new API.
-  const speed = Number(oldSpeed)
-  const apiKey = sync.apiKey
-  const locale = sync.locale
+  const newSync = {}
+  if (sync.locale) {
+    const oldVoiceParts = sync.locale.split('-')
+    newSync.language = [oldVoiceParts[0], oldVoiceParts[1]].join('-')
+    newSync.voices = { [newSync.language]: sync.locale }
+  }
 
-  // Assume the old key is valid until proven otherwise
-  const apiKeyValid = apiKey?.length ? true : undefined
+  if (sync.speed) {
+    newSync.speed = Number(sync.speed)
+  }
 
-  await chrome.storage.sync.set({ voices, pitch, speed, language, apiKey, apiKeyValid })
+  if (sync.pitch) {
+    newSync.pitch = 0
+  }
+
+  if (sync.apiKey) {
+    newSync.apiKey = sync.apiKey
+    newSync.apiKeyValid = true // Assume the old key is valid until proven otherwise
+  }
+
+  await chrome.storage.sync.set(newSync)
 }
 
 async function setLanguages() {
