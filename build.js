@@ -1,0 +1,83 @@
+// TODO(mike): On crash, popup.html should be changed with a meaningful error
+// message, so there is some indication that the build failed.
+//
+// TODO(mike): Re-copy static files on change, so that changes to static files
+// are reflected in the dist folder.
+import 'dotenv/config.js'
+import fs from 'fs'
+import esbuild from 'esbuild'
+import { exec, execSync } from 'child_process'
+import manifest from './manifest.js'
+import { watchFilesInDir } from './src/helpers/watch-files-in-dir.js'
+
+// Define command line args
+const watch = process.argv.includes('--watch')
+
+// Define env variables
+const define = {}
+for (const k in process.env) {
+  define[`process.env.${k}`] = JSON.stringify(process.env[k])
+}
+
+// Clean dist folder so it's fresh
+fs.rmSync('dist', { recursive: true, force: true })
+
+// Copy static files to dist
+fs.mkdirSync('dist/popup', { recursive: true })
+fs.mkdirSync('dist/offscreen', { recursive: true })
+execSync('cp -r src/assets dist/assets')
+fs.writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2))
+
+// Watch tailwindcss
+exec(
+  'npx tailwindcss -i ./src/assets/styles.css -o ./dist/assets/styles.css --watch',
+  console.log
+)
+
+// Watch files
+if (watch) {
+  watchFilesInDir('.', handleChange)
+}
+
+// Initial build
+const entryPoints = [
+  'src/service-worker.js',
+  'src/content-script.jsx',
+  'src/popup.jsx',
+  'src/offscreen.js'
+]
+
+build('initial build')
+
+// ---------------------------------------------
+function handleChange(filePath) {
+  const isEntryPoint = entryPoints.includes(filePath)
+  const isJsx = filePath.startsWith('src/') && filePath.endsWith('.jsx')
+
+  if (isEntryPoint || isJsx) build(`${filePath} changed`)
+}
+
+function build(reason) {
+  const start = performance.now()
+  let success = true
+
+  try {
+    const result = esbuild.buildSync({
+      entryPoints,
+      bundle: true,
+      minify: !watch,
+      sourcemap: true,
+      outdir: 'dist',
+      define
+    })
+
+    if (result.errors.length) {
+      success = false
+    }
+  } catch (e) {
+    success = false
+  }
+
+  const end = performance.now()
+  console.log(`${success ? '⚡️' : '🚨'} Build ${success ? 'completed' : 'failed'} in ${Math.round(end - start)}ms (${reason})`)
+}
