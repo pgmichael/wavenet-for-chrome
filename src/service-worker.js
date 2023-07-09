@@ -342,6 +342,9 @@ async function migrateSyncStorage() {
   const speed = Number(oldSpeed)
   const apiKey = sync.apiKey
 
+  // Assume the old key is valid until proven otherwise
+  const apiKeyValid = apiKey ? true : undefined
+
   await chrome.storage.sync.set({ voices, pitch, speed, language, apiKey })
 }
 
