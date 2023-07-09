@@ -297,7 +297,7 @@ export async function initializeSentry() {
   Sentry.init({
     dsn: 'https://1ff01a53014a4671ba548e9b431e2b15@o516851.ingest.sentry.io/5623837',
     release: chrome.runtime.getManifest().version,
-    environment: process.env.ENVIROMENT,
+    environment: process.env.ENVIROMENT || 'development',
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 1.0,
     beforeSend: function(event) {
