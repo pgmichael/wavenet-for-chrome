@@ -137,13 +137,15 @@ const handlers = {
     const count = text.length
 
     if (!sync.apiKey || !sync.apiKeyValid) {
-      return dispatch({
+      await dispatch({
         id: 'error',
         payload: {
           title: 'API key is missing or invalid',
           message: 'Ensure your API key is valid and try again.'
         }
       })
+
+      throw new Error('API key is missing or invalid')
     }
 
     let ssml
@@ -422,6 +424,5 @@ async function dispatch(event) {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
   const currentTab = tabs[0]
 
-  chrome.tabs.sendMessage(currentTab.id, event, () => {
-  })
+  return chrome.tabs.sendMessage(currentTab.id, event)
 }
