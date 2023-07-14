@@ -1,9 +1,18 @@
-const audioElement = document.createElement('audio');
+// Local variables -------------------------------------------------------------
+const audioElement = document.createElement('audio')
 
-// Bootstrapper ----------------------------------------------------------------
-(async function Bootstrap() {
-  await addEventListeners()
-})()
+// Event listeners -------------------------------------------------------------
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (!request) return
+
+  const { id, payload, offscreen } = request
+  if (!offscreen) return
+
+  if (!handlers[id]) throw new Error(`No handler for ${id}`)
+  handlers[id](payload).then(sendResponse)
+
+  return true
+})
 
 // Handlers --------------------------------------------------------------------
 const handlers = {
@@ -21,24 +30,4 @@ const handlers = {
     audioElement.pause()
     audioElement.currentTime = 0
   }
-}
-
-// Helpers ---------------------------------------------------------------------
-async function handleMessage(request, sender, sendResponse) {
-  if (!request) return
-
-  const { id, payload, offscreen } = request
-  if (!offscreen) return
-  console.log('Handling message', { id, payload })
-
-  const result = await handlers[id](payload)
-  sendResponse(result)
-}
-
-async function addEventListeners() {
-  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    handleMessage(request, sender, sendResponse)
-
-    return true
-  })
 }
