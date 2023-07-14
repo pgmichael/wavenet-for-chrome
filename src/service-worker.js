@@ -174,10 +174,18 @@ const handlers = {
 
     // TODO(mike): pass more details about the request to the analytics endpoint
     // so we can better understand how the extension is being used.
-    fetch('https://tunnel.pgmichael.com/analytics', {
+    fetch('https://tunnel.pgmichael.com/insights', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: 'textToSpeech', count })
+      body: JSON.stringify({
+        resource: 'audio',
+        method: 'post',
+        body: {
+          count,
+          audioConfig: { audioEncoding: encoding, pitch: sync.pitch, speakingRate: sync.speed },
+          voice: { languageCode: sync.language, name: voice }
+        }
+      })
     })
 
     return audioContent
