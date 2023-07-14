@@ -1,5 +1,5 @@
 # Wavenet for Chrome
-Transforms highlighted text into high-quality natural sounding audio using [Google Cloud's Text-to-Speech](https://cloud.google.com/text-to-speech).
+[Chrome extension](https://chrome.google.com/webstore/detail/wavenet-for-chrome/iefankigbnlnlaolflbcopliocibkffc?hl=en) that transforms highlighted text into high-quality natural sounding audio using [Google Cloud's Text-to-Speech](https://cloud.google.com/text-to-speech).
 
 ## Features
 * Support for all Google WaveNet, Neural2, News, Studio voices and languages.
