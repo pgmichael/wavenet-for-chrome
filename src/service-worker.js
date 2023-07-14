@@ -5,26 +5,54 @@ import { fileExtMap } from './helpers/file-helpers.js'
 
 // Local state -----------------------------------------------------------------
 const queue = []
-let playing = false;
+let playing = false
 
-// Bootstrapper ----------------------------------------------------------------
+// Bootstrap -------------------------------------------------------------------
+initializeSentry();
+
 (async function Bootstrap() {
-  console.time('Bootstrap')
-  console.log('Bootstrapping service worker...')
-
-  await initializeSentry()
   await migrateSyncStorage()
   await handlers.fetchVoices()
   await setDefaultSettings()
   await createContextMenus()
-
-  await createShortcutsEventListeners()
-  await createPopupEventListeners()
-  await createOffscreenDocument()
-  await createStorageListener()
-
-  console.timeEnd('Bootstrap')
 })()
+
+// Event listeners -------------------------------------------------------------
+chrome.commands.onCommand.addListener(function(command) {
+  console.log('Handling command', command)
+  if (!handlers[command]) throw new Error(`No handler found for ${command}`)
+  handlers[command]()
+
+  return true
+})
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('Handling message', request)
+  const { id, payload } = request
+
+  if (!handlers[id]) throw new Error(`No handler found for ${id}`)
+  handlers[id](payload).then(sendResponse)
+
+  return true
+})
+
+chrome.storage.onChanged.addListener(function(changes) {
+  console.log('Handling storage change', changes)
+  if (!changes.downloadEncoding) return
+
+  updateContextMenus()
+})
+
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  console.log('Handling context menu click', { info, tab })
+  const id = info.menuItemId
+  const payload = { text: info.selectionText }
+
+  if (!handlers[id]) throw new Error(`No handler found for ${id}`)
+  handlers[id](payload).then((result) => chrome.tabs.sendMessage(tab.id, result))
+
+  return true
+})
 
 // Handlers --------------------------------------------------------------------
 const handlers = {
@@ -74,9 +102,6 @@ const handlers = {
 
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const result = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: retrieveSelection })
-      target: { tabId: tab.id },
-      func: retrieveSelection
-    })
     const text = result[0].result
 
     this.readAloud({ text }).catch((error) => {
@@ -170,11 +195,9 @@ const handlers = {
       const sync = await chrome.storage.sync.get()
       const baseUrl = await getApiUrl()
       const response = await fetch(`${baseUrl}/voices?key=${sync.apiKey}`)
-      const voices = (await response.json()).voices
 
-      if (!voices) {
-        throw new Error('No voices found')
-      }
+      const voices = (await response.json()).voices
+      if (!voices) throw new Error('No voices found')
 
       await chrome.storage.session.set({ voices })
       await setLanguages()
@@ -239,29 +262,6 @@ async function createContextMenus() {
     title,
     contexts: ['selection']
   })
-
-  async function handleMessage({ info, tab }) {
-    const id = info.menuItemId
-    const payload = { text: info.selectionText }
-
-    console.log('Handling message', { id, payload })
-
-    await createOffscreenDocument()
-
-    if (!handlers[id]) {
-      throw new Error(`No handler found for ${id}`)
-    }
-
-    const result = await handlers[id](payload)
-
-    chrome.tabs.sendMessage(tab.id, result).catch((error) => console.warn(error))
-  }
-
-  chrome.contextMenus.onClicked.addListener(function(info, tab) {
-    handleMessage({ info, tab })
-
-    return true
-  })
 }
 
 async function createOffscreenDocument() {
@@ -294,7 +294,7 @@ async function hasOffscreenDocument(path) {
   return false
 }
 
-export async function initializeSentry() {
+function initializeSentry() {
   console.log('Initializing Sentry...')
 
   // Nasty hack to make sentry work using Manifest V3
@@ -384,31 +384,6 @@ async function setLanguages() {
   return languages
 }
 
-async function createShortcutsEventListeners() {
-  console.log('Creating shortcut event listeners...')
-
-  async function handleMessage(command) {
-    try {
-      console.log('Handling command', command)
-      await createOffscreenDocument()
-      await handlers[command]()
-    } catch (e) {
-      if (e.message === 'Cannot access a chrome:// URL') {
-        console.warn(e.message)
-        return
-      }
-
-      throw e
-    }
-  }
-
-  chrome.commands.onCommand.addListener(function(command) {
-    handleMessage(command)
-
-    return true
-  })
-}
-
 function retrieveSelection() {
   const activeElement = document.activeElement
   const selectionContents = window.getSelection()?.getRangeAt(0).cloneContents()
@@ -430,42 +405,14 @@ function retrieveSelection() {
   return selectionContents.textContent
 }
 
-async function createPopupEventListeners() {
-  console.log('Creating popup event listeners...')
-
-  async function handleMessage(request, sender, sendResponse) {
-    console.log('Handling message', request)
-    const { id, payload } = request
-    await createOffscreenDocument()
-    if (!handlers[id]) throw new Error(`No handler found for ${id}`)
-    const result = await handlers[id](payload)
-    sendResponse(result)
-  }
-
-  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    handleMessage(request, sender, sendResponse)
-
-    return true
-  })
-}
-
 async function getApiUrl() {
   return 'https://texttospeech.googleapis.com/v1beta1'
 }
 
-async function dispatch(event, { context } = {}) {
+async function dispatch(event) {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
   const currentTab = tabs[0]
 
   chrome.tabs.sendMessage(currentTab.id, event, () => {
-  })
-}
-
-function createStorageListener() {
-  chrome.storage.onChanged.addListener(function(changes) {
-    const value = changes.downloadEncoding
-    if (!value) return
-
-    updateContextMenus()
   })
 }

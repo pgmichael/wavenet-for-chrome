@@ -1,10 +1,6 @@
-import * as React from 'react'
-import { Heartbeat } from './helpers/heartbeat.js'
-
 // Bootstrapper ----------------------------------------------------------------
 (async function Bootstrap() {
-  await addEventListeners()
-  Heartbeat()
+  addEventListeners()
 })()
 
 // Handlers --------------------------------------------------------------------
@@ -24,7 +20,7 @@ async function handleMessage(request, sender, sendResponse) {
   sendResponse(result)
 }
 
-async function addEventListeners() {
+function addEventListeners() {
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     handleMessage(request, sender, sendResponse)
 

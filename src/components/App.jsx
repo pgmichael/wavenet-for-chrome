@@ -5,7 +5,6 @@ import { Sandbox } from './views/Sandbox'
 import { Sidebar } from './Sidebar'
 import { View } from './views/View'
 import { useMount } from '../hooks/useMount.js'
-import { Heartbeat } from '../helpers/heartbeat.js'
 
 export function App() {
   const navigate = useNavigate()
@@ -13,7 +12,6 @@ export function App() {
   useMount(() => {
     // This is required as extensions load the route as `/popup.html` by default
     navigate('/')
-    Heartbeat()
   })
 
   return (
