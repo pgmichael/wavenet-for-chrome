@@ -238,7 +238,8 @@ async function updateContextMenus() {
 }
 
 async function createContextMenus() {
-  console.log('Creating context menus...')
+  console.log('Removing and re-creating context menus...')
+  chrome.contextMenus.removeAll()
 
   const commands = await chrome.commands.getAll()
   const readAloudShortcut = commands.find(c => c.name === 'readAloudShortcut')?.shortcut
