@@ -111,7 +111,6 @@ const handlers = {
   },
   stopReading: async function() {
     queue.length = 0
-    await createOffscreenDocument()
     chrome.runtime.sendMessage({ id: 'stop', payload: {}, offscreen: true }).catch()
     playing = false
     updateContextMenus()
