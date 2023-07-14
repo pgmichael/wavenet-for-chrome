@@ -55,6 +55,7 @@ const handlers = {
         ? await this.getAudioUri({ text, encoding })
         : await prefetchQueue.shift()
 
+      await createOffscreenDocument()
       await chrome.runtime.sendMessage({
         id: 'play',
         payload: { audioUri },
@@ -72,7 +73,7 @@ const handlers = {
     if (playing) return this.stopReading()
 
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    const result = await chrome.scripting.executeScript({
+    const result = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: retrieveSelection })
       target: { tabId: tab.id },
       func: retrieveSelection
     })
@@ -85,6 +86,7 @@ const handlers = {
   },
   stopReading: async function() {
     queue.length = 0
+    await createOffscreenDocument()
     chrome.runtime.sendMessage({ id: 'stop', payload: {}, offscreen: true }).catch()
     playing = false
     updateContextMenus()
