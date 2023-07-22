@@ -139,6 +139,8 @@ const handlers = {
 
     const { downloadEncoding: encoding } = await chrome.storage.sync.get()
     const url = await this.getAudioUri({ text, encoding })
+
+    console.log('Downloading audio from', url)
     await chrome.downloads.download({
       url,
       filename: `something.${fileExtMap[encoding]}`,
@@ -243,7 +245,7 @@ const handlers = {
 
     const promises = chunks.map((text) => this.synthesize({ text, encoding }))
     const audioContents = await Promise.all(promises)
-    return `data:audio/${fileExtMap[encoding]};base64,` + audioContents.join()
+    return `data:audio/${fileExtMap[encoding]};base64,` + btoa(audioContents.map(atob).join(''))
   },
   fetchVoices: async function () {
     console.log('Fetching voices...', ...arguments)
