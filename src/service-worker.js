@@ -334,6 +334,7 @@ export async function setDefaultSettings() {
   console.log('Setting default settings...')
   await chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
   const sync = await chrome.storage.sync.get()
+
   await chrome.storage.sync.set({
     language: sync.language || 'en-US',
     speed: sync.speed || 1,
@@ -348,6 +349,15 @@ export async function setDefaultSettings() {
 async function migrateSyncStorage() {
   console.log('Migrating sync storage if needed...')
   const sync = await chrome.storage.sync.get()
+
+  // Extension with version 8 had WAV and OGG_OPUS as a download option, but
+  // it was rolled back in version 9. Due to audio stiching issues.
+  if (
+    Number(chrome.runtime.getManifest().version) <= 9 &&
+    (sync.downloadEncoding == 'OGG_OPUS' || sync.downloadEncoding == 'LINEAR16')
+  ) {
+    chrome.storage.sync.set({ downloadEncoding: 'MP3_64_KBPS' })
+  }
 
   // Extensions with version < 8 had a different storage structure.
   // We need to migrate them to the new structure before we can use them.
