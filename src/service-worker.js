@@ -376,7 +376,7 @@ export async function setDefaultSettings() {
     pitch: sync.pitch || 0,
     voices: sync.voices || { 'en-US': 'en-US-Polyglot-1' },
     readAloudEncoding: sync.readAloudEncoding || 'OGG_OPUS',
-    downloadEncoding: sync.downloadEncoding || 'MP3',
+    downloadEncoding: sync.downloadEncoding || 'MP3_64_KBPS',
     apiKey: sync.apiKey || '',
   })
 }
