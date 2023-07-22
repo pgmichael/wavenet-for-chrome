@@ -6,6 +6,7 @@ import { Text } from '../inputs/Text.jsx'
 import { classNames } from '../../helpers/class-names.js'
 import { Button } from '../buttons/Button.jsx'
 import { Key } from '../icons/Key.jsx'
+import { Command } from '../icons/Command.jsx'
 
 const speedOptions = [
   { title: '0.5', value: 0.5 },
@@ -153,6 +154,26 @@ export function Preferences() {
           />
         </div>
       </div>
+        <div
+          className={classNames({
+            'opacity-50 pointer-events-none': !sync.apiKeyValid,
+          })}
+        >
+          <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
+            Shortcuts
+          </div>
+          <div className="grid gap-4 grid-cols-2 bg-white p-3 rounded shadow-sm border">
+            <Button
+              type="primary"
+              Icon={Command}
+              onClick={() =>
+                chrome.tabs.create({ url: 'chrome://extensions/shortcuts' })
+              }
+            >
+              Edit shortcuts
+            </Button>
+          </div>
+        </div>
     </div>
   )
 }
