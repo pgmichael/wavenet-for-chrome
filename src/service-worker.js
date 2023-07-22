@@ -140,7 +140,7 @@ const handlers = {
     const count = text.length
 
     if (!sync.apiKey || !sync.apiKeyValid) {
-      await dispatch({
+      await sendMessageToCurrentTab({
         id: 'error',
         payload: {
           title: 'API key is missing or invalid',
@@ -169,10 +169,12 @@ const handlers = {
     if (!response.ok) {
       const message = (await response.json()).error?.message
 
-      return dispatch({
+      await sendMessageToCurrentTab({
         id: 'error',
         payload: { title: 'Failed to synthesize text', message }
       })
+
+      throw new Error(message)
     }
 
     const audioContent = (await response.json()).audioContent
@@ -432,9 +434,10 @@ async function getApiUrl() {
   return 'https://texttospeech.googleapis.com/v1beta1'
 }
 
-async function dispatch(event) {
+async function sendMessageToCurrentTab(event) {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
   const currentTab = tabs[0]
+  if (!currentTab) throw new Error("No active tab found. Cannot send message to current tab.")
 
   return chrome.tabs.sendMessage(currentTab.id, event)
 }
