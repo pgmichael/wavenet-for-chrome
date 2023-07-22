@@ -26,7 +26,7 @@ chrome.commands.onCommand.addListener(function (command) {
   if (!handlers[command]) throw new Error(`No handler found for ${command}`)
   handlers[command]()
 
-  return true
+  return false
 })
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
