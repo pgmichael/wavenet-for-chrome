@@ -1,8 +1,7 @@
-// Local variables -------------------------------------------------------------
 const audioElement = document.createElement('audio')
 
 // Event listeners -------------------------------------------------------------
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (!request) return
 
   const { id, payload, offscreen } = request
@@ -16,18 +15,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 // Handlers --------------------------------------------------------------------
 const handlers = {
-  play: async function({ audioUri }) {
-    audioElement.src = audioUri
-    try {
-      await audioElement.play()
-    } catch (e) {
-      console.log('Failed to play audio', e)
-    }
-
-    await new Promise((resolve) => (audioElement.addEventListener('ended', resolve)))
+  play: function ({ audioUri }) {
+    return new Promise((resolve) => {
+      audioElement.src = audioUri
+      audioElement.play()
+      audioElement.onended = () => {
+        resolve(true)
+      }
+    })
   },
-  stop: async function() {
+  stop: function () {
     audioElement.pause()
     audioElement.currentTime = 0
-  }
+  },
 }
