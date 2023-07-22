@@ -2,9 +2,9 @@
 [Chrome extension](https://chrome.google.com/webstore/detail/wavenet-for-chrome/iefankigbnlnlaolflbcopliocibkffc?hl=en) that transforms highlighted text into high-quality natural sounding audio using [Google Cloud's Text-to-Speech](https://cloud.google.com/text-to-speech).
 
 ## Features
-* Support for all Google WaveNet, Neural2, News, Studio voices and languages.
+* Support for all Google WaveNet, Neural2, News, Studio, Polyglot voices and languages.
 * Adjustable pitch and speed.
-* Download selected text to an MP3, WAV or OGG file.
+* Download selected text to an MP3 file.
 * [SSML support](https://developers.google.com/actions/reference/ssml)
 * Shortcut to read aloud (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on windows)
 * Shortcut to download selected text (`Cmd+Shift+E` on macOS and `Ctrl+Shift+E` on windows)
