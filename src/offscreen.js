@@ -1,4 +1,10 @@
+import { initializeSentry } from "./helpers/sentry-helpers"
+
+// Local variables -------------------------------------------------------------
 const audioElement = document.createElement('audio')
+
+// Bootstrap -------------------------------------------------------------------
+initializeSentry()
 
 // Event listeners -------------------------------------------------------------
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {

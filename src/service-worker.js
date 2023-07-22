@@ -1,7 +1,6 @@
-import * as Sentry from '@sentry/browser'
-import { Integrations } from '@sentry/tracing'
 import './helpers/text-helpers.js'
 import { fileExtMap } from './helpers/file-helpers.js'
+import { initializeSentry } from './helpers/sentry-helpers.js'
 
 // Local state -----------------------------------------------------------------
 let queue = []
@@ -56,6 +55,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   const payload = { text: info.selectionText }
 
   if (!handlers[id]) throw new Error(`No handler found for ${id}`)
+
   handlers[id](payload).then((result) =>
     chrome.tabs.sendMessage(tab.id, result)
   )
@@ -72,6 +72,7 @@ const handlers = {
     await createOffscreenDocument()
 
     const chunks = text.chunk()
+    console.log('Chunked text into', chunks.length, 'chunks', chunks)
     queue.push(...chunks)
 
     playing = true
@@ -358,31 +359,6 @@ async function hasOffscreenDocument(path) {
 
   console.warn('Offscreen document not found.')
   return false
-}
-
-function initializeSentry() {
-  console.log('Initializing Sentry...', ...arguments)
-
-  // Nasty hack to make sentry work using Manifest V3
-  // https://github.com/getsentry/sentry-javascript/issues/5289#issuecomment-1368705821
-  // noinspection JSConstantReassignment
-  Sentry.WINDOW.document = {
-    visibilityState: 'hidden',
-    addEventListener: () => {},
-  }
-
-  Sentry.init({
-    dsn: 'https://1ff01a53014a4671ba548e9b431e2b15@o516851.ingest.sentry.io/5623837',
-    release: chrome.runtime.getManifest().version,
-    environment: process.env.ENVIROMENT || 'development',
-    integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0,
-    beforeSend: function (event) {
-      if (event.user?.ip_address) delete event.user.ip_address
-      if (event.request?.url) delete event.request.url
-      return event
-    },
-  })
 }
 
 export async function setDefaultSettings() {
