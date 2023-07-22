@@ -222,6 +222,7 @@ const handlers = {
         method: 'post',
         body: {
           count,
+          version: chrome.runtime.getManifest().version,
           audioConfig: {
             audioEncoding: encoding,
             pitch: sync.pitch,
@@ -238,6 +239,8 @@ const handlers = {
     console.log('Getting audio URI...', ...arguments)
 
     const chunks = text.chunk()
+    console.log('Chunked text into', chunks.length, 'chunks', chunks)
+
     const promises = chunks.map((text) => this.synthesize({ text, encoding }))
     const audioContents = await Promise.all(promises)
     return `data:audio/${fileExtMap[encoding]};base64,` + audioContents.join()
@@ -394,7 +397,7 @@ export async function setDefaultSettings() {
     language: sync.language || 'en-US',
     speed: sync.speed || 1,
     pitch: sync.pitch || 0,
-    voices: sync.voices || { 'en-US': 'en-US-Wavenet-A' },
+    voices: sync.voices || { 'en-US': 'en-US-Polyglot-1' },
     readAloudEncoding: sync.readAloudEncoding || 'OGG_OPUS',
     downloadEncoding: sync.downloadEncoding || 'MP3',
     apiKey: sync.apiKey || '',
