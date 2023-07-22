@@ -208,6 +208,8 @@ const handlers = {
         payload: { title: 'Failed to synthesize text', message },
       })
 
+      this.stopReading()
+
       throw new Error(message)
     }
 
