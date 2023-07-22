@@ -1,6 +1,6 @@
 {
   "name": "wavenet-for-chrome-extension",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "A wrapper for Google Cloud Text-to-Speech that transform highlighted text into high-quality natural sounding audio.",
   "main": "index.js",
   "type": "module",
