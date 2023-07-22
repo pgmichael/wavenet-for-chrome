@@ -33,5 +33,7 @@ const handlers = {
   stop: function () {
     audioElement.pause()
     audioElement.currentTime = 0
+
+    return Promise.resolve(true)
   },
 }
