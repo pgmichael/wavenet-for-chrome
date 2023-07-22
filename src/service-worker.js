@@ -4,7 +4,7 @@ import './helpers/text-helpers.js'
 import { fileExtMap } from './helpers/file-helpers.js'
 
 // Local state -----------------------------------------------------------------
-const queue = []
+let queue = []
 let playing = false
 
 // Bootstrap -------------------------------------------------------------------
@@ -98,11 +98,15 @@ const handlers = {
     updateContextMenus()
   },
   readAloudShortcut: async function() {
-    if (playing) return this.stopReading()
-
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const result = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: retrieveSelection })
     const text = result[0].result
+
+    if (playing) {
+      this.stopReading()
+
+      if (!text) return
+    }
 
     this.readAloud({ text }).catch((error) => {
       this.stopReading()
@@ -110,7 +114,7 @@ const handlers = {
     })
   },
   stopReading: async function() {
-    queue.length = 0
+    queue = []
     chrome.runtime.sendMessage({ id: 'stop', payload: {}, offscreen: true }).catch()
     playing = false
     updateContextMenus()
