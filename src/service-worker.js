@@ -199,8 +199,7 @@ const handlers = {
     const chunks = text.chunk()
     const promises = chunks.map((text) => this.synthesize({ text, encoding }))
     const audioContents = await Promise.all(promises)
-    const base64 = audioContents.map((content) => atob(content)).join()
-    return `data:audio/${fileExtMap[encoding]};base64,` + btoa(base64)
+    return `data:audio/${fileExtMap[encoding]};base64,` + audioContents.join()
   },
   fetchVoices: async function() {
     console.log('Fetching voices...')
