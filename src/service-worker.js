@@ -24,9 +24,8 @@ chrome.commands.onCommand.addListener(function (command) {
   console.log('Handling command...', ...arguments)
 
   if (!handlers[command]) throw new Error(`No handler found for ${command}`)
-  handlers[command]()
 
-  return false
+  handlers[command]()
 })
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -69,6 +68,7 @@ const handlers = {
     console.log('Reading aloud...', ...arguments)
 
     if (playing) this.stopReading()
+
     await createOffscreenDocument()
 
     const chunks = text.chunk()
@@ -124,10 +124,7 @@ const handlers = {
       if (!text) return
     }
 
-    this.readAloud({ text }).catch((error) => {
-      this.stopReading()
-      throw error
-    })
+    this.readAloud({ text })
   },
   stopReading: async function () {
     console.log('Stopping reading...', ...arguments)
