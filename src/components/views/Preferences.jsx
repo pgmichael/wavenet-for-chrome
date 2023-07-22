@@ -15,19 +15,25 @@ const speedOptions = [
   { title: '1.25', value: 1.25 },
   { title: '1.5', value: 1.5 },
   { title: '2', value: 2 },
-  { title: '3', value: 3 }
+  { title: '3', value: 3 },
 ]
 
 const pitchOptions = [
   { title: 'Low', value: -5 },
   { title: 'Normal', value: 0 },
-  { title: 'High', value: 5 }
+  { title: 'High', value: 5 },
 ]
 
-const audioFormats = [
-  { value: 'MP3', title: 'MP3', description: '32kbps' },
-  { value: 'OGG_OPUS', title: 'OGG', description: 'Opus' },
-  { value: 'LINEAR16', title: 'WAV', description: 'Linear16' }
+const downloadAudioFormats = [
+  { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },
+  { value: 'MP3', title: 'MP3 (32kbps)' },
+]
+
+const readingAudioFormats = [
+  { value: 'OGG_OPUS', title: 'OGG', description: 'Recommended' },
+  { value: 'LINEAR16', title: 'WAV' },
+  { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)' },
+  { value: 'MP3', title: 'MP3 (32kbps)' },
 ]
 
 export function Preferences() {
@@ -44,7 +50,10 @@ export function Preferences() {
   async function handleApiKeyValidation() {
     setApiKeyValidating(true)
 
-    const voices = await chrome.runtime.sendMessage({ id: 'fetchVoices', offscreen: false })
+    const voices = await chrome.runtime.sendMessage({
+      id: 'fetchVoices',
+      offscreen: false,
+    })
     if (!voices) {
       setApiKeyError('Provided API key is invalid')
       setApiKeyValidating(false)
@@ -68,17 +77,30 @@ export function Preferences() {
             label="API key"
             placeholder="Ex: ABzaSyDRIlE4ioDeZ03fya3385XeyUAvMorxWjw"
             value={sync.apiKey}
-            onChange={apiKey => setSync({ ...sync, apiKey, apiKeyValid: false })}
+            onChange={(apiKey) =>
+              setSync({ ...sync, apiKey, apiKeyValid: false })
+            }
           />
-          {!sync.apiKeyValid && <div className="w-fit ml-auto">
-            <Button type="primary" disabled={!sync.apiKey} Icon={Key} onClick={handleApiKeyValidation}
-                    submitting={apiKeyValidating}>
-              Validate API key
-            </Button>
-          </div>}
+          {!sync.apiKeyValid && (
+            <div className="w-fit ml-auto">
+              <Button
+                type="primary"
+                disabled={!sync.apiKey}
+                Icon={Key}
+                onClick={handleApiKeyValidation}
+                submitting={apiKeyValidating}
+              >
+                Validate API key
+              </Button>
+            </div>
+          )}
         </div>
       </div>
-      <div className={classNames({ 'opacity-50 pointer-events-none': !sync.apiKeyValid })}>
+      <div
+        className={classNames({
+          'opacity-50 pointer-events-none': !sync.apiKeyValid,
+        })}
+      >
         <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
           Audio playback
         </div>
@@ -99,7 +121,10 @@ export function Preferences() {
             value={voice}
             onChange={(voice) => {
               if (voiceOptions.find((v) => v.value === voice)) {
-                setSync({ ...sync, voices: { ...sync.voices, [sync.language]: voice } })
+                setSync({
+                  ...sync,
+                  voices: { ...sync.voices, [sync.language]: voice },
+                })
               }
             }}
             placeholder="Select voice"
@@ -127,7 +152,11 @@ export function Preferences() {
           />
         </div>
       </div>
-      <div className={classNames({ 'opacity-50 pointer-events-none': !sync.apiKeyValid })}>
+      <div
+        className={classNames({
+          'opacity-50 pointer-events-none': !sync.apiKeyValid,
+        })}
+      >
         <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
           Audio format
         </div>
@@ -135,9 +164,11 @@ export function Preferences() {
           <Dropdown
             label="When downloading"
             value={sync.downloadEncoding}
-            options={audioFormats}
+            options={downloadAudioFormats}
             onChange={(downloadEncoding) => {
-              if (audioFormats.find((f) => f.value === downloadEncoding)) {
+              if (
+                downloadAudioFormats.find((f) => f.value === downloadEncoding)
+              ) {
                 setSync({ ...sync, downloadEncoding })
               }
             }}
@@ -145,9 +176,11 @@ export function Preferences() {
           <Dropdown
             label="When reading aloud"
             value={sync.readAloudEncoding}
-            options={audioFormats}
+            options={readingAudioFormats}
             onChange={(readAloudEncoding) => {
-              if (audioFormats.find((f) => f.value === readAloudEncoding)) {
+              if (
+                readingAudioFormats.find((f) => f.value === readAloudEncoding)
+              ) {
                 setSync({ ...sync, readAloudEncoding })
               }
             }}
@@ -201,7 +234,7 @@ function getLanguageOptions(session) {
   if (!session?.languages) return []
   const displayNames = new Intl.DisplayNames(['en-US'], {
     type: 'language',
-    languageDisplay: 'standard'
+    languageDisplay: 'standard',
   })
 
   const languageNames = session.languages.map((value) => {
