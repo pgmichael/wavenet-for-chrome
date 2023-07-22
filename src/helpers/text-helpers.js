@@ -1,11 +1,12 @@
-String.prototype.chunk = function() {
-  if (this.isSSML()) return this.chunkSSML()
+import winkNLP from 'wink-nlp';
+import model from 'wink-eng-lite-web-model';
 
-  const sentences = this.split(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s/gm)
-  return sentences
-    .map(sentence => sentence.trim())
-    .filter(sentence => sentence)
+const nlp = winkNLP(model);
+
+String.prototype.chunk = function() {
+  return nlp.readDoc(this).sentences().out('array')
 }
+
 
 String.prototype.chunkSSML = function() {
   const maxChunkSize = 5000

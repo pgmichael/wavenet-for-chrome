@@ -34,6 +34,8 @@
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.2"
+    "react-router-dom": "^6.8.2",
+    "wink-eng-lite-web-model": "^1.5.0",
+    "wink-nlp": "^1.14.3"
   }
 }
