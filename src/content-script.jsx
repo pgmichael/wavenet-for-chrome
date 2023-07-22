@@ -4,10 +4,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   const { id, payload } = request
 
   if (!handlers[id]) throw new Error(`No handler for ${id}`)
-  console.log('Handling message', { id, payload })
-  handlers[id](payload).then(sendResponse)
 
-  return true
+  console.log('Handling message', { id, payload })
+  handlers[id](payload)
 })
 
 // Handlers --------------------------------------------------------------------

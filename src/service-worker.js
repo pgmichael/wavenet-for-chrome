@@ -164,7 +164,7 @@ const handlers = {
     const count = text.length
 
     if (!sync.apiKey || !sync.apiKeyValid) {
-      await sendMessageToCurrentTab({
+      sendMessageToCurrentTab({
         id: 'error',
         payload: {
           title: 'API key is missing or invalid',
@@ -200,7 +200,7 @@ const handlers = {
     if (!response.ok) {
       const message = (await response.json()).error?.message
 
-      await sendMessageToCurrentTab({
+      sendMessageToCurrentTab({
         id: 'error',
         payload: { title: 'Failed to synthesize text', message },
       })
