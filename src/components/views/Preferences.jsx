@@ -7,22 +7,7 @@ import { classNames } from '../../helpers/class-names.js'
 import { Button } from '../buttons/Button.jsx'
 import { Key } from '../icons/Key.jsx'
 import { Command } from '../icons/Command.jsx'
-
-const speedOptions = [
-  { title: '0.5', value: 0.5 },
-  { title: '0.75', value: 0.75 },
-  { title: '1', value: 1 },
-  { title: '1.25', value: 1.25 },
-  { title: '1.5', value: 1.5 },
-  { title: '2', value: 2 },
-  { title: '3', value: 3 },
-]
-
-const pitchOptions = [
-  { title: 'Low', value: -5 },
-  { title: 'Normal', value: 0 },
-  { title: 'High', value: 5 },
-]
+import { Range } from '../inputs/Range.jsx'
 
 const downloadAudioFormats = [
   { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },
@@ -104,52 +89,55 @@ export function Preferences() {
         <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
           Audio playback
         </div>
-        <div className="grid gap-4 grid-cols-2 bg-white p-3 rounded shadow-sm border">
-          <Dropdown
-            label="Language"
-            value={sync.language}
-            onChange={(language) => {
-              if (languageOptions.find((l) => l.value === language)) {
-                setSync({ ...sync, language })
-              }
-            }}
-            placeholder="Select language"
-            options={languageOptions}
-          />
-          <Dropdown
-            label="Voice"
-            value={voice}
-            onChange={(voice) => {
-              if (voiceOptions.find((v) => v.value === voice)) {
-                setSync({
-                  ...sync,
-                  voices: { ...sync.voices, [sync.language]: voice },
-                })
-              }
-            }}
-            placeholder="Select voice"
-            options={voiceOptions}
-          />
-          <Dropdown
-            label="Speed"
-            onChange={(speed) => {
-              if (speedOptions.find((s) => s.value === speed)) {
-                setSync({ ...sync, speed })
-              }
-            }}
-            value={sync.speed}
-            options={speedOptions}
-          />
-          <Dropdown
-            label="Pitch"
-            onChange={(pitch) => {
-              if (pitchOptions.find((p) => p.value === pitch)) {
-                setSync({ ...sync, pitch })
-              }
-            }}
-            value={sync.pitch}
-            options={pitchOptions}
-          />
+        <div className="grid gap-4 grid-cols-1 bg-white p-3 rounded shadow-sm border">
+          <div className="grid grid-cols-2 gap-4">
+            <Dropdown
+              label="Language"
+              value={sync.language}
+              onChange={(language) => {
+                if (languageOptions.find((l) => l.value === language)) {
+                  setSync({ ...sync, language })
+                }
+              }}
+              placeholder="Select language"
+              options={languageOptions}
+            />
+            <Dropdown
+              label="Voice"
+              value={voice}
+              onChange={(voice) => {
+                if (voiceOptions.find((v) => v.value === voice)) {
+                  setSync({
+                    ...sync,
+                    voices: { ...sync.voices, [sync.language]: voice },
+                  })
+                }
+              }}
+              placeholder="Select voice"
+              options={voiceOptions}
+            />
+          </div>
+          <div className='grid gap-4'>
+            <Range
+              label="Speed"
+              min={0.5}
+              max={3}
+              step={0.05}
+              value={sync.speed}
+              unit="×"
+              onChange={(speed) => setSync({ ...sync, speed })}
+              ticks={[0.5, 1, 1.5, 2, 2.5, 3]}
+            />
+            <Range
+              label="Pitch"
+              min={-10}
+              max={10}
+              step={0.1}
+              value={sync.pitch}
+              onChange={(pitch) => setSync({ ...sync, pitch })}
+              ticks={[-10, -5, 0, 5, 10]}
+            />
+          </div>
         </div>
       </div>
       <div
@@ -187,26 +175,26 @@ export function Preferences() {
           />
         </div>
       </div>
-        <div
-          className={classNames({
-            'opacity-50 pointer-events-none': !sync.apiKeyValid,
-          })}
-        >
-          <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
-            Shortcuts
-          </div>
-          <div className="grid gap-4 grid-cols-2 bg-white p-3 rounded shadow-sm border">
-            <Button
-              type="primary"
-              Icon={Command}
-              onClick={() =>
-                chrome.tabs.create({ url: 'chrome://extensions/shortcuts' })
-              }
-            >
-              Edit shortcuts
-            </Button>
-          </div>
+      <div
+        className={classNames({
+          'opacity-50 pointer-events-none': !sync.apiKeyValid,
+        })}
+      >
+        <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
+          Shortcuts
         </div>
+        <div className="grid gap-4 grid-cols-2 bg-white p-3 rounded shadow-sm border">
+          <Button
+            type="primary"
+            Icon={Command}
+            onClick={() =>
+              chrome.tabs.create({ url: 'chrome://extensions/shortcuts' })
+            }
+          >
+            Edit shortcuts
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
