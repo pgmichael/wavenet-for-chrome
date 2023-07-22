@@ -459,12 +459,7 @@ function retrieveSelection() {
     return activeElement.value.slice(start, end)
   }
 
-  for (const img of imgElements) {
-    const altText = document.createTextNode(img.alt)
-    img.parentNode.replaceChild(altText, img)
-  }
-
-  return selectionContents.textContent
+  return window.getSelection()?.toString()
 }
 
 async function getApiUrl() {
