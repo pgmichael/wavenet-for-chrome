@@ -30,6 +30,9 @@ export default {
     service_worker: 'service-worker.js',
     type: 'module'
   },
+  host_permissions: [
+    '<all_urls>'
+  ],
   content_scripts: [
     {
       matches: ['<all_urls>'],
