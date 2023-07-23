@@ -55,11 +55,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
   if (!handlers[id]) throw new Error(`No handler found for ${id}`)
 
-  handlers[id](payload).then((result) =>
-    chrome.tabs.sendMessage(tab.id, result)
-  )
-
-  return true
+  handlers[id](payload)
 })
 
 // Handlers --------------------------------------------------------------------
