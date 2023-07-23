@@ -5,8 +5,9 @@ import { initializeSentry } from './helpers/sentry-helpers.js'
 // Local state -----------------------------------------------------------------
 let queue = []
 let playing = false
-
+let cancellationToken = false
 let bootstrappedResolver = null
+
 const bootstrapped = new Promise((resolve) => (bootstrappedResolver = resolve))
 
 // Bootstrap -------------------------------------------------------------------
@@ -63,7 +64,7 @@ const handlers = {
   readAloud: async function ({ text }) {
     console.log('Reading aloud...', ...arguments)
 
-    if (playing) this.stopReading()
+    if (playing) await this.stopReading()
 
     const chunks = text.chunk()
     console.log('Chunked text into', chunks.length, 'chunks', chunks)
@@ -76,7 +77,15 @@ const handlers = {
     const sync = await chrome.storage.sync.get()
     const encoding = sync.readAloudEncoding
     const prefetchQueue = []
+    cancellationToken = false
     while (queue.length) {
+      if (cancellationToken) {
+        cancellationToken = false
+        playing = false
+        updateContextMenus()
+        return
+      }
+
       const text = queue.shift()
       const nextText = queue[0]
 
@@ -98,6 +107,11 @@ const handlers = {
         })
       } catch (e) {
         console.warn('Failed to play audio', e)
+
+        // Audio playback may have failed because the user stopped playback, or
+        // called the readAloud function again. We need to return early to avoid
+        // playing the next chunk.
+        return
       }
 
       console.log('Play through of audio complete. Enqueuing next chunk.')
@@ -119,7 +133,7 @@ const handlers = {
     const text = result[0].result
 
     if (playing) {
-      this.stopReading()
+      await this.stopReading()
 
       if (!text) return
     }
@@ -129,6 +143,7 @@ const handlers = {
   stopReading: async function () {
     console.log('Stopping reading...', ...arguments)
 
+    cancellationToken = true
     queue = []
     playing = false
     updateContextMenus()
@@ -220,7 +235,7 @@ const handlers = {
         payload: { title: 'Failed to synthesize text', message },
       })
 
-      this.stopReading()
+      await this.stopReading()
 
       throw new Error(message)
     }
@@ -298,7 +313,8 @@ async function updateContextMenus() {
     chrome.contextMenus.update('readAloud', { enabled: true })
     chrome.contextMenus.update('stopReading', { enabled: playing })
 
-    const fileExt = fileExtMap[(await chrome.storage.sync.get()).downloadEncoding]
+    const fileExt =
+      fileExtMap[(await chrome.storage.sync.get()).downloadEncoding]
     const title = `Download ${fileExt.toUpperCase()}`
     chrome.contextMenus.update('download', { title })
   } catch (e) {

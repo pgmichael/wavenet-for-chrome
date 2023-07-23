@@ -1,7 +1,8 @@
-import { initializeSentry } from "./helpers/sentry-helpers"
+import { initializeSentry } from './helpers/sentry-helpers'
 
 // Local variables -------------------------------------------------------------
-const audioElement = document.createElement('audio')
+let audioElement = new Audio()
+let shouldPlay = false
 
 // Bootstrap -------------------------------------------------------------------
 initializeSentry()
@@ -22,24 +23,43 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 // Handlers --------------------------------------------------------------------
 const handlers = {
   play: function ({ audioUri }) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      shouldPlay = true
+
       audioElement.src = audioUri
-      try {
-        audioElement.play()
-      } catch (e) {
-        Sentry.captureException(e)
-        resolve(true)
+      audioElement.onloadedmetadata = function () {
+        if (!shouldPlay) {
+          resolve('Playback was stopped before audio could start')
+          return
+        }
+
+        audioElement
+          .play()
+          .catch((e) => reject('Error while trying to play audio', e))
       }
 
-      audioElement.onended = () => {
-        resolve(true)
+      audioElement.onerror = function () {
+        reject(`Error loading audio source: ${audioUri}`)
+      }
+
+      audioElement.onended = function () {
+        resolve(`Finished playing`)
       }
     })
   },
   stop: function () {
-    audioElement.pause()
-    audioElement.currentTime = 0
+    return new Promise((resolve) => {
+      shouldPlay = false
 
-    return Promise.resolve(true)
+      if (!audioElement.paused) {
+        audioElement.pause()
+        audioElement.currentTime = 0
+
+        resolve('Stopped audio')
+        return
+      }
+
+      resolve('No audio is currently playing')
+    })
   },
 }
