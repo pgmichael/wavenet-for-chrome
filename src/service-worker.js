@@ -65,12 +65,10 @@ const handlers = {
 
     if (playing) this.stopReading()
 
-    await createOffscreenDocument()
-
     const chunks = text.chunk()
     console.log('Chunked text into', chunks.length, 'chunks', chunks)
-    queue.push(...chunks)
 
+    queue.push(...chunks)
     playing = true
     updateContextMenus()
 
@@ -91,11 +89,16 @@ const handlers = {
           ? await this.getAudioUri({ text, encoding })
           : await prefetchQueue.shift()
 
-      await chrome.runtime.sendMessage({
-        id: 'play',
-        payload: { audioUri },
-        offscreen: true,
-      })
+      try {
+        await createOffscreenDocument()
+        await chrome.runtime.sendMessage({
+          id: 'play',
+          payload: { audioUri },
+          offscreen: true,
+        })
+      } catch (e) {
+        console.warn('Failed to play audio', e)
+      }
 
       console.log('Play through of audio complete. Enqueuing next chunk.')
       count++
@@ -103,6 +106,7 @@ const handlers = {
 
     playing = false
     updateContextMenus()
+    return Promise.resolve(true)
   },
   readAloudShortcut: async function () {
     console.log('Handling read aloud shortcut...', ...arguments)
@@ -126,9 +130,20 @@ const handlers = {
     console.log('Stopping reading...', ...arguments)
 
     queue = []
-    chrome.runtime.sendMessage({ id: 'stop', payload: {}, offscreen: true })
     playing = false
     updateContextMenus()
+
+    try {
+      await createOffscreenDocument()
+      await chrome.runtime.sendMessage({
+        id: 'stop',
+        offscreen: true,
+      })
+    } catch (e) {
+      console.warn('Failed to stop audio', e)
+    }
+
+    return Promise.resolve(true)
   },
   download: async function ({ text }) {
     console.log('Downloading audio...', ...arguments)
@@ -137,10 +152,12 @@ const handlers = {
     const url = await this.getAudioUri({ text, encoding })
 
     console.log('Downloading audio from', url)
-    await chrome.downloads.download({
+    chrome.downloads.download({
       url,
       filename: `something.${fileExtMap[encoding]}`,
     })
+
+    return Promise.resolve(true)
   },
   downloadShortcut: async function () {
     console.log('Handling download shortcut...', ...arguments)
@@ -241,7 +258,11 @@ const handlers = {
 
     const promises = chunks.map((text) => this.synthesize({ text, encoding }))
     const audioContents = await Promise.all(promises)
-    return `data:audio/${fileExtMap[encoding]};base64,` + btoa(audioContents.map(atob).join(''))
+
+    return (
+      `data:audio/${fileExtMap[encoding]};base64,` +
+      btoa(audioContents.map(atob).join(''))
+    )
   },
   fetchVoices: async function () {
     console.log('Fetching voices...', ...arguments)
@@ -259,7 +280,8 @@ const handlers = {
 
       return voices
     } catch (e) {
-      console.warn('Failed to fetch voices', e)
+      Sentry.captureException(e)
+
       return false
     }
   },
@@ -276,8 +298,7 @@ async function updateContextMenus() {
     chrome.contextMenus.update('readAloud', { enabled: true })
     chrome.contextMenus.update('stopReading', { enabled: playing })
 
-    const fileExt =
-      fileExtMap[(await chrome.storage.sync.get()).downloadEncoding]
+    const fileExt = fileExtMap[(await chrome.storage.sync.get()).downloadEncoding]
     const title = `Download ${fileExt.toUpperCase()}`
     chrome.contextMenus.update('download', { title })
   } catch (e) {
@@ -475,5 +496,9 @@ async function sendMessageToCurrentTab(event) {
   if (!currentTab)
     throw new Error('No active tab found. Cannot send message to current tab.')
 
-  return chrome.tabs.sendMessage(currentTab.id, event)
+  try {
+    return chrome.tabs.sendMessage(currentTab.id, event)
+  } catch (e) {
+    console.warn('Failed to send message to current tab', e)
+  }
 }

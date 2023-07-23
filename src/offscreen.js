@@ -24,7 +24,13 @@ const handlers = {
   play: function ({ audioUri }) {
     return new Promise((resolve) => {
       audioElement.src = audioUri
-      audioElement.play()
+      try {
+        audioElement.play()
+      } catch (e) {
+        Sentry.captureException(e)
+        resolve(true)
+      }
+
       audioElement.onended = () => {
         resolve(true)
       }

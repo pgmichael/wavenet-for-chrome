@@ -35,10 +35,7 @@ export function Preferences() {
   async function handleApiKeyValidation() {
     setApiKeyValidating(true)
 
-    const voices = await chrome.runtime.sendMessage({
-      id: 'fetchVoices',
-      offscreen: false,
-    })
+    const voices = await chrome.runtime.sendMessage({id: 'fetchVoices'})
     if (!voices) {
       setApiKeyError('Provided API key is invalid')
       setApiKeyValidating(false)
