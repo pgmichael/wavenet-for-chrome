@@ -56,7 +56,8 @@ const entryPoints = [
 await build('initial build')
 
 if (release) {
-  execSync('rm -f dist.zip && zip -r dist.zip dist', console.log)
+  const releaseName = `wavenet-for-chrome-${process.env.npm_package_version}`
+  execSync(`rm -f releases/${releaseName}.zip && zip -r releases/${releaseName}.zip releases`, console.log)
 }
 
 // ---------------------------------------------
