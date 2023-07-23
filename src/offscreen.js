@@ -24,6 +24,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 const handlers = {
   play: function ({ audioUri }) {
     return new Promise((resolve, reject) => {
+      if (!audioUri) reject('No audioUri provided')
+
       shouldPlay = true
 
       audioElement.src = audioUri
