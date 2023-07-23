@@ -31,6 +31,7 @@ fs.rmSync('dist', { recursive: true, force: true })
 // Copy static files to dist
 fs.mkdirSync('dist/popup', { recursive: true })
 fs.mkdirSync('dist/offscreen', { recursive: true })
+fs.mkdirSync('dist/changelog', { recursive: true })
 execSync('cp -r src/assets dist/assets')
 fs.writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2))
 
@@ -50,7 +51,8 @@ const entryPoints = [
   'src/service-worker.js',
   'src/content-script.jsx',
   'src/popup.jsx',
-  'src/offscreen.js'
+  'src/offscreen.js',
+  'src/changelog.jsx'
 ]
 
 await build('initial build')

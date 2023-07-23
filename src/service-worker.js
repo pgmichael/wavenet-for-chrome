@@ -59,6 +59,16 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   handlers[id](payload)
 })
 
+chrome.runtime.onInstalled.addListener(function (details) {
+  console.log('Handling runtime install...', ...arguments)
+
+  if (details.reason !== 'update') return
+
+  const changelogUrl = chrome.runtime.getURL('assets/changelog.html')
+
+  chrome.tabs.create({ url: changelogUrl })
+})
+
 // Handlers --------------------------------------------------------------------
 const handlers = {
   readAloud: async function ({ text }) {
@@ -363,15 +373,12 @@ async function createContextMenus() {
   })
 }
 
-// global promise to prevent concurrency issues
 let creating
-
 async function createOffscreenDocument() {
   const path = 'assets/offscreen.html'
 
   if (await hasOffscreenDocument(path)) return
 
-  // create offscreen document
   if (creating) {
     await creating
   } else {
