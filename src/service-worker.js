@@ -330,35 +330,38 @@ async function createContextMenus() {
   })
 }
 
+// global promise to prevent concurrency issues
+let creating
+
 async function createOffscreenDocument() {
-  console.log('Creating offscreen document...', ...arguments)
+  const path = 'assets/offscreen.html'
 
-  const documentAlreadyExists = await hasOffscreenDocument(
-    'assets/offscreen.html'
-  )
-  if (documentAlreadyExists) {
-    return
+  if (await hasOffscreenDocument(path)) return
+
+  // create offscreen document
+  if (creating) {
+    await creating
+  } else {
+    creating = chrome.offscreen.createDocument({
+      url: path,
+      reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
+      justification: 'Plays synthesized audio in the background',
+    })
+    await creating
+    creating = null
   }
-
-  await chrome.offscreen.createDocument({
-    url: 'assets/offscreen.html',
-    reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
-    justification: 'Plays synthesized audio in the background',
-  })
 }
 
 async function hasOffscreenDocument(path) {
   console.log('Checking if offscreen document exists...', ...arguments)
 
   const offscreenUrl = chrome.runtime.getURL(path)
-  // eslint-disable-next-line no-undef
   const matchedClients = await clients.matchAll()
 
   for (const client of matchedClients) {
     if (client.url === offscreenUrl) return true
   }
 
-  console.warn('Offscreen document not found.')
   return false
 }
 
