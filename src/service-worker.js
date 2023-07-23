@@ -295,7 +295,7 @@ const handlers = {
 
       return voices
     } catch (e) {
-      Sentry.captureException(e)
+      console.warn('Failed to fetch voices', e)
 
       return false
     }
