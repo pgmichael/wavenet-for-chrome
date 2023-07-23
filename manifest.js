@@ -1,6 +1,6 @@
 export default {
   name: 'Wavenet for Chrome',
-  version: '11',
+  version: '12',
   manifest_version: 3,
   permissions: [
     'contextMenus',
