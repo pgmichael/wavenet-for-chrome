@@ -40,7 +40,6 @@ export function Sandbox() {
     if (!handleValidation()) return
 
     setPlaying(true)
-    chrome.runtime.sendMessage({ id: 'stopReading' })
     await chrome.runtime.sendMessage({ id: 'readAloud', payload: { text } })
     handleReset()
   }
