@@ -59,7 +59,7 @@ await build('initial build')
 
 if (release) {
   const releaseName = `wavenet-for-chrome-${process.env.npm_package_version}`
-  execSync(`rm -f releases/${releaseName}.zip && zip -r releases/${releaseName}.zip releases`, console.log)
+  execSync(`rm -f releases/${releaseName}.zip && zip -r releases/${releaseName}.zip dist`, console.log)
 }
 
 // ---------------------------------------------

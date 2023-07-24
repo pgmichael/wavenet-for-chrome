@@ -179,7 +179,7 @@ const handlers = {
     console.log('Downloading audio from', url)
     chrome.downloads.download({
       url,
-      filename: `something.${fileExtMap[encoding]}`,
+      filename: `tts-download.${fileExtMap[encoding]}`,
     })
 
     return Promise.resolve(true)
