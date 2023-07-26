@@ -29,6 +29,24 @@ function Changelog() {
         </div>
         <div className="p-4">
           <Release
+            version="11"
+            date="2023-07-27"
+            new={[
+              {
+                title: 'Meaningful error messages',
+                description:
+                  'When an error occurs, you will now see a more meaningful error message in a well formatted modal',
+                image: 'error-message.png',
+              },
+            ]}
+            bugs={[
+              {
+                title: 'Fixed SSML parsing',
+                description: 'SSML was being read aloud or downloaded as plain text',
+              },
+            ]}
+          />
+          <Release
             version="10"
             date="2023-07-24"
             new={[
@@ -40,8 +58,9 @@ function Changelog() {
               },
               {
                 title: 'Changelog page',
-                description: "You're looking at it! This page will open on update when there are note worthy changes to the extension",
-              }
+                description:
+                  "You're looking at it! This page will open on update when there are note worthy changes to the extension",
+              },
             ]}
             improvements={[
               {
@@ -75,14 +94,16 @@ function Changelog() {
             new={[
               {
                 title: 'New sandbox page and refreshed UI',
-                description: "You can now read aloud or download any text or SSML directly from the extension's popup",
+                description:
+                  "You can now read aloud or download any text or SSML directly from the extension's popup",
                 image: 'sandbox.png',
               },
               {
                 title: 'Audio format selection',
-                description: 'Choose between MP3, OGG, and WAV when downloading or reading aloud',
+                description:
+                  'Choose between MP3, OGG, and WAV when downloading or reading aloud',
                 image: 'audio-formats.png',
-              }
+              },
             ]}
             improvements={[
               {
@@ -98,8 +119,9 @@ function Changelog() {
               },
               {
                 title: 'Bypass character restrictions on SSML',
-                description: 'SSML is now chunked into smaller requests to bypass the 5,000 character limit',
-              }
+                description:
+                  'SSML is now chunked into smaller requests to bypass the 5,000 character limit',
+              },
             ]}
           />
         </div>
@@ -142,7 +164,7 @@ function Release(props) {
       )}
       {props.improvements && (
         <div className="grid grid-cols-1 gap-3">
-          <span className="font-semibold text-xs uppercase bg-amber-500 border border-amber-600 text-white px-1.5 py-0.5 rounded w-fit">
+          <span className="font-semibold text-xs uppercase bg-blue-500 border border-blue-600 text-white px-1.5 py-0.5 rounded w-fit">
             Improvements
           </span>
           <div className="flex flex-col gap-2">

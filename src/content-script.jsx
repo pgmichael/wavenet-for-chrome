@@ -5,10 +5,6 @@ import { Modal } from './components/Modal'
 import { Button } from './components/buttons/Button'
 import { Alert } from './components/icons/Alert'
 import { Github } from './components/icons/Github'
-import { initializeSentry } from './helpers/sentry-helpers'
-
-// Bootstrap -------------------------------------------------------------------
-initializeSentry()
 
 // Event listeners -------------------------------------------------------------
 window.addEventListener('load', function () {
