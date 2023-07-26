@@ -62,11 +62,11 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 chrome.runtime.onInstalled.addListener(function (details) {
   console.log('Handling runtime install...', ...arguments)
 
-  if (details.reason !== 'update') return
+  if (details.reason === 'update' && process.env.ENVIROMENT === 'production') {
+    const changelogUrl = chrome.runtime.getURL('assets/changelog.html')
 
-  const changelogUrl = chrome.runtime.getURL('assets/changelog.html')
-
-  chrome.tabs.create({ url: changelogUrl })
+    chrome.tabs.create({ url: changelogUrl })
+  }
 })
 
 // Handlers --------------------------------------------------------------------
