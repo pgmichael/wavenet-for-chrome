@@ -47,9 +47,9 @@ export function Button({
 }
 
 const buttonColorMap = {
-  default: 'bg-neutral-50 hover:bg-slate-100 text-slate-600',
+  default: 'bg-white hover:bg-neutral-100 text-neutral-600',
   primary: 'bg-blue-600 text-white border-blue-900 border-opacity-25 hover:bg-blue-700',
-  secondary: 'bg-slate-100 hover:bg-slate-200',
+  secondary: 'bg-neutral-100 hover:bg-neutral-200',
   danger: 'bg-red-600 text-white border-red-900 border-opacity-25 hover:bg-red-700',
   success: 'bg-green-600 text-white border-green-900 border-opacity-25 hover:bg-green-700',
   warning: 'bg-amber-600 text-white border-amber-900 border-opacity-25 hover:bg-amber-700'

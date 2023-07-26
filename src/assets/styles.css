@@ -5,3 +5,10 @@
 * {
   box-sizing: border-box;
 }
+
+/* Reset all host styles for the content script */
+:host {
+  all: unset;
+
+  font-family: system-ui, sans-serif;
+}

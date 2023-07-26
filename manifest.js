@@ -52,5 +52,11 @@ export default {
     128: 'assets/icons/icon_128.png',
     1000: 'assets/icons/icon_1000.png'
   },
+  web_accessible_resources: [
+    {
+      resources: ['assets/styles.css'],
+      matches: ['<all_urls>']
+    }
+  ],
   homepage_url: 'https://github.com/pgmichael/wavenet-for-chrome'
 }

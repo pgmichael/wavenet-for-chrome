@@ -67,10 +67,10 @@ export function Preferences() {
             <div className="w-fit ml-auto">
               <Button
                 type="primary"
-                disabled={!sync.apiKey}
                 Icon={Key}
                 onClick={handleApiKeyValidation}
                 submitting={apiKeyValidating}
+                ping={!sync.apiKey}
               >
                 Validate API key
               </Button>
