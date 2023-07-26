@@ -12,6 +12,7 @@ const bootstrapped = new Promise((resolve) => (bootstrappedResolver = resolve))
 
 // Bootstrap -------------------------------------------------------------------
 initializeSentry()
+
 ;(async function Bootstrap() {
   await migrateSyncStorage()
   await handlers.fetchVoices()
@@ -205,10 +206,11 @@ const handlers = {
 
     if (!sync.apiKey || !sync.apiKeyValid) {
       sendMessageToCurrentTab({
-        id: 'error',
+        id: 'setError',
         payload: {
+          icon: 'error',
           title: 'API key is missing or invalid',
-          message: 'Ensure your API key is valid and try again.',
+          message: "Please enter a valid API key in the extension popup. Video instructions are available here: https://www.youtube.com/watch?v=1n8xlVNWEZ0",
         },
       })
 
@@ -241,7 +243,7 @@ const handlers = {
       const message = (await response.json()).error?.message
 
       sendMessageToCurrentTab({
-        id: 'error',
+        id: 'setError',
         payload: { title: 'Failed to synthesize text', message },
       })
 
