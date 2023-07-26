@@ -318,59 +318,56 @@ const handlers = {
 async function updateContextMenus() {
   console.log('Updating context menus...', { playing })
 
-  // Prevents context menus from being updated before they are created
+  // Prevents context menus from being updated before they are created,
+  // which causes an unnecessary error in the console.
   await bootstrapped
 
-  try {
-    chrome.contextMenus.update('readAloud', { enabled: true })
-    chrome.contextMenus.update('stopReading', { enabled: playing })
+  const commands = await chrome.commands.getAll()
+  const encoding = (await chrome.storage.sync.get()).downloadEncoding
+  const fileExt = fileExtMap[encoding]
+  const downloadShortcut = commands.find((c) => c.name === 'downloadShortcut')?.shortcut
 
-    const fileExt =
-      fileExtMap[(await chrome.storage.sync.get()).downloadEncoding]
-    const title = `Download ${fileExt.toUpperCase()}`
-    chrome.contextMenus.update('download', { title })
-  } catch (e) {
-    Sentry.captureException(e)
-  }
+  chrome.contextMenus.update('readAloud', {
+    enabled: true
+  })
+
+  chrome.contextMenus.update('stopReading', {
+    enabled: playing
+  })
+
+  chrome.contextMenus.update('download', {
+    title: `Download ${fileExt?.toUpperCase()}${downloadShortcut && ` (${downloadShortcut})`}`,
+  })
 }
 
 async function createContextMenus() {
   console.log('Creating context menus...', ...arguments)
-
   chrome.contextMenus.removeAll()
 
-  const commands = await chrome.commands.getAll()
-  const readAloudShortcut = commands.find(
-    (c) => c.name === 'readAloudShortcut'
-  )?.shortcut
-  const downloadShortcut = commands.find(
-    (c) => c.name === 'downloadShortcut'
-  )?.shortcut
 
-  let title = 'Read aloud'
-  if (readAloudShortcut) title += ` (${readAloudShortcut})`
+  const commands = await chrome.commands.getAll()
+  const readAloudShortcut = commands.find((c) => c.name === 'readAloudShortcut')?.shortcut
+  const downloadShortcut = commands.find((c) => c.name === 'downloadShortcut')?.shortcut
+  const downloadEncoding = (await chrome.storage.sync.get()).downloadEncoding
+  const fileExt = fileExtMap[downloadEncoding]
+
   chrome.contextMenus.create({
     id: 'readAloud',
-    title,
+    title: `Read aloud${readAloudShortcut && ` (${readAloudShortcut})`}`,
     contexts: ['selection'],
     enabled: !playing,
   })
 
-  title = 'Stop reading'
-  if (readAloudShortcut) title += ` (${readAloudShortcut})`
   chrome.contextMenus.create({
     id: 'stopReading',
-    title,
+    title: `Stop reading${readAloudShortcut && ` (${readAloudShortcut})`}`,
     contexts: ['all'],
     enabled: playing,
   })
 
-  const fileExt = fileExtMap[(await chrome.storage.sync.get()).downloadEncoding]
-  title = `Download ${fileExt.toUpperCase()}`
-  if (downloadShortcut) title += ` (${downloadShortcut})`
   chrome.contextMenus.create({
     id: 'download',
-    title,
+    title: `Download ${fileExt?.toUpperCase()}${downloadShortcut && ` (${downloadShortcut})`}`,
     contexts: ['selection'],
   })
 }
@@ -491,12 +488,8 @@ function retrieveSelection() {
   console.log('Retrieving selection...', ...arguments)
 
   const activeElement = document.activeElement
-  const selectionContents = window.getSelection()?.getRangeAt(0).cloneContents()
-  const imgElements = selectionContents.querySelectorAll('img')
-  const activeElementIsInput =
-    activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA'
+  if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') {
 
-  if (activeElementIsInput) {
     const start = activeElement.selectionStart
     const end = activeElement.selectionEnd
 
