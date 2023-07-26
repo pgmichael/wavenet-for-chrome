@@ -511,12 +511,10 @@ async function sendMessageToCurrentTab(event) {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
   const currentTab = tabs[0]
 
-  if (!currentTab)
-    throw new Error('No active tab found. Cannot send message to current tab.')
-
-  try {
-    return chrome.tabs.sendMessage(currentTab.id, event)
-  } catch (e) {
-    console.warn('Failed to send message to current tab', e)
+  if (!currentTab) {
+    console.warn('No current tab found. Aborting message send.')
+    return
   }
+
+  chrome.tabs.sendMessage(currentTab.id, event)
 }
