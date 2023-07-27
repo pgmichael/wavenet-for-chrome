@@ -12,6 +12,9 @@ export function App() {
   useMount(() => {
     // This is required as extensions load the route as `/popup.html` by default
     navigate('/')
+
+    // Fetch voices in-case the session has become invalid
+    chrome.runtime.sendMessage({ id: 'fetchVoices' })
   })
 
   return (
