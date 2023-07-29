@@ -18,7 +18,7 @@ export function Dropdown(props) {
 
   const fuse = new Fuse(props.options, {
     keys: ['value', 'title', 'description'],
-    threshold: 0.4
+    threshold: 0.4,
   })
 
   const options =
@@ -31,7 +31,7 @@ export function Dropdown(props) {
       title: 'No results found',
       value: '',
       disabled: true,
-      description: 'Try a different search'
+      description: 'Try a different search',
     })
   }
 
@@ -67,13 +67,17 @@ export function Dropdown(props) {
     const index = nextIndex ?? previousIndex
     const ref = document.querySelector(`[data-value="${options[index].value}"]`)
     const containerRef = ref.parentNode
-    const isOutOfView = ref.offsetTop < containerRef.scrollTop || ref.offsetTop + ref.offsetHeight > containerRef.scrollTop + containerRef.offsetHeight
+    const isOutOfView =
+      ref.offsetTop < containerRef.scrollTop ||
+      ref.offsetTop + ref.offsetHeight >
+        containerRef.scrollTop + containerRef.offsetHeight
 
     // Pointer events are disabled during the scroll in order to prevent
     // mouseover events from firing while scrolling which would cause
     // the index to change and the scroll to jump around
     containerRef.style.pointerEvents = 'none'
     ref?.scrollIntoView({ block: 'nearest' })
+
     if (nextIndex && isOutOfView) ref.parentNode.scrollTop += 4
     if (previousIndex && isOutOfView) ref.parentNode.scrollTop -= 4
     setTimeout(() => (containerRef.style.pointerEvents = 'auto'), 0)
@@ -118,6 +122,18 @@ export function Dropdown(props) {
     setIndex(index)
   }
 
+  // TODO(mike): Should not open below if there is more space but input fits anyways
+  const rect = inputRef.current?.getBoundingClientRect()
+  const position = {
+    top: rect?.top + window.scrollY,
+    left: rect?.left + window.scrollX,
+  }
+
+  const viewportHeight = window.innerHeight
+  const spaceAbove = position.top
+  const spaceBelow = viewportHeight - (position.top + rect?.height)
+  const popupPosition = spaceBelow > spaceAbove ? 'below' : 'above'
+
   return (
     <div
       className="relative font-semibold text-xs"
@@ -128,7 +144,7 @@ export function Dropdown(props) {
         {props.label}
       </label>
 
-      <Options open={open}>
+      <Options open={open} position={popupPosition}>
         {options.map((option, i) => (
           <Option
             selected={option.value === props.value}
@@ -158,21 +174,29 @@ export function Dropdown(props) {
 }
 
 function Options(props) {
+  props.position ||= 'below'
+
   if (!props.open) return null
 
   function handleRef(ref) {
     if (!ref) return
 
     const boundings = ref.getBoundingClientRect()
-    const maxHeight = window.innerHeight - boundings?.top - 10
+    const maxHeight =
+      props.position === 'below'
+        ? window.innerHeight - boundings?.top - 10
+        : boundings?.top - 10
     ref.style.maxHeight = `${maxHeight}px`
   }
+
+  const positionStyle = props.position === 'below' ? 'top-10' : 'bottom-11'
 
   return (
     <div
       ref={handleRef}
-      className="absolute top-10 left-0 w-full z-30 rounded border bg-white shadow-sm overflow-scroll"
+      className={`absolute ${positionStyle} left-0 w-full z-30 rounded border bg-white shadow-sm overflow-scroll`}
       onMouseEnter={props.onMouseEnter}
+      style={{ overscrollBehavior: 'none' }}
     >
       {props.children}
     </div>
@@ -182,8 +206,9 @@ function Options(props) {
 function Option(props) {
   const ref = useRef(null)
 
-  useMount(function() {
-    if (props.selected) ref.current?.scrollIntoView({ block: 'center' })
+  useMount(function () {
+    if (props.selected)
+      ref.current.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   })
 
   function handleClick(e) {
@@ -200,7 +225,7 @@ function Option(props) {
         'hover:bg-neutral-100': !props.selected,
         'bg-blue-50 text-blue-900': props.selected,
         'bg-neutral-200 bg-opacity-80': props.focused && !props.selected,
-        'bg-blue-400 bg-opacity-70': props.focused && props.selected
+        'bg-blue-400 bg-opacity-70': props.focused && props.selected,
       })}
       onClick={handleClick}
       data-value={props.option.value}
