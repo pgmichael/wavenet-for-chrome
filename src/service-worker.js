@@ -223,18 +223,27 @@ const handlers = {
       text = undefined
     }
 
+    const audioConfig = {
+      audioEncoding: encoding,
+      pitch: sync.pitch,
+      speakingRate: sync.speed,
+      volumeGainDb: sync.volumeGainDb,
+      effectsProfileId: sync.audioProfile != 'default' ? [sync.audioProfile] : undefined
+    }
+
+    const voiceConfig = {
+      languageCode: sync.language,
+      name: voice
+    }
+
     const response = await fetch(
       `${await getApiUrl()}/text:synthesize?key=${sync.apiKey}`,
       {
         method: 'POST',
         body: JSON.stringify({
-          audioConfig: {
-            audioEncoding: encoding,
-            pitch: sync.pitch,
-            speakingRate: sync.speed,
-          },
+          audioConfig,
+          voice: voiceConfig,
           input: { text, ssml },
-          voice: { languageCode: sync.language, name: voice },
         }),
       }
     )
@@ -265,12 +274,8 @@ const handlers = {
         body: {
           count,
           version: chrome.runtime.getManifest().version,
-          audioConfig: {
-            audioEncoding: encoding,
-            pitch: sync.pitch,
-            speakingRate: sync.speed,
-          },
-          voice: { languageCode: sync.language, name: voice },
+          audioConfig,
+          voice: voiceConfig,
         },
       }),
     })
@@ -420,6 +425,8 @@ export async function setDefaultSettings() {
     readAloudEncoding: sync.readAloudEncoding || 'OGG_OPUS',
     downloadEncoding: sync.downloadEncoding || 'MP3_64_KBPS',
     apiKey: sync.apiKey || '',
+    audioProfile: sync.audioProfile || 'default',
+    volumeGainDb: sync.volumeGainDb || 0,
   })
 }
 

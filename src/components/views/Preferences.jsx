@@ -21,6 +21,54 @@ const readingAudioFormats = [
   { value: 'MP3', title: 'MP3 (32kbps)' },
 ]
 
+const audioProfiles = [
+  {
+    value: 'default',
+    title: 'Default',
+    description: 'Recommended'
+  },
+  {
+    value: 'wearable-class-device',
+    title: 'Wearable class device',
+    description: 'Smart watches and other wearables'
+  },
+  {
+    value: 'handset-class-device',
+    title: 'Handset class device',
+    description: 'Smartphones or tablets'
+  },
+  {
+    value: 'headphone-class-device',
+    title: 'Headphone class device',
+    description: 'Earbuds and over-ears'
+  },
+  {
+    value: 'small-bluetooth-speaker-class-device',
+    title: 'Small bluetooth speaker class device',
+    description: 'Portable Bluetooth speakers'
+  },
+  {
+    value: 'medium-bluetooth-speaker-class-device',
+    title: 'Medium bluetooth speaker class device',
+    description: 'Desktop Bluetooth speakers'
+  },
+  {
+    value: 'large-home-entertainment-class-device',
+    title: 'Large home entertainment class device',
+    description: 'TVs or home theater systems'
+  },
+  {
+    value: 'large-automotive-class-device',
+    title: 'Large automotive class device',
+    description: 'Car audio systems'
+  },
+  {
+    value: 'telephony-class-application',
+    title: 'Telephony class application',
+    description: 'Call centers or IVR systems'
+  },
+]
+
 export function Preferences() {
   const { ready: sessionReady, session } = useSession()
   const { ready: syncReady, sync, setSync } = useSync()
@@ -35,7 +83,7 @@ export function Preferences() {
   async function handleApiKeyValidation() {
     setApiKeyValidating(true)
 
-    const voices = await chrome.runtime.sendMessage({id: 'fetchVoices'})
+    const voices = await chrome.runtime.sendMessage({ id: 'fetchVoices' })
     if (!voices) {
       setApiKeyError('Provided API key is invalid')
       setApiKeyValidating(false)
@@ -114,7 +162,20 @@ export function Preferences() {
               options={voiceOptions}
             />
           </div>
-          <div className='grid gap-4'>
+          <div>
+            <Dropdown
+              label="Audio profile"
+              value={sync.audioProfile}
+              onChange={(audioProfile) => {
+                if (audioProfiles.find((p) => p.value === audioProfile)) {
+                  setSync({ ...sync, audioProfile })
+                }
+              }}
+              placeholder="Select audio profile"
+              options={audioProfiles}
+            />
+          </div>
+          <div className="grid gap-4">
             <Range
               label="Speed"
               min={0.5}
@@ -133,6 +194,16 @@ export function Preferences() {
               value={sync.pitch}
               onChange={(pitch) => setSync({ ...sync, pitch })}
               ticks={[-10, -5, 0, 5, 10]}
+            />
+            <Range
+              label="Volume Gain"
+              min={-16}
+              max={16}
+              step={1}
+              value={sync.volumeGainDb}
+              unit="dB"
+              onChange={(volumeGainDb) => setSync({ ...sync, volumeGainDb })}
+              ticks={[-16, -8, 0, 8, 16]}
             />
           </div>
         </div>
