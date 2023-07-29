@@ -13,17 +13,17 @@ export function Range(props) {
   }, [debouncedValue])
 
   return (
-    <div className="relative font-semibold text-xs text-neutral-500">
-      <label className="bg-white absolute text-xxs -top-2 left-1.5 px-1">
+    <div className="relative font-semibold text-xs text-neutral-500 -mb-2">
+      <label className="absolute text-xxs -top-2 left-1.5 px-1">
         {props.label}
       </label>
-      <div className="bg-white absolute text-xxs -top-2 right-1.5 px-1">
+      <div className="absolute text-xxs -top-2 right-1.5 px-1">
         {value.toString()}
         {props.unit || ''}
       </div>
-      <div className="h-10 px-2 py-1 outline-none rounded-md w-full text-neutral-900 flex items-center justify-center">
+      <div className="h-11 outline-none rounded-md w-full text-neutral-900 flex items-center justify-center">
         <input
-          className="w-full h-0.5 bg-neutral-300 rounded"
+          className="w-full h-1 bg-neutral-300 rounded"
           type="range"
           name="price"
           min={min}
