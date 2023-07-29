@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 
 function Changelog() {
   return (
@@ -29,6 +29,23 @@ function Changelog() {
         </div>
         <div className="p-4">
           <Release
+            version="12"
+            date="2023-07-30"
+            new={[
+              {
+                title: 'Added new volume slider',
+                description: 'You can independently control the volume of the generated audio',
+                image: 'volume-slider.png',
+              },
+              {
+                title: 'Added support for audio profiles',
+                description:
+                  'You can now select from a list of audio profiles to change the way audio is generated. This is useful for changing the way the audio sounds for different use cases (e.g. audiobooks, podcasts, etc.)',
+                image: 'audio-profile.png',
+              }
+            ]}
+          />
+          <Release
             version="11"
             date="2023-07-27"
             new={[
@@ -42,7 +59,8 @@ function Changelog() {
             bugs={[
               {
                 title: 'Fixed SSML parsing',
-                description: 'SSML was being read aloud or downloaded as plain text',
+                description:
+                  'SSML was being read aloud or downloaded as plain text',
               },
             ]}
           />
@@ -145,8 +163,8 @@ function Release(props) {
             New
           </span>
           <div className="flex flex-col gap-2">
-            {props.new?.map((item) => (
-              <div className="mb-2">
+            {props.new?.map((item, index) => (
+              <div className="mb-2" key={`new-${index}`}>
                 <div className="font-bold pb-1 text-base">🎉 {item.title}</div>
                 <div className="text-neutral-500 text-sm pb-3">
                   {item.description}
@@ -168,8 +186,8 @@ function Release(props) {
             Improvements
           </span>
           <div className="flex flex-col gap-2">
-            {props.improvements?.map((item) => (
-              <div className="mb-2">
+            {props.improvements?.map((item, index) => (
+              <div className="mb-2" key={`improvements-${index}`}>
                 <div className="font-bold pb-1 text-base">🚀 {item.title}</div>
                 <div className="text-neutral-500 text-sm pb-3">
                   {item.description}
@@ -191,8 +209,8 @@ function Release(props) {
             Bugs
           </span>
           <div className="flex flex-col gap-2">
-            {props.bugs?.map((item) => (
-              <div className="mb-2">
+            {props.bugs?.map((item, index) => (
+              <div className="mb-2" key={`bugs-${index}`}>
                 <div className="font-bold pb-1 text-base">🐛 {item.title}</div>
                 <div className="text-neutral-500 text-sm pb-3">
                   {item.description}
@@ -212,8 +230,9 @@ function Release(props) {
   )
 }
 
-// mount react component
 const root = document.createElement('div')
 root.id = 'changelog-root'
+
 document.body.appendChild(root)
-ReactDOM.render(<Changelog />, root)
+
+createRoot(root).render(<Changelog />)
