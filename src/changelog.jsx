@@ -40,7 +40,7 @@ function Changelog() {
               {
                 title: 'Added support for audio profiles',
                 description:
-                  'You can now select from a list of audio profiles to change the way audio is generated. This is useful for changing the way the audio sounds for different use cases (e.g. audiobooks, podcasts, etc.)',
+                  'You can now select from a list of audio profiles to change the way audio is generated. This is useful for changing the way the audio sounds for different devices (e.g. headphones vs. speakers)',
                 image: 'audio-profile.png',
               }
             ]}
