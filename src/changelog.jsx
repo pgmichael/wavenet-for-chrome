@@ -9,7 +9,7 @@ function Changelog() {
           <div className="flex justify-center">
             <div className="flex items-center text-center">
               <img
-                src="../assets/icons/icon_1000.png"
+                src="../public/images/icon_1000.png"
                 className="mr-4 pt-0.5"
                 style={{ width: '64px' }}
               />
@@ -171,7 +171,7 @@ function Release(props) {
                 </div>
                 {item.image && (
                   <img
-                    src={`./images/${item.image}`}
+                    src={`./images/changelog/${item.image}`}
                     className="w-full rounded shadow border mb-2"
                   />
                 )}
@@ -194,7 +194,7 @@ function Release(props) {
                 </div>
                 {item.image && (
                   <img
-                    src={`./images/${item.image}`}
+                    src={`./images/changelog/${item.image}`}
                     className="w-full rounded shadow border mb-2"
                   />
                 )}
@@ -217,7 +217,7 @@ function Release(props) {
                 </div>
                 {item.image && (
                   <img
-                    src={`./images/${item.image}`}
+                    src={`./images/changelog/${item.image}`}
                     className="w-full rounded shadow border mb-2"
                   />
                 )}

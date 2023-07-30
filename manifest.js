@@ -41,20 +41,20 @@ export default {
   ],
   action: {
     default_title: 'Wavenet for Chrome',
-    default_popup: 'assets/popup.html',
-    default_icon: 'assets/icons/icon_1000.png'
+    default_popup: 'public/popup.html',
+    default_icon: 'public/images/icon_1000.png'
   },
   icons: {
-    16: 'assets/icons/icon_16.png',
-    19: 'assets/icons/icon_19.png',
-    38: 'assets/icons/icon_38.png',
-    48: 'assets/icons/icon_48.png',
-    128: 'assets/icons/icon_128.png',
-    1000: 'assets/icons/icon_1000.png'
+    16: 'public/images/icon_16.png',
+    19: 'public/images/icon_19.png',
+    38: 'public/images/icon_38.png',
+    48: 'public/images/icon_48.png',
+    128: 'public/images/icon_128.png',
+    1000: 'public/images/icon_1000.png'
   },
   web_accessible_resources: [
     {
-      resources: ['assets/styles.css'],
+      resources: ['public/styles.css'],
       matches: ['<all_urls>']
     }
   ],

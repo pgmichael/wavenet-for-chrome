@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { useMount } from './hooks/useMount'
 import { Modal } from './components/Modal'
 import { Button } from './components/buttons/Button'
-import { Alert } from './components/icons/Alert'
-import { Github } from './components/icons/Github'
+import {AlertTriangle, GitHub} from 'react-feather'
+
 
 // Event listeners -------------------------------------------------------------
 window.addEventListener('load', function () {
@@ -15,7 +15,7 @@ window.addEventListener('load', function () {
 
   // Fetch the CSS file and replace rem values with px values, this is needed
   // so tailwind styles don't inherit the font size from the page.
-  fetch(chrome.runtime.getURL('assets/styles.css'))
+  fetch(chrome.runtime.getURL('public/styles.css'))
     .then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok')
@@ -66,7 +66,7 @@ function ContentScript() {
     <div>
       {error && (
         <Modal
-          Icon={Alert}
+          Icon={AlertTriangle}
           title={error.title}
           content={error.message}
           onClose={() => setError(null)}
@@ -82,7 +82,7 @@ function ContentScript() {
               className="max-w-fit"
               type="primary"
               key="support"
-              Icon={Github}
+              Icon={GitHub}
               onClick={() =>
                 window.open(
                   'https://github.com/pgmichael/wavenet-for-chrome/issues'

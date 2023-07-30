@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { Button } from '../buttons/Button.jsx'
-import { Download } from '../icons/Download.jsx'
-import { Play } from '../icons/Play.jsx'
 import { Textarea } from '../inputs/Textarea.jsx'
 import { useSync } from '../../hooks/useSync.js'
+import {Download, Play} from "react-feather";
 
 export function Sandbox() {
   const { ready, sync } = useSync()

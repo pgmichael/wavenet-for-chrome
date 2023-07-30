@@ -1,18 +1,14 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { classNames } from '../helpers/class-names.js'
-import { Box } from './icons/Box'
-import { Settings } from './icons/Settings'
-import { Star } from './icons/Star'
-import { Help } from './icons/Help'
-import { Github } from './icons/Github.jsx'
+import {Box, GitHub, HelpCircle, Settings, Star} from "react-feather";
 
 export function Sidebar() {
   return (
     <div className="flex flex-col w-56 p-2 py-2.5 border-r">
       <div className="flex items-center text-center mb-3 mx-1 ml-3">
         <img
-          src="../assets/icons/icon_1000.png"
+          src="../../public/images/icon_1000.png"
           className="mr-1.5 pt-0.5"
           style={{ width: '26px' }}
         />
@@ -35,15 +31,15 @@ export function Sidebar() {
         Sandbox
       </Sidebar.Item>
       <div className="mt-auto">
-        <Sidebar.Item Icon={Help} color="bg-neutral-400" onClick={() => {
-          const changelogUrl = chrome.runtime.getURL('assets/changelog.html')
+        <Sidebar.Item Icon={HelpCircle} color="bg-neutral-400" onClick={() => {
+          const changelogUrl = chrome.runtime.getURL('public/changelog.html')
 
           chrome.tabs.create({ url: changelogUrl })
         }}>
           Changelog
         </Sidebar.Item>
         <Sidebar.Item
-          Icon={Github}
+          Icon={GitHub}
           color="bg-neutral-600"
           to="https://github.com/pgmichael/wavenet-for-chrome"
         >

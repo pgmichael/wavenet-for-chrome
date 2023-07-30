@@ -5,9 +5,8 @@ import { Dropdown } from '../inputs/Dropdown.jsx'
 import { Text } from '../inputs/Text.jsx'
 import { classNames } from '../../helpers/class-names.js'
 import { Button } from '../buttons/Button.jsx'
-import { Key } from '../icons/Key.jsx'
-import { Command } from '../icons/Command.jsx'
 import { Range } from '../inputs/Range.jsx'
+import {Command, Key} from "react-feather";
 
 const downloadAudioFormats = [
   { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },

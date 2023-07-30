@@ -5,11 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node build.js --watch",
-    "build": "node build.js",
-    "release": "node build.js --release",
-    "lint": "npx eslint src",
-    "fix": "npx eslint --fix src"
+    "start": "node scripts/start.js",
+    "release": "node scripts/release.js"
   },
   "author": "Michael Poirier-Ginter <michael.poirierginter@gmail.com>",
   "license": "MIT",
@@ -27,6 +24,7 @@
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-feather": "^2.0.10",
     "react-router-dom": "^6.8.2",
     "wink-eng-lite-web-model": "^1.5.0",
     "wink-nlp": "^1.14.3"

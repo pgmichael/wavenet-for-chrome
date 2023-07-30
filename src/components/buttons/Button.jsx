@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { classNames } from '../../helpers/class-names.js'
-import { Loader } from '../icons/Loader.jsx'
+import {Loader} from "react-feather";
 
 export function Button({
   children,

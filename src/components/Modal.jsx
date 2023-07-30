@@ -1,8 +1,5 @@
 import * as React from 'react'
 import { useOutsideClick } from '../hooks/useOutsideClick.js'
-import { Download } from './icons/Download.jsx'
-import { Button } from './buttons/Button.jsx'
-import { Key } from './icons/Key.jsx'
 
 export function Modal({
   title,
