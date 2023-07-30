@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { classNames } from '../../helpers/class-names.js'
 import {Loader} from "react-feather";
+import {twMerge} from "tailwind-merge";
 
 export function Button({
   children,
@@ -22,25 +22,24 @@ export function Button({
     <button
       onMouseDown={scaleUp}
       disabled={submitting || disabled}
-      className={classNames({
-        [buttonColorMap[type]]: true,
-        'flex transition-all items-center rounded-md py-1.5 px-2.5 select-none border text-xs font-medium shadow-sm w-full relative': true,
-        'opacity-50 cursor-not-allowed': submitting || disabled,
-        [scale]: true,
-        [className]: className
-      })}
-      {...args}
+      className={twMerge(
+        buttonColorMap[type],
+        'flex transition-all items-center rounded-md py-1.5 px-2.5 select-none border text-xs font-medium shadow-sm w-full relative',
+        (submitting || disabled) && 'opacity-50 cursor-not-allowed',
+        scale,
+        className
+      )} {...args}
     >
       {Icon && !submitting && <Icon className="mr-1.5" size={16} />}
       {submitting && <Loader size={16} className="mr-1.5 animate-spin" />}
       <span className="flex items-center justify-center text-center w-full relative whitespace-nowrap">
         {children}
       </span>
-      <span className={classNames({
-        'w-full h-full absolute top-0 left-0 bg-black rounded -z-50': true,
-        [buttonColorMap[type]]: true,
-        'animate-ping-sm': ping
-      })}>
+      <span className={twMerge(
+          'w-full h-full absolute top-0 left-0 bg-black rounded -z-50',
+          buttonColorMap[type],
+          ping && 'animate-ping-sm'
+        )}>
       </span>
     </button>
   )

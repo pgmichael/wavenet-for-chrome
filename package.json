@@ -26,6 +26,7 @@
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
     "react-router-dom": "^6.8.2",
+    "tailwind-merge": "^1.14.0",
     "wink-eng-lite-web-model": "^1.5.0",
     "wink-nlp": "^1.14.3"
   }

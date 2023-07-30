@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { classNames } from '../../helpers/class-names.js'
+import {twMerge} from "tailwind-merge";
 
 export function Text(props) {
   const [value, setValue] = useState(props.value)
@@ -12,19 +12,19 @@ export function Text(props) {
 
   return (
     <div className="relative font-semibold text-xs">
-      <label className={classNames({
-        'bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500': true,
-        'text-red-500': props.error
-      })}>
+      <label className={twMerge(
+        'bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500',
+        props.error && 'text-red-500'
+      )}>
         {props.label}
       </label>
 
       <input
         type="text"
-        className={classNames({
-          'border border-neutral-200 h-9 px-3 py-1 outline-none rounded-md w-full text-neutral-900': true,
-          'border-red-400': props.error
-        })}
+        className={twMerge(
+          'border border-neutral-200 h-9 px-3 py-1 outline-none rounded-md w-full text-neutral-900',
+          props.error && 'border-red-400'
+        )}
         placeholder={props.placeholder}
         value={props.value}
         onChange={handleChange}

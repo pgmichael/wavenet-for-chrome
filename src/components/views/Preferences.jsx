@@ -3,10 +3,10 @@ import { useSession } from '../../hooks/useSession.js'
 import { useSync } from '../../hooks/useSync.js'
 import { Dropdown } from '../inputs/Dropdown.jsx'
 import { Text } from '../inputs/Text.jsx'
-import { classNames } from '../../helpers/class-names.js'
 import { Button } from '../buttons/Button.jsx'
 import { Range } from '../inputs/Range.jsx'
 import {Command, Key} from "react-feather";
+import {twMerge} from "tailwind-merge";
 
 const downloadAudioFormats = [
   { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },
@@ -125,11 +125,7 @@ export function Preferences() {
           )}
         </div>
       </div>
-      <div
-        className={classNames({
-          'opacity-50 pointer-events-none': !sync.apiKeyValid,
-        })}
-      >
+      <div className={!sync.apiKeyValid && 'opacity-50 pointer-events-none'}>
         <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
           Audio playback
         </div>
@@ -207,11 +203,7 @@ export function Preferences() {
           </div>
         </div>
       </div>
-      <div
-        className={classNames({
-          'opacity-50 pointer-events-none': !sync.apiKeyValid,
-        })}
-      >
+      <div className={!sync.apiKeyValid && 'opacity-50 pointer-events-none'}>
         <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
           Audio format
         </div>
@@ -242,11 +234,7 @@ export function Preferences() {
           />
         </div>
       </div>
-      <div
-        className={classNames({
-          'opacity-50 pointer-events-none': !sync.apiKeyValid,
-        })}
-      >
+      <div className={!sync.apiKeyValid && 'opacity-50 pointer-events-none'}>
         <div className="font-semibold text-neutral-700 mb-1.5 ml-1 flex items-center">
           Shortcuts
         </div>

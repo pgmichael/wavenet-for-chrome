@@ -1,8 +1,8 @@
 import Fuse from 'fuse.js'
 import React, { useRef, useState } from 'react'
 import { useOutsideClick } from '../../hooks/useOutsideClick'
-import { classNames } from '../../helpers/class-names.js'
 import { useMount } from '../../hooks/useMount'
+import {twMerge} from "tailwind-merge";
 
 export function Dropdown(props) {
   const inputRef = useRef(null)
@@ -220,13 +220,13 @@ function Option(props) {
   return (
     <div
       ref={ref}
-      className={classNames({
-        'flex flex-col px-2 py-1 m-1 rounded': true,
-        'hover:bg-neutral-100': !props.selected,
-        'bg-blue-50 text-blue-900': props.selected,
-        'bg-neutral-200 bg-opacity-80': props.focused && !props.selected,
-        'bg-blue-400 bg-opacity-70': props.focused && props.selected,
-      })}
+      className={twMerge(
+        'flex flex-col px-2 py-1 m-1 rounded',
+        !props.selected && 'hover:bg-neutral-100',
+        props.selected && 'bg-blue-50 text-blue-900',
+        props.focused && !props.selected && 'bg-neutral-200 bg-opacity-80',
+        props.focused && props.selected && 'bg-blue-400 bg-opacity-30',
+      )}
       onClick={handleClick}
       data-value={props.option.value}
       onMouseOver={props.onMouseOver}

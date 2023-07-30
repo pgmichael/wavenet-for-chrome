@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { classNames } from '../helpers/class-names.js'
 import {Box, GitHub, HelpCircle, Settings, Star} from "react-feather";
+import {twMerge} from "tailwind-merge";
 
 export function Sidebar() {
   return (
@@ -74,11 +74,11 @@ Sidebar.Item = function Item({ Icon, children, to, color, onClick }) {
   return (
     <button
       onClick={onClick || handleClick}
-      className={classNames({
-        'p-1 flex items-center group font-semibold rounded cursor-pointer transition-all w-full': true,
-        'text-neutral-700 hover:text-neutral-900': !active,
-        'bg-neutral-200 bg-opacity-70 text-neutral-900': active,
-      })}
+      className={twMerge(
+        'p-1 flex items-center group font-semibold rounded cursor-pointer transition-all w-full',
+        !active && 'text-neutral-700 hover:text-neutral-900',
+        active && 'bg-neutral-200 bg-opacity-70 text-neutral-900'
+      )}
     >
       <div className={`p-1 rounded mr-1.5 text-white ${color}`}>
         <Icon size={14} className="group-hover:animate-wiggle" />
