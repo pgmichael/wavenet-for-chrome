@@ -85,7 +85,7 @@ function ContentScript() {
               Icon={GitHub}
               onClick={() =>
                 window.open(
-                  'https://github.com/pgmichael/wavenet-for-chrome/issues'
+                  'https://github.com/pgmichael/wavenet-for-chrome/issues/new?title=${error.title}&body=${error.message}'
                 )
               }
             >
