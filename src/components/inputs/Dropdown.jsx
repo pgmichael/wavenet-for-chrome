@@ -1,8 +1,8 @@
 import Fuse from 'fuse.js'
 import React, { useRef, useState } from 'react'
-import { useOutsideClick } from '../../hooks/useOutsideClick'
-import { useMount } from '../../hooks/useMount'
-import {twMerge} from "tailwind-merge";
+import { twMerge } from 'tailwind-merge'
+import { useOutsideClick } from '../../hooks/hooks/useOutsideClick'
+import { useMount } from '../../hooks/hooks/useMount'
 
 export function Dropdown(props) {
   const inputRef = useRef(null)
@@ -122,29 +122,17 @@ export function Dropdown(props) {
     setIndex(index)
   }
 
-  // TODO(mike): Should not open below if there is more space but input fits anyways
-  const rect = inputRef.current?.getBoundingClientRect()
-  const position = {
-    top: rect?.top + window.scrollY,
-    left: rect?.left + window.scrollX,
-  }
-
-  const viewportHeight = window.innerHeight
-  const spaceAbove = position.top
-  const spaceBelow = viewportHeight - (position.top + rect?.height)
-  const popupPosition = spaceBelow > spaceAbove ? 'below' : 'above'
-
   return (
     <div
       className="relative font-semibold text-xs"
       ref={useOutsideClick(handleClose)}
       onClick={handleOpen}
     >
-      <label className=" bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500">
+      <label className="bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500">
         {props.label}
       </label>
 
-      <Options open={open} position={popupPosition}>
+      <Options open={open}>
         {options.map((option, i) => (
           <Option
             selected={option.value === props.value}
@@ -174,7 +162,7 @@ export function Dropdown(props) {
 }
 
 function Options(props) {
-  props.position ||= 'below'
+  props.position ||= 'above'
 
   if (!props.open) return null
 
@@ -182,19 +170,14 @@ function Options(props) {
     if (!ref) return
 
     const boundings = ref.getBoundingClientRect()
-    const maxHeight =
-      props.position === 'below'
-        ? window.innerHeight - boundings?.top - 10
-        : boundings?.top - 10
+    const maxHeight = window.innerHeight - boundings?.top - 10
     ref.style.maxHeight = `${maxHeight}px`
   }
-
-  const positionStyle = props.position === 'below' ? 'top-10' : 'bottom-11'
 
   return (
     <div
       ref={handleRef}
-      className={`absolute ${positionStyle} left-0 w-full z-30 rounded border bg-white shadow-sm overflow-scroll`}
+      className="absolute top-10 left-0 w-full z-30 rounded border bg-white shadow-sm overflow-scroll"
       onMouseEnter={props.onMouseEnter}
       style={{ overscrollBehavior: 'none' }}
     >
@@ -225,7 +208,7 @@ function Option(props) {
         !props.selected && 'hover:bg-neutral-100',
         props.selected && 'bg-blue-50 text-blue-900',
         props.focused && !props.selected && 'bg-neutral-200 bg-opacity-80',
-        props.focused && props.selected && 'bg-blue-400 bg-opacity-30',
+        props.focused && props.selected && 'bg-blue-400 bg-opacity-30'
       )}
       onClick={handleClick}
       data-value={props.option.value}
