@@ -8,7 +8,8 @@ console.log(`🛠️  Building for ${environment} environment\n`)
 
 // Setup environment variables for the frontend in development
 const SHARED_ENVIRONMENT_VARIABLES = {
-  TTS_API_URL: 'https://texttospeech.googleapis.com/v1beta1',
+  TTS_API_URL:
+    'https://texttospeech.googleapis.com/v1beta1',
   GOOGLE_OAUTH2_CLIENT_ID:
     '89959520704-p0jas87qkq9u8tmjs0d0c6sopiajl0kl.apps.googleusercontent.com',
   GOOGLE_CHROME_EXTENSION_KEY:

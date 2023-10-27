@@ -1,7 +1,9 @@
 # Wavenet for Chrome
+
 [Chrome extension](https://chrome.google.com/webstore/detail/wavenet-for-chrome/iefankigbnlnlaolflbcopliocibkffc?hl=en) that transforms highlighted text into high-quality natural sounding audio using [Google Cloud's Text-to-Speech](https://cloud.google.com/text-to-speech).
 
 ## Features
+
 * Support for all Google WaveNet, Neural2, News, Studio, Polyglot voices and languages.
 * Adjustable pitch and speed.
 * Download selected text to an MP3 file.
@@ -9,23 +11,23 @@
 * Shortcut to read aloud (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on windows)
 * Shortcut to download selected text (`Cmd+Shift+E` on macOS and `Ctrl+Shift+E` on windows)
 * Chunk selected text into sentences to bypass the 5000 character limit and lower usage cost.
-* Use your own Google Cloud API key.
+* Use your own [Google Cloud API key](](https://www.youtube.com/watch?v=1n8xlVNWEZ0)) or purchase credits directly.
 
-### Using your own API key
-* [Generate an API Key using Google Cloud's Console](https://www.youtube.com/watch?v=1n8xlVNWEZ0).
-* Paste the API Key in the extension's popup menu (under Preferences > Credentials).
+### Usage Costs
 
-Usage will be charged through your Google Cloud account as per their [pricing policy](https://cloud.google.com/text-to-speech/pricing).
+- If you're using your own Google Cloud API key, your usage will be billed through your Google Cloud account according to their [pricing policy](https://cloud.google.com/text-to-speech/pricing).
+- If you're using purchased credits on each synthesis, the cost will be deducted from your available credits. Your credits will be automatically refilled when empty.
 
 ## Development
-If you're interested in contributing, you can easily get started by running the following commands and loading the unpacked extension from the `dist` folder.
 
-```
-npm install
+Interested in contributing? Follow these steps to set up your development environment:
 
-npm run start
-```
+1. Install dependencies: `npm install`
+2. Run the [backend](https://github.com/pgmichael/wavenet-for-chrome-backend) of the project or change the `BACKEND_URL` in the `build.js` file at the root of the project to point to the production API (https://api.wavenet-for-chrome.com/v1).
+2. Start the development server: `npm run start`
 
+After running these commands, load the unpacked extension from the `dist` folder to your Chrome browser.
 
 ## License
-[MIT](/LICENSE)
+
+This project is licensed under the [MIT License](/LICENSE).
