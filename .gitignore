@@ -1,6 +1,18 @@
-dist
-node_modules
+# Dependency directories
+node_modules/
 
-.env
-.idea
+# Distribution / build output
+dist/
+dist-website/
+
+# IDE specific files
+.idea/
+
+# OS generated files
 .DS_Store
+
+# Build cache
+.parcel-cache/
+
+# Environment variables
+.env
