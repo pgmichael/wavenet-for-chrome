@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import { Textarea } from '../../../components/inputs/Textarea.jsx'
 import { Download, Play } from "react-feather";
 import { Button } from '../../../components/Button.js';
-import { useSync } from '../../../hooks/hooks/useSync.js';
-import { useLocalStorage } from '../../../hooks/hooks/useLocalStorage.js';
+import { useSync } from '../../../hooks/useSync.js';
+import { useLocalStorage } from '../../../hooks/useLocalStorage.js';
+import { useStore } from '../../../hooks/useStore.js';
+import { errorStore } from '../../extension.js';
+import { isError } from '../../helpers/error-helpers.js';
 
 export function Sandbox() {
   const { ready, sync } = useSync()
@@ -11,6 +14,8 @@ export function Sandbox() {
   const [valueError, setValueError] = useState('')
   const [downloading, setDownloading] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [error, setError] = useStore(errorStore)
+  
   if (!ready) return null
 
   function handleValidation() {
@@ -29,17 +34,20 @@ export function Sandbox() {
 
   async function handleDownload() {
     if (!handleValidation()) return
-
     setDownloading(true)
-    await chrome.runtime.sendMessage({ id: 'download', payload: { text } })
+    const response = await chrome.runtime.sendMessage({ id: 'download', payload: { text } })
+    if (isError(response)) setError(response)
+    
     handleReset()
   }
 
   async function handleReadAloud() {
     if (!handleValidation()) return
-
     setPlaying(true)
-    await chrome.runtime.sendMessage({ id: 'readAloud', payload: { text } })
+    
+    const response = await chrome.runtime.sendMessage({ id: 'readAloud', payload: { text } })
+    if (isError(response)) setError(response)
+    
     handleReset()
   }
 

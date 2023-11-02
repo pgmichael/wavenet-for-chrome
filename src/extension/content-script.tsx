@@ -5,8 +5,9 @@ import { useState } from "react";
 import { Dialog } from '../components/Dialog'
 import { OnboardingDialog } from './components/dialogs/OnboardingDialog';
 import { Button } from '../components/Button';
-import { useMount } from '../hooks/hooks/useMount';
-import { useSync } from '../hooks/hooks/useSync';
+import { useMount } from '../hooks/useMount';
+import { useSync } from '../hooks/useSync';
+import { TError, isError } from './helpers/error-helpers';
 
 // Event listeners -------------------------------------------------------------
 window.addEventListener('load', function () {
@@ -45,24 +46,26 @@ window.addEventListener('load', function () {
 // React component -------------------------------------------------------------
 function ContentScript() {
   const { sync, ready } = useSync()
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<null | TError>(null)
   const handlers = { setError }
 
   async function handleMessages(request, sender, sendResponse) {
     console.log('Handling message...', request, sender, sendResponse)
 
-    if (!request) return
+    if (!request) {
+      return
+    }
 
-    const { id, payload } = request
-
-    if (!handlers[id]) throw new Error(`No handler for ${id}`)
-
-    handlers[id](payload)
+    if (isError(request)) {
+      setError(request)
+      
+      return
+    }
   }
 
   function handleIssueCreation() {
     window.open(
-      `https://github.com/pgmichael/wavenet-for-chrome/issues/new?title=${error.title}&body=${error.message}`
+      `https://github.com/pgmichael/wavenet-for-chrome/issues/new?title=${error.errorCode}&body=${error.errorMessage}`
     )
   }
 
@@ -76,14 +79,14 @@ function ContentScript() {
     return null
   }
 
-  if (error.id === 'missing-api-key' || (sync.user && !sync.user.credits)) {
+  if (error.errorCode === 'MISSING_API_KEY' || (sync.user && !sync.user.credits)) {
     return <OnboardingDialog onClose={() => setError(null)} />
   }
 
   return (
     <Dialog
-      title={error?.title || 'Something went wrong'}
-      content={error?.message || 'Please try again later or contact support'}
+      title={error.errorTitle}
+      content={error.errorMessage}
       onClose={() => setError(null)}
       buttons={[
         <Button className="max-w-fit" onClick={() => setError(null)}>Close</Button>,

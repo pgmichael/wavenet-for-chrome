@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CreditCard, Key } from "react-feather";
 import { Text } from "../../../components/inputs/Text.jsx";
 import { Button } from "../../../components/Button.js";
-import { useSync } from "../../../hooks/hooks/useSync.js";
+import { useSync } from "../../../hooks/useSync.js";
 
 export function ApiKeyForm() { }
 

@@ -11,7 +11,7 @@ import {
   Star,
 } from 'react-feather'
 import { twMerge } from 'tailwind-merge'
-import { useSync } from '../../hooks/hooks/useSync'
+import { useSync } from '../../hooks/useSync'
 
 export function Sidebar() {
   const { sync, ready } = useSync()

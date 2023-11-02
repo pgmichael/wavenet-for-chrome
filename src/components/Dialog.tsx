@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useMount } from '../hooks/hooks/useMount'
-import { useOutsideClick } from '../hooks/hooks/useOutsideClick'
+import { useMount } from '../hooks/useMount'
+import { useOutsideClick } from '../hooks/useOutsideClick'
 
 type DialogProps = {
   title: string

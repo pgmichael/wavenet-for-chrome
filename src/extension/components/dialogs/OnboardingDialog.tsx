@@ -5,8 +5,8 @@ import { FreeNotice, Notice } from "../copy/Notice.jsx";
 import { PricingTable } from "../copy/PricingTable.jsx";
 import { ApiKeyForm } from "../forms/ApiKey.js";
 import { Button } from "../../../components/Button.js";
-import { useSync } from "../../../hooks/hooks/useSync.js";
-import { useSession } from "../../../hooks/hooks/useSession.js";
+import { useSync } from "../../../hooks/useSync.js";
+import { useSession } from "../../../hooks/useSession.js";
 
 export function OnboardingDialog({ onClose }) {
   const { sync, setSync, ready: syncReady } = useSync()

@@ -1,6 +1,7 @@
 import './helpers/text-helpers.js'
 import { fileExtMap } from './helpers/file-helpers.js'
 import { initializeSentry } from './helpers/sentry-helpers.js'
+import { createError, isError } from './helpers/error-helpers.js'
 
 // Local state -----------------------------------------------------------------
 let queue = []
@@ -115,6 +116,8 @@ export const handlers = {
           : await prefetchQueue.shift()
 
       try {
+        if (isError(audioUri)) return audioUri
+        
         await createOffscreenDocument()
         await chrome.runtime.sendMessage({
           id: 'play',
@@ -180,9 +183,12 @@ export const handlers = {
     console.log('Downloading audio...', { text })
 
     const { downloadEncoding: encoding } = await chrome.storage.sync.get()
+    
     const url = await this.getAudioUri({ text, encoding })
+    if (isError(url)) return url
 
     console.log('Downloading audio from', url)
+    
     chrome.downloads.download({
       url,
       filename: `tts-download.${fileExtMap[encoding]}`,
@@ -216,12 +222,15 @@ export const handlers = {
     if (sync.mode === 'paid') headers['Authorization'] = `Bearer ${key}`
 
     if (!key) {
-      sendMessageToCurrentTab({
-        id: 'setError',
-        payload: { id: 'missing-api-key' },
+      const error = createError({
+        errorCode: 'MISSING_API_KEY',
+        errorMessage: "Missing API key",
+        errorTitle: "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup."
       })
 
-      throw new Error('API key is missing or invalid')
+      sendMessageToCurrentTab(error)
+      
+      return error
     }
 
     let ssml = undefined
@@ -252,23 +261,29 @@ export const handlers = {
       const message = (await response.json()).error?.message
 
       if (message === 'API key not valid. Please pass a valid API key.') {
-        sendMessageToCurrentTab({
-          id: 'setError',
-          payload: { id: 'missing-api-key' },
+        const error = createError({
+          errorCode: 'MISSING_API_KEY',
+          errorMessage: "Missing API key",
+          errorTitle: "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup."
         })
-
-        await this.stopReading()
-        throw new Error('API key is missing or invalid')
+  
+        sendMessageToCurrentTab(error)
+        
+        return error
       }
 
       // Unknown errors
-      sendMessageToCurrentTab({
-        id: 'setError',
-        payload: { title: 'Failed to synthesize text', message },
+      const error = createError({
+        errorCode: 'FAILED_TO_SYNTHESIZE_TEXT',
+        errorTitle: 'An error occured while synthesizing text',
+        errorMessage: message
       })
 
+      sendMessageToCurrentTab(error)
+
       await this.stopReading()
-      throw new Error(message)
+      
+      return error
     }
 
     return (await response.json()).audioContent
@@ -281,6 +296,11 @@ export const handlers = {
 
     const promises = chunks.map((text) => this.synthesize({ text, encoding }))
     const audioContents = await Promise.all(promises)
+    const errorContents = audioContents.filter(isError)
+    
+    if (errorContents.length) {
+      return errorContents[0]
+    }
 
     return (
       `data:audio/${fileExtMap[encoding]};base64,` +
@@ -320,21 +340,30 @@ export const handlers = {
   authenticate: async function () {
     console.log('Authenticating...')
     const authTokenResult = await chrome.identity.getAuthToken({ interactive: true })
-    console.log(authTokenResult)
 
-    const userResult = await fetch(`${process.env.BACKEND_URL}/users`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authTokenResult.token}`,
-        'Content-Type': 'application/json'
-      }
-    })
+    try {
+      const userResult = await fetch(`${process.env.BACKEND_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authTokenResult.token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+  
+      const user = await userResult.json()
+  
+      await chrome.storage.sync.set({ user })
 
-    const user = await userResult.json()
+      return user
+    } catch(e) {
+      const error = createError({
+        errorCode: 'AUTHENTICATION_FAILED',
+        errorTitle: 'Authentication failed',
+        errorMessage: 'Please try again later or contact us for more details.'
+      })
 
-    await chrome.storage.sync.set({ user })
-
-    return user
+      return error
+    }
   },
   createPaymentSession: async function () {
     console.log('Creating payment session...')

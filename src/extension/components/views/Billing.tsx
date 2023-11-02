@@ -6,8 +6,8 @@ import { ApiKeyForm } from '../forms/ApiKey.js'
 import { useNavigate } from 'react-router-dom'
 import { dateFormat, creditFormat } from '../../helpers/formatting-helpers.js'
 import { Button } from '../../../components/Button.js'
-import { useSession } from '../../../hooks/hooks/useSession.js'
-import { useSync } from '../../../hooks/hooks/useSync.js'
+import { useSession } from '../../../hooks/useSession.js'
+import { useSync } from '../../../hooks/useSync.js'
 
 export function Billing() {
   const navigate = useNavigate()

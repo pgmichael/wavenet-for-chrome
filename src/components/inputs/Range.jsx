@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDebounce } from '../../hooks/hooks/useDebounce'
+import { useDebounce } from '../../hooks/useDebounce'
 
 export function Range(props) {
   const [value, setValue] = React.useState(props.value || 0)

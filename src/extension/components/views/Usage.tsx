@@ -1,6 +1,6 @@
 import React from 'react'
 import { creditFormat, dateFormat } from '../../helpers/formatting-helpers.js';
-import { useMount } from '../../../hooks/hooks/useMount.js';
+import { useMount } from '../../../hooks/useMount.js';
 
 export function Usage() {
   const [user, setUser] = React.useState(null);

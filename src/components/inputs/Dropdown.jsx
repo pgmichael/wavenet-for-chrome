@@ -1,8 +1,8 @@
 import Fuse from 'fuse.js'
 import React, { useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { useOutsideClick } from '../../hooks/hooks/useOutsideClick'
-import { useMount } from '../../hooks/hooks/useMount'
+import { useOutsideClick } from '../../hooks/useOutsideClick'
+import { useMount } from '../../hooks/useMount'
 
 export function Dropdown(props) {
   const inputRef = useRef(null)

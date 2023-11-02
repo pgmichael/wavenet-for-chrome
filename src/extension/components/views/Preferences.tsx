@@ -3,8 +3,8 @@ import { Dropdown } from '../../../components/inputs/Dropdown.jsx'
 import { Range } from '../../../components/inputs/Range.jsx'
 import { Command, Key } from "react-feather";
 import { Button } from '../../../components/Button.js'
-import { useSession } from '../../../hooks/hooks/useSession.js';
-import { useSync } from '../../../hooks/hooks/useSync.js';
+import { useSession } from '../../../hooks/useSession.js';
+import { useSync } from '../../../hooks/useSync.js';
 
 const downloadAudioFormats = [
   { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },
