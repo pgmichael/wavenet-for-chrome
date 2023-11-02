@@ -5,8 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "bun run build.js --environment=development",
-    "release": "bun run build.js --environment=production"
+    "start:extension": "bun run build.js --environment=development",
+    "build:extension": "bun run build.js --environment=production",
+    
+    "start:website": "parcel src/website/index.html --dist-dir dist-website",
+    "build:website": "parcel build src/website/index.html --dist-dir dist-website"
   },
   "author": "Michael Poirier-Ginter <michael.poirierginter@gmail.com>",
   "license": "MIT",
@@ -19,7 +22,10 @@
     "bun": "^1.0.7",
     "bun-types": "^1.0.1",
     "esbuild": "^0.18.17",
-    "tailwindcss": "^3.2.7"
+    "parcel": "^2.10.2",
+    "postcss": "^8.4.31",
+    "process": "^0.11.10",
+    "tailwindcss": "^3.3.5"
   },
   "dependencies": {
     "@sentry/browser": "^7.61.1",
