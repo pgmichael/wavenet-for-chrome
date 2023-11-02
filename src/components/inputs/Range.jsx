@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDebounce } from '../../hooks/useDebounce.js'
+import { useDebounce } from '../../hooks/useDebounce'
 
 export function Range(props) {
   const [value, setValue] = React.useState(props.value || 0)
@@ -21,9 +21,12 @@ export function Range(props) {
         {value.toString()}
         {props.unit || ''}
       </div>
-      <div className="h-11 outline-none rounded-md w-full text-neutral-900 flex items-center justify-center">
+      <div
+        style={{ height: 50 }}
+        className="outline-none rounded-md w-full text-neutral-900 flex items-center justify-center"
+      >
         <input
-          className="w-full h-1 bg-neutral-300 rounded"
+          className="w-full h-1 bg-neutral-300 rounded -mx-2"
           type="range"
           name="price"
           min={min}
@@ -35,7 +38,9 @@ export function Range(props) {
         />
         {props.ticks && (
           <datalist id={listId}>
-            {props.ticks.map((tick, index) => <option key={`tick-${index}`} value={tick} />)}
+            {props.ticks.map((tick, index) => (
+              <option key={`tick-${index}`} value={tick} />
+            ))}
           </datalist>
         )}
       </div>

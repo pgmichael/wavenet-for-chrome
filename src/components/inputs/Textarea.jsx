@@ -11,10 +11,7 @@ export function Textarea(props) {
   }
 
   return (
-    <div className={twMerge(
-      'relative font-semibold text-xs flex flex-col grow',
-      props.className
-    )}>
+    <div className="relative font-semibold text-xs flex flex-col grow">
       <label className={twMerge(
         'bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500',
         props.error && 'text-red-500'
@@ -24,7 +21,7 @@ export function Textarea(props) {
 
       <textarea
         className={twMerge(
-          'border border-neutral-200 h-9 px-3 py-1 outline-none rounded-md w-full text-neutral-900',
+          'border border-neutral-200 h-full px-3 py-1 pt-2.5 outline-none rounded-md w-full text-neutral-900',
           props.error && 'border-red-400'
         )}
         placeholder={props.placeholder}
