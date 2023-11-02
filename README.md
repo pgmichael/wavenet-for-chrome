@@ -22,9 +22,10 @@
 
 Interested in contributing? Follow these steps to set up your development environment:
 
-1. Install dependencies: `npm install`
+1. Install dependencies with `npm install`.
 2. Run the [backend](https://github.com/pgmichael/wavenet-for-chrome-backend) of the project or change the `BACKEND_URL` in the `build.js` file at the root of the project to point to the production API (https://api.wavenet-for-chrome.com/v1).
-2. Start the development server: `npm run start`
+3. Start the development server for the extension with `npm run start:extension`.
+4. To run the website locally, use `npm run start:website`.
 
 After running these commands, load the unpacked extension from the `dist` folder to your Chrome browser.
 
