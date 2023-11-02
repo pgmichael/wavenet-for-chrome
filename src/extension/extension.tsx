@@ -55,8 +55,8 @@ export function Extension() {
           content={error.errorMessage}
           onClose={() => setError(null)}
           buttons={[
-            <Button className="max-w-fit" onClick={() => setError(null)}>Close</Button>,
-            <Button className="max-w-fit" type="primary" Icon={GitHub} onClick={handleIssueCreation}>Create an issue</Button>
+            <Button key="close-button" className="max-w-fit" onClick={() => setError(null)}>Close</Button>,
+            <Button key="create-issue-button" className="max-w-fit" type="primary" Icon={GitHub} onClick={handleIssueCreation}>Create an issue</Button>
           ]}
         />
       }
