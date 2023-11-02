@@ -3,7 +3,8 @@ import { useState } from "react"
 import { StopCircle, Play } from "react-feather"
 import { useMount } from "../../hooks/useMount"
 import { Button } from "../../components/Button"
-const audio = new Audio('./demo.mp3')
+
+const audio = new Audio(new URL('../assets/demo.mp3', import.meta.url).toString())
 
 export function Hero() {
   const [playing, setPlaying] = useState(false)
