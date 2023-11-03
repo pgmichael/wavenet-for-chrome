@@ -666,8 +666,10 @@ async function sendMessageToCurrentTab(event) {
   return chrome.tabs.sendMessage(currentTab.id, event)
 }
 
+// TODO(mike): Ideally use pheonix channels instead of polling.
 // When the session has a payment session and the user doesn't have any credits
 // we poll the server every 5 seconds to check if the payment has been processed.
+// If the payment session has expired, we also remove it from the session storage.
 //
 // When the payment has been processed we remove the payment session from the
 // session storage triggering a re-render of any components that depend on it.
@@ -680,7 +682,18 @@ async function pollForPayment() {
     return
   }
 
+  const expiryDate = new Date(session.paymentSession.expiry_date)
+
   const interval = setInterval(async () => {
+    const currentDate = new Date(new Date().toUTCString())
+
+    if (currentDate > expiryDate) {
+      console.log('Payment session has expired. Removing payment session...')
+      await chrome.storage.session.remove('paymentSession')
+      clearInterval(interval)
+      return
+    }
+
     console.log('Checking if payment has been processed...')
     const user = await handlers.fetchUser()
     if (user.credits > 0) {
