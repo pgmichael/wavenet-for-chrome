@@ -2,6 +2,7 @@ import './helpers/text-helpers.js'
 import { fileExtMap } from './helpers/file-helpers.js'
 import { initializeSentry } from './helpers/sentry-helpers.js'
 import { createError, isError } from './helpers/error-helpers.js'
+import { getCurrentVoice } from './helpers/voice-helpers.js'
 
 // Local state -----------------------------------------------------------------
 let queue = []
@@ -12,7 +13,6 @@ const bootstrapped = new Promise((resolve) => (bootstrappedResolver = resolve))
 
 // Bootstrap -------------------------------------------------------------------
 initializeSentry()
-
 ;(async function Bootstrap() {
   await migrateSyncStorage()
   await setDefaultSettings()
@@ -211,8 +211,8 @@ export const handlers = {
   synthesize: async function ({ text, encoding }) {
     console.log('Synthesizing text...', { text, encoding })
 
+    const session = await chrome.storage.session.get()
     const sync = await chrome.storage.sync.get()
-    const voice = sync.voices[sync.language]
     const key = sync.mode === 'paid' ? sync.user?.secret_key : sync.apiKey
 
     let url = `${process.env.BACKEND_URL}/synthesize`
@@ -240,46 +240,62 @@ export const handlers = {
       text = undefined
     }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        text: text,
-        ssml: ssml,
-        voice_name: voice,
-        voice_language_code: sync.language,
-        audio_pitch: sync.pitch,
-        audio_speaking_rate: sync.speed,
-        audio_volume_gain_db: sync.volumeGainDb,
-        audio_encoding: encoding,
-        audio_profile:
-          sync.audioProfile !== 'default' ? [sync.audioProfile] : undefined,
-        extension_version: chrome.runtime.getManifest().version,
-      }),
-    })
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          text: text,
+          ssml: ssml,
+          voice_name: getCurrentVoice(session, sync),
+          voice_language_code: sync.language,
+          audio_pitch: sync.pitch,
+          audio_speaking_rate: sync.speed,
+          audio_volume_gain_db: sync.volumeGainDb,
+          audio_encoding: encoding,
+          audio_profile:
+            sync.audioProfile !== 'default' ? [sync.audioProfile] : undefined,
+          extension_version: chrome.runtime.getManifest().version,
+        }),
+      })
 
-    if (!response.ok) {
-      console.log('Failed to synthesize text', response)
-      const message = (await response.json()).error?.message
+      if (!response.ok) {
+        console.log('Failed to synthesize text', response)
+        const message = (await response.json()).error?.message
 
-      if (message === 'API key not valid. Please pass a valid API key.') {
+        if (message === 'API key not valid. Please pass a valid API key.') {
+          const error = createError({
+            errorCode: 'MISSING_API_KEY',
+            errorMessage: 'Missing API key',
+            errorTitle:
+              "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup.",
+          })
+
+          sendMessageToCurrentTab(error)
+
+          return error
+        }
+
         const error = createError({
-          errorCode: 'MISSING_API_KEY',
-          errorMessage: 'Missing API key',
-          errorTitle:
-            "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup.",
+          errorCode: 'FAILED_TO_SYNTHESIZE_TEXT',
+          errorTitle: 'An error occured while synthesizing text',
+          errorMessage: message,
         })
 
         sendMessageToCurrentTab(error)
 
+        await this.stopReading()
+
         return error
       }
 
-      // Unknown errors
+      return (await response.json()).audioContent
+    } catch (e) {
       const error = createError({
         errorCode: 'FAILED_TO_SYNTHESIZE_TEXT',
         errorTitle: 'An error occured while synthesizing text',
-        errorMessage: message,
+        errorMessage:
+          'An unknown error occured. Please try again later or contact us for more details.',
       })
 
       sendMessageToCurrentTab(error)
@@ -288,8 +304,6 @@ export const handlers = {
 
       return error
     }
-
-    return (await response.json()).audioContent
   },
   getAudioUri: async function ({ text, encoding }) {
     console.log('Getting audio URI...', { text, encoding })
