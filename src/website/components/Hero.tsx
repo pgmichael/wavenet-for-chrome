@@ -89,9 +89,7 @@ export function Hero() {
                 import.meta.url,
               ).toString()}
               className="cursor-not-allowed w-2/3 lg:w-auto min-w-full shadow-xl rounded-lg border-2 border-neutral-200"
-              style={{
-                marginBottom: '-50%',
-              }}
+              style={{ marginBottom: '-25%' }}
             />
           </div>
         </div>
