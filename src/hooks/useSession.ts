@@ -8,7 +8,8 @@ export function useSession() {
   useMount(() => {
     chrome.storage.session.get(null, handleLoad)
     chrome.storage.session.onChanged.addListener(handleOnChanged)
-    return () => chrome.storage.session.onChanged.removeListener(handleOnChanged)
+    return () =>
+      chrome.storage.session.onChanged.removeListener(handleOnChanged)
   })
 
   async function handleOnChanged() {

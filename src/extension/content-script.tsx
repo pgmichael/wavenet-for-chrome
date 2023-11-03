@@ -1,13 +1,17 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { GitHub } from 'react-feather'
-import { useState } from "react";
+import { useState } from 'react'
 import { Dialog } from '../components/Dialog'
-import { OnboardingDialog } from './components/dialogs/OnboardingDialog';
-import { Button } from '../components/Button';
-import { useMount } from '../hooks/useMount';
-import { useSync } from '../hooks/useSync';
-import { TError, createGithubIssueFromError, isError } from './helpers/error-helpers';
+import { OnboardingDialog } from './components/dialogs/OnboardingDialog'
+import { Button } from '../components/Button'
+import { useMount } from '../hooks/useMount'
+import { useSync } from '../hooks/useSync'
+import {
+  TError,
+  createGithubIssueFromError,
+  isError,
+} from './helpers/error-helpers'
 
 // Event listeners -------------------------------------------------------------
 window.addEventListener('load', function () {
@@ -58,7 +62,7 @@ function ContentScript() {
 
     if (isError(request)) {
       setError(request)
-      
+
       return
     }
   }
@@ -73,7 +77,10 @@ function ContentScript() {
     return null
   }
 
-  if (error.errorCode === 'MISSING_API_KEY' || (sync.user && !sync.user.credits)) {
+  if (
+    error.errorCode === 'MISSING_API_KEY' ||
+    (sync.user && !sync.user.credits)
+  ) {
     return <OnboardingDialog onClose={() => setError(null)} />
   }
 
@@ -83,8 +90,17 @@ function ContentScript() {
       content={error.errorMessage}
       onClose={() => setError(null)}
       buttons={[
-        <Button className="max-w-fit" onClick={() => setError(null)}>Close</Button>,
-        <Button className="max-w-fit" type="primary" Icon={GitHub} onClick={() => createGithubIssueFromError(error)}>Create an issue</Button>
+        <Button className="max-w-fit" onClick={() => setError(null)}>
+          Close
+        </Button>,
+        <Button
+          className="max-w-fit"
+          type="primary"
+          Icon={GitHub}
+          onClick={() => createGithubIssueFromError(error)}
+        >
+          Create an issue
+        </Button>,
       ]}
     />
   )

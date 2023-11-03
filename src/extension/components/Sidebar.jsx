@@ -118,7 +118,7 @@ Sidebar.Item = function Item({ Icon, children, to, color, onClick, disabled }) {
         'p-1 flex items-center group font-semibold rounded cursor-pointer transition-all w-full',
         !active && 'text-neutral-700 hover:text-neutral-900',
         active && 'bg-neutral-200 bg-opacity-70 text-neutral-900',
-        disabled && 'opacity-50 cursor-not-allowed'
+        disabled && 'opacity-50 cursor-not-allowed',
       )}
     >
       <div className={`p-1 rounded mr-1.5 text-white ${color}`}>

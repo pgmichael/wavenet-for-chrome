@@ -1,31 +1,31 @@
 import React from 'react'
-import { creditFormat, dateFormat } from '../../helpers/formatting-helpers.js';
-import { useMount } from '../../../hooks/useMount.js';
+import { creditFormat, dateFormat } from '../../helpers/formatting-helpers.js'
+import { useMount } from '../../../hooks/useMount.js'
 
 export function Usage() {
-  const [user, setUser] = React.useState(null);
-  const [loadingUser, setLoadingUser] = React.useState(false);
+  const [user, setUser] = React.useState(null)
+  const [loadingUser, setLoadingUser] = React.useState(false)
 
-  const [usage, setUsage] = React.useState([]);
-  const [loadingUsage, setLoadingUsage] = React.useState(false);
+  const [usage, setUsage] = React.useState([])
+  const [loadingUsage, setLoadingUsage] = React.useState(false)
 
   useMount(() => {
     setLoadingUser(true)
     setLoadingUsage(true)
     chrome.runtime.sendMessage({ id: 'fetchUser' }, (response) => {
-      if (!response) return;
+      if (!response) return
 
-      setUser(response);
-      setLoadingUser(false);
-    });
+      setUser(response)
+      setLoadingUser(false)
+    })
 
     chrome.runtime.sendMessage({ id: 'fetchUsage' }, (response) => {
-      if (!response) return;
+      if (!response) return
 
-      setUsage(response);
-      setLoadingUsage(false);
-    });
-  });
+      setUsage(response)
+      setLoadingUsage(false)
+    })
+  })
 
   function renderCredits() {
     return (
@@ -35,7 +35,11 @@ export function Usage() {
         </div>
         <div className="bg-white p-3 rounded shadow-sm border flex flex-col gap-2">
           <span>
-            You have <span className="font-bold">{creditFormat(user?.credits || 0)}</span> of credits left
+            You have{' '}
+            <span className="font-bold">
+              {creditFormat(user?.credits || 0)}
+            </span>{' '}
+            of credits left
           </span>
         </div>
       </div>
@@ -49,11 +53,11 @@ export function Usage() {
           Last 100 usages
         </div>
         <div className="bg-white rounded shadow-sm border flex flex-col">
-          {
-            usage.length
-              ? usage?.map((u) => <UsageItem {...u} />)
-              : <div className='p-3'>No usage yet</div>
-          }
+          {usage.length ? (
+            usage?.map((u) => <UsageItem {...u} />)
+          ) : (
+            <div className="p-3">No usage yet</div>
+          )}
         </div>
       </div>
     )
@@ -64,7 +68,7 @@ export function Usage() {
       {renderCredits()}
       {renderUsage()}
     </div>
-  );
+  )
 }
 
 function UsageItem(props) {

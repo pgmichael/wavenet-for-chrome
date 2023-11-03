@@ -10,10 +10,10 @@ export function Dropdown(props) {
   const [input, setInput] = useState(props.value)
   const [dirty, setDirty] = useState(false)
   const [index, setIndex] = useState(
-    props.options.findIndex((o) => o.value === props.value)
+    props.options.findIndex((o) => o.value === props.value),
   )
   const option = props.options.find(
-    (o) => o.value === input || (o.value === props.value && !dirty)
+    (o) => o.value === input || (o.value === props.value && !dirty),
   )
 
   const fuse = new Fuse(props.options, {
@@ -40,7 +40,7 @@ export function Dropdown(props) {
     setDirty(true)
     setInput(value)
     setIndex(
-      value ? 0 : props.options.findIndex((o) => o.value === props.value)
+      value ? 0 : props.options.findIndex((o) => o.value === props.value),
     )
     props.onChange(value)
   }
@@ -208,7 +208,7 @@ function Option(props) {
         !props.selected && 'hover:bg-neutral-100',
         props.selected && 'bg-blue-50 text-blue-900',
         props.focused && !props.selected && 'bg-neutral-200 bg-opacity-80',
-        props.focused && props.selected && 'bg-blue-400 bg-opacity-30'
+        props.focused && props.selected && 'bg-blue-400 bg-opacity-30',
       )}
       onClick={handleClick}
       data-value={props.option.value}

@@ -5,7 +5,6 @@ export function ScrollToHash() {
   const navigate = useNavigate()
   const location = useLocation()
 
-
   useEffect(() => {
     const hash = location.hash
 

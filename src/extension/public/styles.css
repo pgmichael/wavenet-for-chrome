@@ -8,7 +8,8 @@
 }
 
 /* Reset all host styles for the content script, and to the popup so it matches */
-:host, #root {
+:host,
+#root {
   all: unset;
 }
 

@@ -1,14 +1,14 @@
-import { CreditCard, Key } from "react-feather";
-import { Dialog } from "../../../components/Dialog.js";
-import * as React from "react";
-import { FreeNotice, Notice } from "../copy/Notice.jsx";
-import { PricingTable } from "../copy/PricingTable.jsx";
-import { ApiKeyForm } from "../forms/ApiKey.js";
-import { Button } from "../../../components/Button.js";
-import { useSync } from "../../../hooks/useSync.js";
-import { useSession } from "../../../hooks/useSession.js";
-import { useStore } from "../../../hooks/useStore.js";
-import { errorStore } from "../../extension.js";
+import { CreditCard, Key } from 'react-feather'
+import { Dialog } from '../../../components/Dialog.js'
+import * as React from 'react'
+import { FreeNotice, Notice } from '../copy/Notice.jsx'
+import { PricingTable } from '../copy/PricingTable.jsx'
+import { ApiKeyForm } from '../forms/ApiKey.js'
+import { Button } from '../../../components/Button.js'
+import { useSync } from '../../../hooks/useSync.js'
+import { useSession } from '../../../hooks/useSession.js'
+import { useStore } from '../../../hooks/useStore.js'
+import { errorStore } from '../../extension.js'
 
 export function OnboardingDialog({ onClose }) {
   const { sync, setSync, ready: syncReady } = useSync()
@@ -19,16 +19,20 @@ export function OnboardingDialog({ onClose }) {
 
   async function pay() {
     setLoading(true)
-    const paymentSession = await chrome.runtime.sendMessage({id: 'createPaymentSession'})
+    const paymentSession = await chrome.runtime.sendMessage({
+      id: 'createPaymentSession',
+    })
     setLoading(false)
 
     if (isError(paymentSession)) {
       setError(paymentSession)
       return
     }
-    
+
     if (!paymentSession?.hosted_invoice_url) {
-      throw new Error('Could not create payment session or payment session URL is missing')
+      throw new Error(
+        'Could not create payment session or payment session URL is missing',
+      )
     }
 
     window.open(paymentSession.hosted_invoice_url)
@@ -89,8 +93,10 @@ export function OnboardingDialog({ onClose }) {
         submitting={loading}
         ping={session.paymentSession}
       >
-        {session.paymentSession ? 'Waiting for payment' : 'Purchase credits ($9.75)'}
-      </Button>
+        {session.paymentSession
+          ? 'Waiting for payment'
+          : 'Purchase credits ($9.75)'}
+      </Button>,
     ]
   }
 
@@ -100,7 +106,11 @@ export function OnboardingDialog({ onClose }) {
 
   return (
     <Dialog
-      title={sync.mode === 'paid' ? "You're almost there!" : 'Your API key is missing or invalid'}
+      title={
+        sync.mode === 'paid'
+          ? "You're almost there!"
+          : 'Your API key is missing or invalid'
+      }
       content={renderContent()}
       onClose={onClose}
       buttons={renderButtons()}

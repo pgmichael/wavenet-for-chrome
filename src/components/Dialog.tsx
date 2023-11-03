@@ -9,7 +9,13 @@ type DialogProps = {
   buttons?: React.ReactNode
 }
 
-export function Dialog({ title, content, onClose, buttons, ...args }: DialogProps) {
+export function Dialog({
+  title,
+  content,
+  onClose,
+  buttons,
+  ...args
+}: DialogProps) {
   useMount(() => document.getSelection().removeAllRanges())
 
   return (
@@ -24,20 +30,20 @@ export function Dialog({ title, content, onClose, buttons, ...args }: DialogProp
         className="border bg-white h-fit rounded-lg overflow-hidden shadow-2xl animate-popup"
       >
         <div className="flex px-6 pt-4 pb-0">
-          <div className='w-full'>
+          <div className="w-full">
             <h1 className="text-lg mb-3 tracking-wide text-neutral-800 font-semibold">
               {title}
             </h1>
-            <div className="text-sm text-neutral-600 break-words">{content}</div>
+            <div className="text-sm text-neutral-600 break-words">
+              {content}
+            </div>
           </div>
           <div>
             <audio></audio>
           </div>
         </div>
         {buttons && (
-          <div className="flex justify-end gap-3 p-6 pt-4">
-            {buttons}
-          </div>
+          <div className="flex justify-end gap-3 p-6 pt-4">{buttons}</div>
         )}
       </div>
     </div>

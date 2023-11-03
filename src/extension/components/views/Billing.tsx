@@ -32,16 +32,20 @@ export function Billing() {
 
   async function pay() {
     setLoading(true)
-    const paymentSession = await chrome.runtime.sendMessage({id: 'createPaymentSession'})
+    const paymentSession = await chrome.runtime.sendMessage({
+      id: 'createPaymentSession',
+    })
     setLoading(false)
 
     if (isError(paymentSession)) {
       setError(paymentSession)
       return
     }
-    
+
     if (!paymentSession?.hosted_invoice_url) {
-      throw new Error('Could not create payment session or payment session URL is missing')
+      throw new Error(
+        'Could not create payment session or payment session URL is missing',
+      )
     }
 
     window.open(paymentSession.hosted_invoice_url)
@@ -117,7 +121,7 @@ export function Billing() {
               if you wish to change your payment method or if you have any
               questions.
             </p>
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Button
                 className="w-full"
                 onClick={async () => {
@@ -134,9 +138,8 @@ export function Billing() {
               </Button>
             </div>
           </div>
-        )
-        }
-      </div >
+        )}
+      </div>
     )
   }
 
@@ -151,7 +154,7 @@ export function Billing() {
         </div>
         <div className="bg-white rounded shadow-sm border flex flex-col">
           {invoices.map((invoice) => (
-            <Invoice {...invoice} />
+            <Invoice key={invoice.id} {...invoice} />
           ))}
         </div>
       </div>

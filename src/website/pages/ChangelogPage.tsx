@@ -20,7 +20,10 @@ export function ChangelogPage() {
               title: 'Purchase credits (Optional)',
               description:
                 "It's now possible to purchase credits directly from the extension. This is completely optional and you can still use the extension for free. Purchasing credits will help support the development of the extension and allow me to continue to add new features.",
-              image: new URL('../assets/images/changelog/paid-version.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/paid-version.png',
+                import.meta.url,
+              ).toString(),
             },
           ]}
           improvements={[
@@ -33,10 +36,18 @@ export function ChangelogPage() {
               title: 'Error dialog in popup',
               description:
                 'When an error occurs in the popup, a dialog will now appear with a more meaningful error message. Useful if you are having trouble synthesizing audio in the Sandbox.',
-                image: new URL('../assets/images/changelog/popup-errors.png', import.meta.url).toString(),
-            }
+              image: new URL(
+                '../assets/images/changelog/popup-errors.png',
+                import.meta.url,
+              ).toString(),
+            },
           ]}
-          bugs={[{ title: 'Fixed voices not always loading when opening the popup and duplicate entries' }]}
+          bugs={[
+            {
+              title:
+                'Fixed voices not always loading when opening the popup and duplicate entries',
+            },
+          ]}
         />
         <Release
           version="12"
@@ -46,13 +57,19 @@ export function ChangelogPage() {
               title: 'Added new volume slider',
               description:
                 'You can independently control the volume of the generated audio',
-              image: new URL('../assets/images/changelog/volume-slider.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/volume-slider.png',
+                import.meta.url,
+              ).toString(),
             },
             {
               title: 'Added support for audio profiles',
               description:
                 'You can now select from a list of audio profiles to change the way audio is generated. This is useful for changing the way the audio sounds for different devices (e.g. headphones vs. speakers)',
-              image: new URL('../assets/images/changelog/audio-profile.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/audio-profile.png',
+                import.meta.url,
+              ).toString(),
             },
           ]}
         />
@@ -64,7 +81,10 @@ export function ChangelogPage() {
               title: 'Meaningful error messages',
               description:
                 'When an error occurs, you will now see a more meaningful error message in a well formatted modal',
-              image: new URL('../assets/images/changelog/error-message.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/error-message.png',
+                import.meta.url,
+              ).toString(),
             },
           ]}
           bugs={[
@@ -83,7 +103,10 @@ export function ChangelogPage() {
               title: 'New edit shortcut button',
               description:
                 'Quickly navigate to the chrome://extensions/shortcuts page to edit your shortcuts',
-              image: new URL('../assets/images/changelog/edit-shortcuts.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/edit-shortcuts.png',
+                import.meta.url,
+              ).toString(),
             },
             {
               title: 'Changelog page',
@@ -95,11 +118,17 @@ export function ChangelogPage() {
             {
               title: 'Reverted speed and pitch dropdowns to range sliders',
               description: 'Allows for a more precise selection',
-              image: new URL('../assets/images/changelog/speed-pitch-sliders.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/speed-pitch-sliders.png',
+                import.meta.url,
+              ).toString(),
             },
             {
               title: 'Better sentence boundary detection using WinkNLP',
-              image: new URL('../assets/images/changelog/sentence-boundary-detection.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/sentence-boundary-detection.png',
+                import.meta.url,
+              ).toString(),
               description:
                 'Prevents unnatural pauses in the middle of sentences containing abbreviations and acronyms (e.g. "Mr. Smith" and "U.S.A.")',
             },
@@ -125,13 +154,19 @@ export function ChangelogPage() {
               title: 'New sandbox page and refreshed UI',
               description:
                 "You can now read aloud or download any text or SSML directly from the extension's popup",
-              image: new URL('../assets/images/changelog/sandbox.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/sandbox.png',
+                import.meta.url,
+              ).toString(),
             },
             {
               title: 'Audio format selection',
               description:
                 'Choose between MP3, OGG, and WAV when downloading or reading aloud',
-              image: new URL('../assets/images/changelog/audio-formats.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/audio-formats.png',
+                import.meta.url,
+              ).toString(),
             },
           ]}
           improvements={[
@@ -144,7 +179,10 @@ export function ChangelogPage() {
               title: 'Search through languages and voices by name or keyword',
               description:
                 'You can now search through the list of languages and voices by name or keyword making it easier to find the voice you want',
-              image: new URL('../assets/images/changelog/voice-search.png', import.meta.url).toString(),
+              image: new URL(
+                '../assets/images/changelog/voice-search.png',
+                import.meta.url,
+              ).toString(),
             },
             {
               title: 'Bypass character restrictions on SSML',
@@ -160,10 +198,12 @@ export function ChangelogPage() {
 
 function Release(props) {
   return (
-    <div className={twMerge(
-      'flex flex-col gap-4 border-t pt-4 mt-8',
-      props.isFirst && 'border-t-0 mt-0'
-    )}>
+    <div
+      className={twMerge(
+        'flex flex-col gap-4 border-t pt-4 mt-8',
+        props.isFirst && 'border-t-0 mt-0',
+      )}
+    >
       <div>
         <div className="font-bold text-3xl">
           Version <span className="">{props.version}</span>

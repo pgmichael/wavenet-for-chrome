@@ -12,12 +12,12 @@ import { ScrollToTop } from './components/ScrollToTop'
 
 export function Website() {
   return (
-    <div className='flex flex-col items-center justify-center text-neutral-800'>
+    <div className="flex flex-col items-center justify-center text-neutral-800">
       <Header />
       <Routes>
-        <Route path='/changelog' element={<ChangelogPage />} />
-        <Route path='/privacy-policy' element={<PrivacyPolicyPage />} />
-        <Route path='/' element={<HomePage />} />
+        <Route path="/changelog" element={<ChangelogPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
       <Footer />
     </div>

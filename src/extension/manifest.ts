@@ -10,47 +10,43 @@ export default {
     'activeTab',
     'scripting',
     'offscreen',
-    'identity'
+    'identity',
   ],
   oauth2: {
     client_id: process.env.GOOGLE_OAUTH2_CLIENT_ID,
-    scopes: [
-      'https://www.googleapis.com/auth/userinfo.email',
-    ]
+    scopes: ['https://www.googleapis.com/auth/userinfo.email'],
   },
   commands: {
     readAloudShortcut: {
       suggested_key: {
         default: 'Ctrl+Shift+S',
-        mac: 'Command+Shift+S'
+        mac: 'Command+Shift+S',
       },
-      description: 'Read aloud'
+      description: 'Read aloud',
     },
     downloadShortcut: {
       suggested_key: {
         default: 'Ctrl+Shift+E',
-        mac: 'Command+Shift+E'
+        mac: 'Command+Shift+E',
       },
-      description: 'Download'
-    }
+      description: 'Download',
+    },
   },
   background: {
     service_worker: 'service-worker.js',
-    type: 'module'
+    type: 'module',
   },
-  host_permissions: [
-    '<all_urls>'
-  ],
+  host_permissions: ['<all_urls>'],
   content_scripts: [
     {
       matches: ['<all_urls>'],
-      js: ['content-script.js']
-    }
+      js: ['content-script.js'],
+    },
   ],
   action: {
     default_title: 'Wavenet for Chrome',
     default_popup: 'public/popup.html',
-    default_icon: 'public/images/icon_1000.png'
+    default_icon: 'public/images/icon_1000.png',
   },
   icons: {
     16: 'public/images/icon_16.png',
@@ -58,13 +54,13 @@ export default {
     38: 'public/images/icon_38.png',
     48: 'public/images/icon_48.png',
     128: 'public/images/icon_128.png',
-    1000: 'public/images/icon_1000.png'
+    1000: 'public/images/icon_1000.png',
   },
   web_accessible_resources: [
     {
       resources: ['public/styles.css'],
-      matches: ['<all_urls>']
-    }
+      matches: ['<all_urls>'],
+    },
   ],
-  homepage_url: 'https://github.com/pgmichael/wavenet-for-chrome'
+  homepage_url: 'https://github.com/pgmichael/wavenet-for-chrome',
 }

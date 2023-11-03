@@ -8,8 +8,7 @@ console.log(`🛠️  Building for ${environment} environment\n`)
 
 // Setup environment variables for the frontend in development
 const SHARED_ENVIRONMENT_VARIABLES = {
-  TTS_API_URL:
-    'https://texttospeech.googleapis.com/v1beta1',
+  TTS_API_URL: 'https://texttospeech.googleapis.com/v1beta1',
   GOOGLE_OAUTH2_CLIENT_ID:
     '89959520704-p0jas87qkq9u8tmjs0d0c6sopiajl0kl.apps.googleusercontent.com',
   GOOGLE_CHROME_EXTENSION_KEY:
@@ -36,7 +35,7 @@ const define = Object.entries(ENVIRONMENT_VARIABLES).reduce(
     ...acc,
     [`process.env.${key}`]: JSON.stringify(value),
   }),
-  {}
+  {},
 )
 
 process.env = { ...process.env, ...ENVIRONMENT_VARIABLES }
@@ -58,7 +57,7 @@ if (environment === 'production') {
 
   console.time(`✅ Zipped up release ${releaseName}`)
   execSync(
-    `rm -f releases/${releaseName}.zip && zip -r releases/${releaseName}.zip dist`
+    `rm -f releases/${releaseName}.zip && zip -r releases/${releaseName}.zip dist`,
   )
   console.timeEnd(`✅ Zipped up release ${releaseName}`)
 }
@@ -94,7 +93,7 @@ async function build() {
 
   console.time('ℹ️ Built css')
   execSync(
-    'npx tailwindcss -i ./src/extension/public/styles.css -o ./dist/public/styles.css'
+    'npx tailwindcss -i ./src/extension/public/styles.css -o ./dist/public/styles.css',
   )
   console.timeEnd('ℹ️ Built css')
   console.timeEnd('✅ Built extension')

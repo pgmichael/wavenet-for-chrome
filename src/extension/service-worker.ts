@@ -11,9 +11,9 @@ let bootstrappedResolver = null
 const bootstrapped = new Promise((resolve) => (bootstrappedResolver = resolve))
 
 // Bootstrap -------------------------------------------------------------------
-initializeSentry();
+initializeSentry()
 
-(async function Bootstrap() {
+;(async function Bootstrap() {
   await migrateSyncStorage()
   await setDefaultSettings()
   await handlers.fetchVoices()
@@ -224,8 +224,9 @@ export const handlers = {
     if (!key) {
       const error = createError({
         errorCode: 'MISSING_API_KEY',
-        errorMessage: "Missing API key",
-        errorTitle: "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup."
+        errorMessage: 'Missing API key',
+        errorTitle:
+          "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup.",
       })
 
       sendMessageToCurrentTab(error)
@@ -243,16 +244,17 @@ export const handlers = {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        "text": text,
-        "ssml": ssml,
-        "voice_name": voice,
-        "voice_language_code": sync.language,
-        "audio_pitch": sync.pitch,
-        "audio_speaking_rate": sync.speed,
-        "audio_volume_gain_db": sync.volumeGainDb,
-        "audio_encoding": encoding,
-        "audio_profile": sync.audioProfile !== 'default' ? [sync.audioProfile] : undefined,
-        "extension_version": chrome.runtime.getManifest().version,
+        text: text,
+        ssml: ssml,
+        voice_name: voice,
+        voice_language_code: sync.language,
+        audio_pitch: sync.pitch,
+        audio_speaking_rate: sync.speed,
+        audio_volume_gain_db: sync.volumeGainDb,
+        audio_encoding: encoding,
+        audio_profile:
+          sync.audioProfile !== 'default' ? [sync.audioProfile] : undefined,
+        extension_version: chrome.runtime.getManifest().version,
       }),
     })
 
@@ -263,8 +265,9 @@ export const handlers = {
       if (message === 'API key not valid. Please pass a valid API key.') {
         const error = createError({
           errorCode: 'MISSING_API_KEY',
-          errorMessage: "Missing API key",
-          errorTitle: "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup."
+          errorMessage: 'Missing API key',
+          errorTitle:
+            "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup.",
         })
 
         sendMessageToCurrentTab(error)
@@ -276,7 +279,7 @@ export const handlers = {
       const error = createError({
         errorCode: 'FAILED_TO_SYNTHESIZE_TEXT',
         errorTitle: 'An error occured while synthesizing text',
-        errorMessage: message
+        errorMessage: message,
       })
 
       sendMessageToCurrentTab(error)
@@ -310,9 +313,11 @@ export const handlers = {
   validateApiKey: async function () {
     console.log('Validating API key...')
     const sync = await chrome.storage.sync.get()
-    
+
     try {
-      const response = await fetch(`${process.env.TTS_API_URL}/voices?key=${sync.apiKey}`)
+      const response = await fetch(
+        `${process.env.TTS_API_URL}/voices?key=${sync.apiKey}`,
+      )
       return response.ok
     } catch (e) {
       return false
@@ -324,7 +329,7 @@ export const handlers = {
     const response = await fetch(`${process.env.BACKEND_URL}/voices`)
     if (!response.ok) throw new Error('Failed to fetch voices')
 
-    const voices = (await response.json())
+    const voices = await response.json()
     if (!voices) throw new Error('No voices found')
 
     await chrome.storage.session.set({ voices })
@@ -335,15 +340,17 @@ export const handlers = {
   // ---------------------------------------------------------------------------
   authenticate: async function () {
     console.log('Authenticating...')
-    const authTokenResult = await chrome.identity.getAuthToken({ interactive: true })
+    const authTokenResult = await chrome.identity.getAuthToken({
+      interactive: true,
+    })
 
     try {
       const userResult = await fetch(`${process.env.BACKEND_URL}/users`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authTokenResult.token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${authTokenResult.token}`,
+          'Content-Type': 'application/json',
+        },
       })
 
       const user = await userResult.json()
@@ -355,7 +362,7 @@ export const handlers = {
       const error = createError({
         errorCode: 'AUTHENTICATION_FAILED',
         errorTitle: 'Authentication failed',
-        errorMessage: 'Please try again later or contact us for more details.'
+        errorMessage: 'Please try again later or contact us for more details.',
       })
 
       return error
@@ -379,19 +386,22 @@ export const handlers = {
     const session = await chrome.storage.session.get()
     if (session.paymentSession) return session.paymentSession
 
-    const response = await fetch(`${process.env.BACKEND_URL}/payment-sessions`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${user.secret_key}`,
-        'Content-Type': 'application/json'
-      }
-    })
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/payment-sessions`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.secret_key}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    )
 
     if (!response.ok) {
       const error = createError({
         errorCode: 'FAILED_TO_CREATE_PAYMENT_SESSION',
         errorTitle: 'Failed to create payment session',
-        errorMessage: 'Please try again later or contact us for more details.'
+        errorMessage: 'Please try again later or contact us for more details.',
       })
 
       sendMessageToCurrentTab(error)
@@ -413,7 +423,7 @@ export const handlers = {
 
     const response = await fetch(`${process.env.BACKEND_URL}/users`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${sync.user.secret_key}` }
+      headers: { Authorization: `Bearer ${sync.user.secret_key}` },
     })
 
     if (!response.ok) throw new Error('Failed to fetch user')
@@ -430,7 +440,7 @@ export const handlers = {
 
     const response = await fetch(`${process.env.BACKEND_URL}/insights`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${sync.user.secret_key}` }
+      headers: { Authorization: `Bearer ${sync.user.secret_key}` },
     })
 
     if (!response.ok) throw new Error('Failed to fetch usage')
@@ -447,13 +457,13 @@ export const handlers = {
 
     const response = await fetch(`${process.env.BACKEND_URL}/invoices`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${sync.user.secret_key}` }
+      headers: { Authorization: `Bearer ${sync.user.secret_key}` },
     })
 
     if (!response.ok) throw new Error('Failed to fetch invoices')
 
     return response.json()
-  }
+  },
 }
 
 // Helpers ---------------------------------------------------------------------
@@ -467,18 +477,21 @@ async function updateContextMenus() {
   const commands = await chrome.commands.getAll()
   const encoding = (await chrome.storage.sync.get()).downloadEncoding
   const fileExt = fileExtMap[encoding]
-  const downloadShortcut = commands.find((c) => c.name === 'downloadShortcut')?.shortcut
+  const downloadShortcut = commands.find((c) => c.name === 'downloadShortcut')
+    ?.shortcut
 
   chrome.contextMenus.update('readAloud', {
-    enabled: true
+    enabled: true,
   })
 
   chrome.contextMenus.update('stopReading', {
-    enabled: playing
+    enabled: playing,
   })
 
   chrome.contextMenus.update('download', {
-    title: `Download ${fileExt?.toUpperCase()}${downloadShortcut && ` (${downloadShortcut})`}`,
+    title: `Download ${fileExt?.toUpperCase()}${
+      downloadShortcut && ` (${downloadShortcut})`
+    }`,
   })
 }
 
@@ -486,10 +499,11 @@ async function createContextMenus() {
   console.log('Creating context menus...')
   chrome.contextMenus.removeAll()
 
-
   const commands = await chrome.commands.getAll()
-  const readAloudShortcut = commands.find((c) => c.name === 'readAloudShortcut')?.shortcut
-  const downloadShortcut = commands.find((c) => c.name === 'downloadShortcut')?.shortcut
+  const readAloudShortcut = commands.find((c) => c.name === 'readAloudShortcut')
+    ?.shortcut
+  const downloadShortcut = commands.find((c) => c.name === 'downloadShortcut')
+    ?.shortcut
   const downloadEncoding = (await chrome.storage.sync.get()).downloadEncoding
   const fileExt = fileExtMap[downloadEncoding]
 
@@ -509,7 +523,9 @@ async function createContextMenus() {
 
   chrome.contextMenus.create({
     id: 'download',
-    title: `Download ${fileExt?.toUpperCase()}${downloadShortcut && ` (${downloadShortcut})`}`,
+    title: `Download ${fileExt?.toUpperCase()}${
+      downloadShortcut && ` (${downloadShortcut})`
+    }`,
     contexts: ['selection'],
   })
 }
@@ -550,7 +566,9 @@ async function hasOffscreenDocument(path) {
 export async function setDefaultSettings() {
   console.info('Setting default settings...')
 
-  await chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
+  await chrome.storage.session.setAccessLevel({
+    accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
+  })
 
   const sync = await chrome.storage.sync.get()
   const hasCredits = sync.user?.credits > 0
@@ -566,7 +584,7 @@ export async function setDefaultSettings() {
     apiKey: sync.apiKey || '',
     audioProfile: sync.audioProfile || 'default',
     volumeGainDb: sync.volumeGainDb || 0,
-    mode: sync.mode || hasApiKey && !hasCredits ? 'free' : 'paid',
+    mode: sync.mode || (hasApiKey && !hasCredits) ? 'free' : 'paid',
   })
 }
 
@@ -623,7 +641,7 @@ async function setLanguages() {
   }
 
   const languages = new Set(
-    session.voices.map((voice) => voice.languageCodes).flat()
+    session.voices.map((voice) => voice.languageCodes).flat(),
   )
 
   await chrome.storage.session.set({ languages: Array.from(languages) })
@@ -635,15 +653,14 @@ function retrieveSelection() {
   console.log('Retrieving selection...')
 
   const activeElement = document.activeElement
-  if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') {
+  if (
+    activeElement?.tagName === 'INPUT' ||
+    activeElement?.tagName === 'TEXTAREA'
+  ) {
+    const start = (activeElement as HTMLInputElement).selectionStart
+    const end = (activeElement as HTMLInputElement).selectionEnd
 
-    // @ts-ignore
-    const start = activeElement.selectionStart
-    // @ts-ignore
-    const end = activeElement.selectionEnd
-
-    // @ts-ignore
-    return activeElement.value.slice(start, end)
+    return (activeElement as HTMLInputElement).value.slice(start, end)
   }
 
   return window.getSelection()?.toString()

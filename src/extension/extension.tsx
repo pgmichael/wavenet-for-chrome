@@ -35,7 +35,10 @@ export function Extension() {
   if (!ready) return null
 
   return (
-    <div style={{ width: 586, height: 550 }} className="bg-neutral-50 bg-opacity-50 flex">
+    <div
+      style={{ width: 586, height: 550 }}
+      className="bg-neutral-50 bg-opacity-50 flex"
+    >
       <Sidebar />
       <div className="w-full p-4 overflow-y-scroll bg-neutral-100 bg-opacity-60">
         <Routes>
@@ -45,8 +48,8 @@ export function Extension() {
           <Route path="/sandbox" element={<Sandbox />} />
         </Routes>
       </div>
-      {
-        error && <Dialog
+      {error && (
+        <Dialog
           title={error.errorTitle}
           content={error.errorMessage}
           onClose={() => setError(null)}
@@ -54,7 +57,8 @@ export function Extension() {
             <Button
               key="close-button"
               className="max-w-fit"
-              onClick={() => setError(null)}>
+              onClick={() => setError(null)}
+            >
               Close
             </Button>,
             <Button
@@ -62,12 +66,13 @@ export function Extension() {
               className="max-w-fit"
               type="primary"
               Icon={GitHub}
-              onClick={() => createGithubIssueFromError(error)}>
+              onClick={() => createGithubIssueFromError(error)}
+            >
               Create an issue
-            </Button>
+            </Button>,
           ]}
         />
-      }
+      )}
     </div>
   )
 }

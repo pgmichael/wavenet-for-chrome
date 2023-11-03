@@ -1,10 +1,10 @@
 import React from 'react'
 import { Dropdown } from '../../../components/inputs/Dropdown.jsx'
 import { Range } from '../../../components/inputs/Range.jsx'
-import { Command, Key } from "react-feather";
+import { Command, Key } from 'react-feather'
 import { Button } from '../../../components/Button.js'
-import { useSession } from '../../../hooks/useSession.js';
-import { useSync } from '../../../hooks/useSync.js';
+import { useSession } from '../../../hooks/useSession.js'
+import { useSync } from '../../../hooks/useSync.js'
 
 const downloadAudioFormats = [
   { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },
@@ -22,47 +22,47 @@ const audioProfiles = [
   {
     value: 'default',
     title: 'Default',
-    description: 'Recommended'
+    description: 'Recommended',
   },
   {
     value: 'wearable-class-device',
     title: 'Wearable class device',
-    description: 'Smart watches and other wearables'
+    description: 'Smart watches and other wearables',
   },
   {
     value: 'handset-class-device',
     title: 'Handset class device',
-    description: 'Smartphones or tablets'
+    description: 'Smartphones or tablets',
   },
   {
     value: 'headphone-class-device',
     title: 'Headphone class device',
-    description: 'Earbuds and over-ears'
+    description: 'Earbuds and over-ears',
   },
   {
     value: 'small-bluetooth-speaker-class-device',
     title: 'Small bluetooth speaker class device',
-    description: 'Portable Bluetooth speakers'
+    description: 'Portable Bluetooth speakers',
   },
   {
     value: 'medium-bluetooth-speaker-class-device',
     title: 'Medium bluetooth speaker class device',
-    description: 'Desktop Bluetooth speakers'
+    description: 'Desktop Bluetooth speakers',
   },
   {
     value: 'large-home-entertainment-class-device',
     title: 'Large home entertainment class device',
-    description: 'TVs or home theater systems'
+    description: 'TVs or home theater systems',
   },
   {
     value: 'large-automotive-class-device',
     title: 'Large automotive class device',
-    description: 'Car audio systems'
+    description: 'Car audio systems',
   },
   {
     value: 'telephony-class-application',
     title: 'Telephony class application',
-    description: 'Call centers or IVR systems'
+    description: 'Call centers or IVR systems',
   },
 ]
 
@@ -212,7 +212,7 @@ function getVoiceOptions(session, language) {
   if (!session?.voices) return []
 
   const voicesInLanguage = session.voices.filter((voice) =>
-    voice.languageCodes.includes(language)
+    voice.languageCodes.includes(language),
   )
 
   const uniqueVoiceNames = new Set()
@@ -220,7 +220,8 @@ function getVoiceOptions(session, language) {
   const voiceNames = voicesInLanguage
     .map(({ name: value, ssmlGender }) => {
       const title = value.split('-').slice(2).join(' ')
-      const description = ssmlGender.charAt(0).toUpperCase() + ssmlGender.toLowerCase().slice(1)
+      const description =
+        ssmlGender.charAt(0).toUpperCase() + ssmlGender.toLowerCase().slice(1)
       return { value, title, description }
     })
     .filter(({ value }) => {
@@ -235,7 +236,6 @@ function getVoiceOptions(session, language) {
 
   return voiceNames
 }
-
 
 function getLanguageOptions(session) {
   if (!session?.languages) return []

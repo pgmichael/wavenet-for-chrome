@@ -18,6 +18,6 @@ export async function initializeSentry() {
     release: self.version,
     environment: self.installType,
     integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0
+    tracesSampleRate: 1.0,
   })
 }

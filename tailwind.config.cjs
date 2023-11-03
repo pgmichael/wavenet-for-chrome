@@ -18,16 +18,16 @@ module.exports = {
           '50%': { transform: 'scaleY(1.5) scaleX(1.1)', opacity: 0 },
           '100%': { transform: 'scaleY(1.5) scaleX(1.1)', opacity: 0 },
         },
-        'popup': {
+        popup: {
           '0%': { transform: 'scale(0.2)' },
           '80%': { transform: 'scale(1.1)' },
           '100%': { transform: 'scale(1)' },
-        }
+        },
       },
       animation: {
         wiggle: 'wiggle 0.6s ease 1',
         'ping-sm': 'ping-sm 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'popup': 'popup 0.2s ease-in-out',
+        popup: 'popup 0.2s ease-in-out',
       },
     },
   },

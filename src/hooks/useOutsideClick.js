@@ -8,7 +8,8 @@ export const useOutsideClick = (callback) => {
   const ref = useRef(null)
 
   const mousedownHandler = (event) => {
-    if (ref.current && !ref.current.contains(event.composedPath()[0])) callback()
+    if (ref.current && !ref.current.contains(event.composedPath()[0]))
+      callback()
   }
 
   useMount(() => {

@@ -4,14 +4,14 @@
 
 ## Features
 
-* Support for all Google WaveNet, Neural2, News, Studio, Polyglot voices and languages.
-* Adjustable pitch and speed.
-* Download selected text to an MP3 file.
-* [SSML support](https://developers.google.com/actions/reference/ssml)
-* Shortcut to read aloud (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on windows)
-* Shortcut to download selected text (`Cmd+Shift+E` on macOS and `Ctrl+Shift+E` on windows)
-* Chunk selected text into sentences to bypass the 5000 character limit and lower usage cost.
-* Use your own [Google Cloud API key](](https://www.youtube.com/watch?v=1n8xlVNWEZ0)) or purchase credits directly.
+- Support for all Google WaveNet, Neural2, News, Studio, Polyglot voices and languages.
+- Adjustable pitch and speed.
+- Download selected text to an MP3 file.
+- [SSML support](https://developers.google.com/actions/reference/ssml)
+- Shortcut to read aloud (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on windows)
+- Shortcut to download selected text (`Cmd+Shift+E` on macOS and `Ctrl+Shift+E` on windows)
+- Chunk selected text into sentences to bypass the 5000 character limit and lower usage cost.
+- Use your own [Google Cloud API key](<](https://www.youtube.com/watch?v=1n8xlVNWEZ0)>) or purchase credits directly.
 
 ### Usage Costs
 

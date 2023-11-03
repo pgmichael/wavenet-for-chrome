@@ -1,20 +1,22 @@
-import React from "react";
-import { useState } from "react";
-import { CreditCard, Key } from "react-feather";
-import { Text } from "../../../components/inputs/Text.jsx";
-import { Button } from "../../../components/Button.js";
-import { useSync } from "../../../hooks/useSync.js";
+import React from 'react'
+import { useState } from 'react'
+import { CreditCard, Key } from 'react-feather'
+import { Text } from '../../../components/inputs/Text.jsx'
+import { Button } from '../../../components/Button.js'
+import { useSync } from '../../../hooks/useSync.js'
 
-export function ApiKeyForm() { }
+export function ApiKeyForm() {}
 
 ApiKeyForm.Content = function ({ form, sync, setSync }) {
-  return <Text
-    error={form.error}
-    label="API key"
-    placeholder="Ex: ABzaSyDRIlE4ioDeZ03fya3385XeyUAvMorxWjw"
-    value={sync.apiKey}
-    onChange={(apiKey) => setSync({ ...sync, apiKey, apiKeyValid: false })}
-  />
+  return (
+    <Text
+      error={form.error}
+      label="API key"
+      placeholder="Ex: ABzaSyDRIlE4ioDeZ03fya3385XeyUAvMorxWjw"
+      value={sync.apiKey}
+      onChange={(apiKey) => setSync({ ...sync, apiKey, apiKeyValid: false })}
+    />
+  )
 }
 
 ApiKeyForm.Buttons = function ({ form, sync, setSync }) {
@@ -24,10 +26,12 @@ ApiKeyForm.Buttons = function ({ form, sync, setSync }) {
         Icon={CreditCard}
         onClick={() => setSync({ ...sync, mode: 'paid' })}
       >
-        {sync.user?.credits > 0 ? 'Use credits instead' : 'Purchase credits instead'}
+        {sync.user?.credits > 0
+          ? 'Use credits instead'
+          : 'Purchase credits instead'}
       </Button>
       <Button
-        className='ml-2'
+        className="ml-2"
         type="primary"
         Icon={Key}
         onClick={form.validate}
@@ -47,7 +51,7 @@ ApiKeyForm.Validator = function (callback) {
   async function validate() {
     setValidating(true)
 
-    if (!await chrome.runtime.sendMessage({ id: 'validateApiKey' })) {
+    if (!(await chrome.runtime.sendMessage({ id: 'validateApiKey' }))) {
       setError('Provided API key is invalid')
       setValidating(false)
       return setSync({ ...sync, apiKeyValid: false })

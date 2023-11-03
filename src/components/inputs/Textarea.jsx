@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {twMerge} from "tailwind-merge";
+import { twMerge } from 'tailwind-merge'
 
 export function Textarea(props) {
   const [value, setValue] = useState(props.value)
@@ -12,17 +12,19 @@ export function Textarea(props) {
 
   return (
     <div className="relative font-semibold text-xs flex flex-col grow">
-      <label className={twMerge(
-        'bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500',
-        props.error && 'text-red-500'
-      )}>
+      <label
+        className={twMerge(
+          'bg-white absolute text-xxs -top-2 left-1.5 px-1 text-neutral-500',
+          props.error && 'text-red-500',
+        )}
+      >
         {props.label}
       </label>
 
       <textarea
         className={twMerge(
           'border border-neutral-200 h-full px-3 py-1 pt-2.5 outline-none rounded-md w-full text-neutral-900',
-          props.error && 'border-red-400'
+          props.error && 'border-red-400',
         )}
         placeholder={props.placeholder}
         value={props.value}
