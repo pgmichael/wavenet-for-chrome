@@ -8,6 +8,9 @@ import { dateFormat, creditFormat } from '../../helpers/formatting-helpers.js'
 import { Button } from '../../../components/Button.js'
 import { useSession } from '../../../hooks/useSession.js'
 import { useSync } from '../../../hooks/useSync.js'
+import { useStore } from '../../../hooks/useStore.js'
+import { errorStore } from '../../extension.js'
+import { isError } from '../../helpers/error-helpers.js'
 
 export function Billing() {
   const navigate = useNavigate()
@@ -16,6 +19,7 @@ export function Billing() {
   const { session, ready: sessionReady } = useSession()
   const { sync, setSync, ready: syncReady } = useSync()
   const form = ApiKeyForm.Validator(() => navigate('/preferences'))
+  const [error, setError] = useStore(errorStore)
   const paymentSession = session?.paymentSession
 
   useEffect(() => {
@@ -28,17 +32,19 @@ export function Billing() {
 
   async function pay() {
     setLoading(true)
-    const paymentSession = await chrome.runtime.sendMessage({
-      id: 'createPaymentSession',
-    })
+    const paymentSession = await chrome.runtime.sendMessage({id: 'createPaymentSession'})
     setLoading(false)
+
+    if (isError(paymentSession)) {
+      setError(paymentSession)
+      return
+    }
+    
     if (!paymentSession?.hosted_invoice_url) {
-      throw new Error(
-        'Could not create payment session or payment session URL is missing'
-      )
+      throw new Error('Could not create payment session or payment session URL is missing')
     }
 
-    chrome.tabs.create({ url: paymentSession.hosted_invoice_url })
+    window.open(paymentSession.hosted_invoice_url)
   }
 
   if (!sessionReady || !syncReady) return

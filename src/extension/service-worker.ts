@@ -391,7 +391,17 @@ export const handlers = {
       }
     })
 
-    if (!response.ok) throw new Error('Failed to create payment session')
+    if (!response.ok) {
+      const error = createError({
+        errorCode: 'FAILED_TO_CREATE_PAYMENT_SESSION',
+        errorTitle: 'Failed to create payment session',
+        errorMessage: 'Please try again later or contact us for more details.'  
+      })
+
+      sendMessageToCurrentTab(error)
+
+      return error
+    }
 
     const paymentSession = await response.json()
 

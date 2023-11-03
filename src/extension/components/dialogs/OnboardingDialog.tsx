@@ -7,23 +7,31 @@ import { ApiKeyForm } from "../forms/ApiKey.js";
 import { Button } from "../../../components/Button.js";
 import { useSync } from "../../../hooks/useSync.js";
 import { useSession } from "../../../hooks/useSession.js";
+import { useStore } from "../../../hooks/useStore.js";
+import { errorStore } from "../../extension.js";
 
 export function OnboardingDialog({ onClose }) {
   const { sync, setSync, ready: syncReady } = useSync()
   const { session, ready: sessionReady } = useSession()
   const form = ApiKeyForm.Validator(onClose)
   const [loading, setLoading] = React.useState(false)
+  const [error, setError] = useStore(errorStore)
 
   async function pay() {
     setLoading(true)
-    const paymentSession = await chrome.runtime.sendMessage({ id: 'createPaymentSession' })
+    const paymentSession = await chrome.runtime.sendMessage({id: 'createPaymentSession'})
     setLoading(false)
 
+    if (isError(paymentSession)) {
+      setError(paymentSession)
+      return
+    }
+    
     if (!paymentSession?.hosted_invoice_url) {
       throw new Error('Could not create payment session or payment session URL is missing')
     }
 
-    window.open(paymentSession.hosted_invoice_url, '_blank')
+    window.open(paymentSession.hosted_invoice_url)
   }
 
   function useMyOwnApiKey() {
