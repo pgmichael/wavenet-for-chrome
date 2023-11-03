@@ -12,6 +12,8 @@
   "author": "Michael Poirier-Ginter <michael.poirierginter@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@parcel/packager-raw-url": "^2.10.2",
+    "@parcel/transformer-webmanifest": "^2.10.2",
     "@sentry/esbuild-plugin": "^2.4.0",
     "@sentry/types": "^7.57.0",
     "@types/chrome": "^0.0.220",
