@@ -310,17 +310,13 @@ export const handlers = {
   validateApiKey: async function () {
     console.log('Validating API key...')
     const sync = await chrome.storage.sync.get()
-
+    
     try {
-      const response = (await fetch(`${process.env.TTS_API_URL}/voices?key=${sync.apiKey}`))
-      if (!response.ok) {
-        return false
-      }
+      const response = await fetch(`${process.env.TTS_API_URL}/voices?key=${sync.apiKey}`)
+      return response.ok
     } catch (e) {
       return false
     }
-
-    return true
   },
   fetchVoices: async function () {
     console.log('Fetching voices...')
