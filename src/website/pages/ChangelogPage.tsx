@@ -14,7 +14,7 @@ export function ChangelogPage() {
         <Release
           isFirst={true}
           version="13"
-          date="2023-08-01"
+          date="2023-11-05"
           new={[
             {
               title: 'Purchase credits (Optional)',
