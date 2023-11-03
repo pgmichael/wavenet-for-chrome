@@ -7,7 +7,7 @@ import { OnboardingDialog } from './components/dialogs/OnboardingDialog';
 import { Button } from '../components/Button';
 import { useMount } from '../hooks/useMount';
 import { useSync } from '../hooks/useSync';
-import { TError, isError } from './helpers/error-helpers';
+import { TError, createGithubIssueFromError, isError } from './helpers/error-helpers';
 
 // Event listeners -------------------------------------------------------------
 window.addEventListener('load', function () {
@@ -63,12 +63,6 @@ function ContentScript() {
     }
   }
 
-  function handleIssueCreation() {
-    window.open(
-      `https://github.com/pgmichael/wavenet-for-chrome/issues/new?title=${error.errorCode}&body=${error.errorMessage}`
-    )
-  }
-
   useMount(function () {
     chrome.runtime.onMessage.addListener(handleMessages)
 
@@ -90,7 +84,7 @@ function ContentScript() {
       onClose={() => setError(null)}
       buttons={[
         <Button className="max-w-fit" onClick={() => setError(null)}>Close</Button>,
-        <Button className="max-w-fit" type="primary" Icon={GitHub} onClick={handleIssueCreation}>Create an issue</Button>
+        <Button className="max-w-fit" type="primary" Icon={GitHub} onClick={() => createGithubIssueFromError(error)}>Create an issue</Button>
       ]}
     />
   )

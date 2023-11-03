@@ -11,7 +11,7 @@ import { Sandbox } from './components/views/Sandbox'
 import { Dialog } from '../components/Dialog'
 import { Button } from '../components/Button'
 import { GitHub } from 'react-feather'
-import { TError } from './helpers/error-helpers'
+import { TError, createGithubIssueFromError } from './helpers/error-helpers'
 import { createStore, useStore } from '../hooks/useStore'
 
 export const errorStore = createStore<null | TError>(null)
@@ -32,10 +32,6 @@ export function Extension() {
     chrome.runtime.sendMessage({ id: 'fetchVoices' })
   })
 
-  function handleIssueCreation() {
-    window.open(`https://github.com/pgmichael/wavenet-for-chrome/issues/new?title=${error.errorCode}&body=${error.errorMessage}`)
-  }
-
   if (!ready) return null
 
   return (
@@ -55,8 +51,20 @@ export function Extension() {
           content={error.errorMessage}
           onClose={() => setError(null)}
           buttons={[
-            <Button key="close-button" className="max-w-fit" onClick={() => setError(null)}>Close</Button>,
-            <Button key="create-issue-button" className="max-w-fit" type="primary" Icon={GitHub} onClick={handleIssueCreation}>Create an issue</Button>
+            <Button
+              key="close-button"
+              className="max-w-fit"
+              onClick={() => setError(null)}>
+              Close
+            </Button>,
+            <Button
+              key="create-issue-button"
+              className="max-w-fit"
+              type="primary"
+              Icon={GitHub}
+              onClick={() => createGithubIssueFromError(error)}>
+              Create an issue
+            </Button>
           ]}
         />
       }
