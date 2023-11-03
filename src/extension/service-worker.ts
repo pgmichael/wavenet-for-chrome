@@ -14,11 +14,9 @@ const bootstrapped = new Promise((resolve) => (bootstrappedResolver = resolve))
 // Bootstrap -------------------------------------------------------------------
 initializeSentry()
 ;(async function Bootstrap() {
-  await migrateSyncStorage()
   await setDefaultSettings()
   await handlers.fetchVoices()
   await handlers.fetchUser()
-
   await createContextMenus()
   bootstrappedResolver()
   await pollForPayment()
@@ -73,6 +71,21 @@ chrome.runtime.onInstalled.addListener(async function (details) {
   const self = await chrome.management.getSelf()
   if (details.reason === 'update' && self.installType !== 'development') {
     chrome.tabs.create({ url: 'https://wavenet-for-chrome.com/changelog' })
+  }
+
+  // New installs should default to the paid mode.
+  if (details.reason === 'install') {
+    await chrome.storage.sync.set({ mode: 'paid' })
+  }
+
+  if (details.reason === 'update') {
+    const sync = await chrome.storage.sync.get()
+
+    // Previous versions of the extension didn't have the mode setting should
+    // default to the free mode when they have an API key.
+    if (typeof sync.mode === 'undefined') {
+      await chrome.storage.sync.set({ mode: sync.apiKey ? 'free' : 'paid' })
+    }
   }
 })
 
@@ -577,7 +590,7 @@ async function hasOffscreenDocument(path) {
   return false
 }
 
-export async function setDefaultSettings() {
+async function setDefaultSettings() {
   console.info('Setting default settings...')
 
   await chrome.storage.session.setAccessLevel({
@@ -585,8 +598,6 @@ export async function setDefaultSettings() {
   })
 
   const sync = await chrome.storage.sync.get()
-  const hasCredits = sync.user?.credits > 0
-  const hasApiKey = sync.apiKey
 
   await chrome.storage.sync.set({
     language: sync.language || 'en-US',
@@ -598,51 +609,7 @@ export async function setDefaultSettings() {
     apiKey: sync.apiKey || '',
     audioProfile: sync.audioProfile || 'default',
     volumeGainDb: sync.volumeGainDb || 0,
-    mode: sync.mode || (hasApiKey && !hasCredits) ? 'free' : 'paid',
   })
-}
-
-async function migrateSyncStorage() {
-  console.log('Migrating sync storage...')
-
-  const sync = await chrome.storage.sync.get()
-
-  // Extension with version 8 had WAV and OGG_OPUS as a download option, but
-  // it was rolled back in version 9. Due to audio stiching issues.
-  if (
-    Number(chrome.runtime.getManifest().version) <= 9 &&
-    (sync.downloadEncoding == 'OGG_OPUS' || sync.downloadEncoding == 'LINEAR16')
-  ) {
-    chrome.storage.sync.set({ downloadEncoding: 'MP3_64_KBPS' })
-  }
-
-  // Extensions with version < 8 had a different storage structure.
-  // We need to migrate them to the new structure before we can use them.
-  if (sync.voices || Number(chrome.runtime.getManifest().version) < 8) return
-
-  await chrome.storage.sync.clear()
-
-  const newSync: any = {}
-  if (sync.locale) {
-    const oldVoiceParts = sync.locale.split('-')
-    newSync.language = [oldVoiceParts[0], oldVoiceParts[1]].join('-')
-    newSync.voices = { [newSync.language]: sync.locale }
-  }
-
-  if (sync.speed) {
-    newSync.speed = Number(sync.speed)
-  }
-
-  if (sync.pitch) {
-    newSync.pitch = 0
-  }
-
-  if (sync.apiKey) {
-    newSync.apiKey = sync.apiKey
-    newSync.apiKeyValid = true // Assume the old key is valid until proven otherwise
-  }
-
-  await chrome.storage.sync.set(newSync)
 }
 
 async function setLanguages() {
