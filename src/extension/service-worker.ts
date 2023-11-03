@@ -117,7 +117,7 @@ export const handlers = {
 
       try {
         if (isError(audioUri)) return audioUri
-        
+
         await createOffscreenDocument()
         await chrome.runtime.sendMessage({
           id: 'play',
@@ -183,12 +183,12 @@ export const handlers = {
     console.log('Downloading audio...', { text })
 
     const { downloadEncoding: encoding } = await chrome.storage.sync.get()
-    
+
     const url = await this.getAudioUri({ text, encoding })
     if (isError(url)) return url
 
     console.log('Downloading audio from', url)
-    
+
     chrome.downloads.download({
       url,
       filename: `tts-download.${fileExtMap[encoding]}`,
@@ -229,7 +229,7 @@ export const handlers = {
       })
 
       sendMessageToCurrentTab(error)
-      
+
       return error
     }
 
@@ -266,9 +266,9 @@ export const handlers = {
           errorMessage: "Missing API key",
           errorTitle: "Your api key is invalid or missing. Please double check it has been entered correctly inside the extension's popup."
         })
-  
+
         sendMessageToCurrentTab(error)
-        
+
         return error
       }
 
@@ -282,7 +282,7 @@ export const handlers = {
       sendMessageToCurrentTab(error)
 
       await this.stopReading()
-      
+
       return error
     }
 
@@ -297,7 +297,7 @@ export const handlers = {
     const promises = chunks.map((text) => this.synthesize({ text, encoding }))
     const audioContents = await Promise.all(promises)
     const errorContents = audioContents.filter(isError)
-    
+
     if (errorContents.length) {
       return errorContents[0]
     }
@@ -349,13 +349,13 @@ export const handlers = {
           'Content-Type': 'application/json'
         }
       })
-  
+
       const user = await userResult.json()
-  
+
       await chrome.storage.sync.set({ user })
 
       return user
-    } catch(e) {
+    } catch (e) {
       const error = createError({
         errorCode: 'AUTHENTICATION_FAILED',
         errorTitle: 'Authentication failed',
@@ -395,7 +395,7 @@ export const handlers = {
       const error = createError({
         errorCode: 'FAILED_TO_CREATE_PAYMENT_SESSION',
         errorTitle: 'Failed to create payment session',
-        errorMessage: 'Please try again later or contact us for more details.'  
+        errorMessage: 'Please try again later or contact us for more details.'
       })
 
       sendMessageToCurrentTab(error)
@@ -552,13 +552,14 @@ async function hasOffscreenDocument(path) {
 }
 
 export async function setDefaultSettings() {
-  console.log('Setting default settings...')
+  console.info('Setting default settings...')
 
-  await chrome.storage.session.setAccessLevel({
-    accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
-  })
+  await chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
 
   const sync = await chrome.storage.sync.get()
+  const hasCredits = sync.user?.credits > 0
+  const hasApiKey = sync.apiKey
+
   await chrome.storage.sync.set({
     language: sync.language || 'en-US',
     speed: sync.speed || 1,
@@ -569,7 +570,7 @@ export async function setDefaultSettings() {
     apiKey: sync.apiKey || '',
     audioProfile: sync.audioProfile || 'default',
     volumeGainDb: sync.volumeGainDb || 0,
-    mode: sync.mode || 'paid',
+    mode: sync.mode || hasApiKey && !hasCredits ? 'free' : 'paid',
   })
 }
 
