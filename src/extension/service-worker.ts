@@ -13,14 +13,14 @@ const bootstrapped = new Promise((resolve) => (bootstrappedResolver = resolve))
 
 // Bootstrap -------------------------------------------------------------------
 initializeSentry()
-;(async function Bootstrap() {
-  await setDefaultSettings()
-  await handlers.fetchVoices()
-  await handlers.fetchUser()
-  await createContextMenus()
-  bootstrappedResolver()
-  await pollForPayment()
-})()
+  ; (async function Bootstrap() {
+    await setDefaultSettings()
+    await handlers.fetchVoices()
+    await handlers.fetchUser()
+    await createContextMenus()
+    bootstrappedResolver()
+    await pollForPayment()
+  })()
 
 // Event listeners -------------------------------------------------------------
 chrome.commands.onCommand.addListener(function (command) {
@@ -192,19 +192,64 @@ export const handlers = {
 
     return Promise.resolve(true)
   },
+  // download: async function ({ text }) {
+  //   console.log('Downloading audio...', { text })
+
+  //   // Always use OGG_OPUS for downloads regardless of settings
+  //   const encoding = 'OGG_OPUS'
+
+  //   const url = await this.getAudioUri({ text, encoding })
+  //   if (isError(url)) return url
+
+  //   console.log('Downloading audio from', url)
+
+  //   chrome.downloads.download({
+  //     url,
+  //     filename: `tts-download.${fileExtMap[encoding] || 'ogg'}`,
+  //   })
+
+  //   return Promise.resolve(true)
+  // },
+
   download: async function ({ text }) {
     console.log('Downloading audio...', { text })
 
-    const { downloadEncoding: encoding } = await chrome.storage.sync.get()
+    const chunks = text.chunk()
+    const totalChunks = chunks.length
+    const batchSize = 30
+    const totalBatches = Math.ceil(totalChunks / batchSize)
 
+    // Notify the user if this will take a while
+    if (totalBatches > 1) {
+      sendMessageToCurrentTab({
+        id: 'downloadStatus',
+        payload: {
+          message: `Processing ${totalChunks} text segments in ${totalBatches} batches. This may take ${totalBatches - 1} minute(s).`,
+          status: 'processing'
+        }
+      })
+    }
+
+    const encoding = 'OGG_OPUS'
     const url = await this.getAudioUri({ text, encoding })
+
     if (isError(url)) return url
 
-    console.log('Downloading audio from', url)
+    // Notify the user the download is starting
+    if (totalBatches > 1) {
+      sendMessageToCurrentTab({
+        id: 'downloadStatus',
+        payload: {
+          message: 'Processing complete! Starting download...',
+          status: 'complete'
+        }
+      })
+    }
 
+    console.log('Downloading audio from', url)
     chrome.downloads.download({
       url,
-      filename: `tts-download.${fileExtMap[encoding]}`,
+      filename: `tts-download.${fileExtMap[encoding] || 'ogg'}`,
     })
 
     return Promise.resolve(true)
@@ -324,17 +369,41 @@ export const handlers = {
     const chunks = text.chunk()
     console.log('Chunked text into', chunks.length, 'chunks', chunks)
 
-    const promises = chunks.map((text) => this.synthesize({ text, encoding }))
-    const audioContents = await Promise.all(promises)
-    const errorContents = audioContents.filter(isError)
+    const batchSize = 30
+    const totalBatches = Math.ceil(chunks.length / batchSize)
+    let allAudioContents = []
 
-    if (errorContents.length) {
-      return errorContents[0]
+    for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+      console.log(`Processing batch ${batchIndex + 1}/${totalBatches}`)
+
+      // Get the current batch of chunks
+      const startIndex = batchIndex * batchSize
+      const batchChunks = chunks.slice(startIndex, startIndex + batchSize)
+
+      // Process this batch
+      const promises = batchChunks.map((text) => this.synthesize({ text, encoding }))
+      const batchContents = await Promise.all(promises)
+
+      // Check for errors
+      const errorContents = batchContents.filter(isError)
+      if (errorContents.length) {
+        return errorContents[0]
+      }
+
+      // Add to our results
+      allAudioContents = [...allAudioContents, ...batchContents]
+
+      // If there are more batches, wait 60 seconds before continuing
+      if (batchIndex < totalBatches - 1) {
+        console.log('Rate limit reached, waiting 60 seconds before continuing...')
+        await new Promise(resolve => setTimeout(resolve, 60000))
+      }
     }
 
+    // Combine all audio contents into one file
     return (
       `data:audio/${fileExtMap[encoding]};base64,` +
-      btoa(audioContents.map(atob).join(''))
+      btoa(allAudioContents.map(atob).join(''))
     )
   },
   validateApiKey: async function () {
@@ -516,9 +585,8 @@ async function updateContextMenus() {
   })
 
   chrome.contextMenus.update('download', {
-    title: `Download ${fileExt?.toUpperCase()}${
-      downloadShortcut && ` (${downloadShortcut})`
-    }`,
+    title: `Download ${fileExt?.toUpperCase()}${downloadShortcut && ` (${downloadShortcut})`
+      }`,
   })
 }
 
@@ -550,9 +618,8 @@ async function createContextMenus() {
 
   chrome.contextMenus.create({
     id: 'download',
-    title: `Download ${fileExt?.toUpperCase()}${
-      downloadShortcut && ` (${downloadShortcut})`
-    }`,
+    title: `Download ${fileExt?.toUpperCase()}${downloadShortcut && ` (${downloadShortcut})`
+      }`,
     contexts: ['selection'],
   })
 }

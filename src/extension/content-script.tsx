@@ -51,6 +51,7 @@ window.addEventListener('load', function () {
 function ContentScript() {
   const { sync, ready } = useSync()
   const [error, setError] = useState<null | TError>(null)
+  const [progressMessage, setProgressMessage] = useState<string | null>(null)
   const handlers = { setError }
 
   async function handleMessages(request, sender, sendResponse) {
@@ -64,6 +65,18 @@ function ContentScript() {
       setError(request)
 
       return
+    }
+
+    // Add this to the handleMessages function
+    if (request.id === 'downloadStatus') {
+      // Show a notification to the user about download progress
+      // You could update this to use a more sophisticated notification system
+      if (request.payload.status === 'processing') {
+        setProgressMessage(request.payload.message);
+      } else if (request.payload.status === 'complete') {
+        setProgressMessage(request.payload.message);
+        setTimeout(() => setProgressMessage(null), 3000);
+      }
     }
   }
 

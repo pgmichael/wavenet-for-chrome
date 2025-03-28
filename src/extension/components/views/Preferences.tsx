@@ -13,6 +13,7 @@ import {
 const downloadAudioFormats = [
   { value: 'MP3_64_KBPS', title: 'MP3 (64kbps)', description: 'Recommended' },
   { value: 'MP3', title: 'MP3 (32kbps)' },
+  { value: 'OGG_OPUS', title: 'OGG' },
 ]
 
 const readingAudioFormats = [

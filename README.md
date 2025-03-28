@@ -6,7 +6,7 @@
 
 - Support for all Google WaveNet, Neural2, News, Studio, Polyglot voices and languages.
 - Adjustable pitch and speed.
-- Download selected text to an MP3 file.
+- Download selected text to an MP3 or OGG file.
 - [SSML support](https://developers.google.com/actions/reference/ssml)
 - Shortcut to read aloud (`Cmd+Shift+S` on macOS and `Ctrl+Shift+S` on windows)
 - Shortcut to download selected text (`Cmd+Shift+E` on macOS and `Ctrl+Shift+E` on windows)
